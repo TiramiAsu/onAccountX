@@ -29,7 +29,7 @@
 		<property name="show_sql">true</property>
 		
 		<!-- 加載映射 -->
-		<mapping resource="./entity.hbm.xml" />
+		<mapping class="com.onaccountx.mvc.model.entity.Member" />
 		<mapping class="com.onaccountx.mvc.model.entity.Account" />
 		
 	</session-factory>

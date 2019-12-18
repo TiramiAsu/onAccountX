@@ -11,6 +11,15 @@ package com.onaccountx.mvc.model.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 /**
  * <pre>
  * [會員] 2019-12-06 00:24
@@ -18,6 +27,8 @@ import java.util.Date;
  * 
  * @author  TiramiAsu (Email)
  */
+@Entity
+@Table(name="members")
 public class Member {
 
 	public final static String _ENTITY_NAME = "member";
@@ -28,16 +39,26 @@ public class Member {
 	public final static String _TIME_MODIFY = "timeModify";
 	public final static String _TIME_BUILD = "timeBuild";
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column(name = "name")
 	private String name;
 	
+	@Column(name = "email")
 	private String email;
 	
+	@Column(name = "phone")
 	private String phone;
 	
+	@Column(name = "time_modify")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeModify;
 	
+	@Column(name = "time_build")
+
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
 	
 	public Member() {}
