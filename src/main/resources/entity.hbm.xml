@@ -2,12 +2,12 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 	<class name="com.onaccountx.mvc.model.entity.Member" table="members">
-		<id column="id" name="id" type="int">
+		<id name="id" column="id" type="java.lang.Long">
 			<generator class="native" />
 		</id>
-		<property name="name" column="name" />
-		<property name="email" column="email" />
-		<property name="phone" column="phone" />
+		<property name="name" column="name" type="string" />
+		<property name="email" column="email" type="string" />
+		<property name="phone" column="phone" type="string" />
 		<property name="timeModify" column="time_modify" type="timestamp" />
 		<property name="timeBuild" column="time_build" type="timestamp" />
 	</class>

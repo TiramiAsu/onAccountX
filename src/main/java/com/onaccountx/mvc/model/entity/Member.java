@@ -13,7 +13,7 @@ import java.util.Date;
 
 /**
  * <pre>
- * [Member] 2019-12-06 00:24
+ * [會員] 2019-12-06 00:24
  * </pre>
  * 
  * @author  TiramiAsu (Email)
@@ -28,7 +28,7 @@ public class Member {
 	public final static String _TIME_MODIFY = "timeModify";
 	public final static String _TIME_BUILD = "timeBuild";
 	
-	private int id;
+	private Long id;
 	
 	private String name;
 	
@@ -51,11 +51,11 @@ public class Member {
 		this.timeBuild = timeBuild;
 	}
 	
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
