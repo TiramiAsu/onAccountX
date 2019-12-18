@@ -7,6 +7,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	
+	<properties>
+		<hibernate.version>4.3.6.Final</hibernate.version>
+	</properties>
+	
 	<dependencies>
 
 		<!-- https://mvnrepository.com/artifact/javax/javaee-web-api -->
@@ -23,7 +27,15 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.2.2.jre7</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		
 	</dependencies>
 	
 	<build>

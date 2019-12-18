@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<!-- 通常，一個session-factory節點代表一個數據庫 -->
+	<session-factory>
+		<!-- 數據庫連接配置 -->
+		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+		<property name="hibernate.connection.url">jdbc:postgresql://127.0.0.1:5432/onaccountx</property>
+		<property name="hibernate.connection.username">postgres</property>
+		<property name="hibernate.connection.password">postgres</property>
+		
+		<!-- 數據庫方言配置， hibernate在運行的時候，會根據不同的方言生成符合當前數據庫語法的sql -->
+		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+		
+		<!-- 自動建表 -->
+		<!-- update: table 與 Entity 結構不同則變更 table 結構 -->
+		<property name="hibernate.hbm2ddl.auto">update</property>
+		
+		<!-- 透過 jta(預設)/thread 來自動維護 session 開啟與關閉資源 -->
+		<property name="current_session_context_class">thread</property>
+		
+		<!-- 不使用二級緩存 -->
+		<property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+		
+		<!-- 格式化sql -->
+		<property name="hibernate.format_sql">true</property>
+		
+		<!-- 顯示hibernate在運行時候執行的sql語句 -->
+		<property name="show_sql">true</property>
+		
+		<!-- 加載映射 -->
+		<mapping resource="./entity.hbm.xml" />
+		
+	</session-factory>
+</hibernate-configuration>
