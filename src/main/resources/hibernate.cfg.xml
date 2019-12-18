@@ -30,6 +30,7 @@
 		
 		<!-- 加載映射 -->
 		<mapping resource="./entity.hbm.xml" />
+		<mapping class="com.onaccountx.mvc.model.entity.Account" />
 		
 	</session-factory>
 </hibernate-configuration>

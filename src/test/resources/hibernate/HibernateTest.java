@@ -20,11 +20,13 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.Test;
 
+import com.onaccountx.mvc.model.entity.Account;
 import com.onaccountx.mvc.model.entity.Member;
+import com.onaccountx.utils.HibernateUtils;
 
 /**
  * <pre>
- * [Hibernate] 2019-12-18 01:37
+ * [測試 Hibernate] 2019-12-18 01:37
  * </pre>
  * 
  * @author TiramiAsu (Email)
@@ -58,20 +60,36 @@ public class HibernateTest {
 		assertArrayEquals(expecteds, actuals);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	final void testCreate() {
 		Member member = new Member("Asu", "xxxx@gmail.com", "0987654321",
 				new Date(), new Date());
 		try {
-			Configuration cfg = new Configuration().configure();
-			SessionFactory sf = cfg.buildSessionFactory();
+			SessionFactory sf = HibernateUtils.getSessionFactory();
 			Session session = sf.getCurrentSession();
 			Transaction tx = session.beginTransaction();
 			session.save(member);
 			tx.commit();
 		} catch (Exception e) {
 			fail(">>> Hibernate handle Error <<<");
+		}
+	}
+	
+	@Test
+	final void testCreateByAnnotation() {
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		try {
+			Account acc = new Account("asc", "zxc", Account.VALUE_ENABLE, 0,
+					new Date(), new Date(), new Date(), 1L);
+			Transaction tx = session.beginTransaction();
+			session.persist(acc);
+			tx.commit();
+		} catch (Exception e) {
+			session.close();
+			fail(">>> Hibernate handle Error <<<");
+		}
+		if (session.isOpen()) {
+			session.close();
 		}
 	}
 
