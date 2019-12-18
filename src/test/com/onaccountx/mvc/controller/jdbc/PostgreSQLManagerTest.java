@@ -7,7 +7,7 @@
  * &copy;TiramiAsu
  * 
  */
-package v1.mvc.dao.jdbc.impl;
+package com.onaccountx.mvc.controller.jdbc;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * <pre>
- * [Test] 2019-12-04 11:01
+ * [測試 PostgreSQL JDBC] 2019-12-04 11:01
  * </pre>
  * 
  * @author  TiramiAsu (Email)
@@ -35,7 +35,7 @@ class PostgreSQLManagerTest {
 	final void testGetConnection() throws ClassNotFoundException, SQLException {
 		Connection actual = null;
 		Class.forName(JDBC_DRIVER); // ClassNotFoundException
-		actual  = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASS); // SQLException
+		actual = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASS); // SQLException
 		assertNotNull(actual);
 	}
 

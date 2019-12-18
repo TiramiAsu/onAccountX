@@ -7,7 +7,7 @@
  * &copy;TiramiAsu
  * 
  */
-package v1.mvc.dao.jdbc;
+package com.onaccountx.generic;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,7 +17,7 @@ import java.sql.Statement;
 
 /**
  * <pre>
- * [Database Manager] 2019-12-04 09:53
+ * [資料庫 JDBC 定義] 2019-12-04 09:53
  * 1 public final String JDBC_DRIVER
  *   public final String JDBC_URL
  *   public final String JDBC_USER

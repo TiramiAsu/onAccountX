@@ -7,17 +7,17 @@
  * &copy;TiramiAsu
  * 
  */
-package v1.mvc.dao.jdbc.impl;
+package com.onaccountx.mvc.controller.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import v1.mvc.dao.jdbc.DatabaseManager;
+import com.onaccountx.generic.DatabaseManager;
 
 /**
  * <pre>
- * [PostgreSQL Manager] 2019-12-04 10:31
+ * [PostgreSQL JDBC] 2019-12-04 10:31
  * </pre>
  * 
  * @author  TiramiAsu (Email)
@@ -44,10 +44,8 @@ public class PostgreSQLManager implements DatabaseManager {
 	@Override
 	public Connection getConnection() throws ClassNotFoundException, SQLException {
 		Connection conn = null;
-		
 		Class.forName(JDBC_DRIVER); // ClassNotFoundException
 		conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASS); // SQLException
-		
 		return conn;
 	}
 
