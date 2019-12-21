@@ -9,6 +9,7 @@
  */
 package com.onaccountx.mvc.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,9 +30,11 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="members")
-public class Member {
+public class Member implements Serializable {
 
-	public final static String _ENTITY_NAME = "member";
+	private static final long serialVersionUID = 3063969525003747477L;
+	
+	public final static String _ENTITY_NAME = "Member";
 	public final static String _ID = "id";
 	public final static String _NAME = "name";
 	public final static String _EMAIL = "email";
@@ -57,7 +60,6 @@ public class Member {
 	private Date timeModify;
 	
 	@Column(name = "time_build")
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
 	
