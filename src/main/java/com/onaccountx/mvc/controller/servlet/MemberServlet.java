@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.onaccountx.mvc.model.dao.MemberDAO;
 import com.onaccountx.mvc.model.dao.impl.MemberDAOImpl;
 import com.onaccountx.mvc.model.entity.Member;
+import com.onaccountx.utils.JudgeUtils;
 
 /**
  * <pre>
@@ -84,14 +85,20 @@ public class MemberServlet extends HttpServlet {
 			String email = req.getParameter(Member._EMAIL);
 			String phone = req.getParameter(Member._PHONE);
 			
-			Member member = new Member(name, email, phone, new Date(), new Date());
+			boolean b = JudgeUtils.isNullOrEmptyString(name, email, phone);
 			
-			memberDAO.create(member);
-			req.setAttribute("msg", "\"" + member.getName() + "\" add Success!!");
+			if (b) {
+				Member member = new Member(name, email, phone, new Date(), new Date());
+				memberDAO.create(member);
+				req.setAttribute("msg", "\"" + member.getName() + "\" add Success!!");
+			} else {
+				throw new Exception(">>> Some attribute is Null <<<");
+			}
 		} catch(Exception e) {
+			e.printStackTrace();
 			req.setAttribute("msg", "Failed to add Member, Please try again.");
 		}
-		resp.getWriter().print(req.getAttribute("msg"));
+		search(req, resp);
 	}
 	
 	protected void edit(HttpServletRequest req, HttpServletResponse resp)

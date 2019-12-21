@@ -10,7 +10,7 @@
 </head>
 <body style="padding: 20px 10%">
 	<h1>members</h1>
-	<h3>[Info] ${ msg }</h3>
+	<h3 style="color: darkgray">[Info] ${ msg }</h3>
 	<table class="table">
 		<thead>
 			<tr>
@@ -48,5 +48,13 @@
 			</c:forEach>
 		</tbody>
 	</table>
+	<script>
+		// 頁面載入完, 執行方法檢查是否有資訊
+		window.onload = function () {
+			if ('${ msg }' !== '') {
+				alert('${ msg }')
+			}
+		}
+	</script>
 </body>
 </html>

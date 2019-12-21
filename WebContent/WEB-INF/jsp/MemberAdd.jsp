@@ -11,6 +11,7 @@
 	<h1>members</h1>
 	<h3 style="color: darkgray">[info] Add Member...</h3>
 		<form method="post" action="./member">
+			<input type="hidden" name="action" value="add">
 			<div class="form-group">
 				<label>Name</label>
 				<input type="text" class="form-control" name="name">
