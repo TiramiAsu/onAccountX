@@ -26,10 +26,12 @@ public class ServletParameters {
 	
 	{
 		dispatcherURL.put(Dispatcher.UI_MemberServlet_ADD.name, Dispatcher.UI_MemberServlet_ADD.url);
+		dispatcherURL.put(Dispatcher.UI_MemberServlet_SEARCH.name, Dispatcher.UI_MemberServlet_SEARCH.url);
 	}
 	
 	public static enum Dispatcher {
-		UI_MemberServlet_ADD("UI_member_ADD", "./WEB-INF/jsp/MemberAdd.jsp");
+		UI_MemberServlet_ADD("UI_member_ADD", "./WEB-INF/jsp/MemberAdd.jsp"),
+		UI_MemberServlet_SEARCH("UI_member_SEARCH", "./WEB-INF/jsp/Member.jsp");
 		
 		private String name;
 		private String url;

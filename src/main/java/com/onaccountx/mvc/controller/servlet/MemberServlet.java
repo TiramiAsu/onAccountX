@@ -104,6 +104,9 @@ public class MemberServlet extends HttpServlet {
 	
 	protected void search(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		req.setAttribute("memberList", memberDAO.query(" from " + Member._ENTITY_NAME + " "));
+		req.getRequestDispatcher(String.valueOf(ServletParameters.Dispatcher.UI_MemberServlet_SEARCH.getUrl()))
+		   .forward(req, resp);
 	}
 	
 	@Override

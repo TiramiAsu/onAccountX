@@ -9,9 +9,12 @@
  */
 package com.onaccountx.mvc.controller.servlet;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -80,7 +83,11 @@ class MemberServletTest {
 	
 	@Test
 	final void testSearch() {
-		fail("Not yet implemented"); // TODO
+		List<Member> list = memberDAO.query(" from " + Member._ENTITY_NAME + " ");
+		// list.stream().forEach(System.out::println);
+		assertNotNull(list);
+		assertEquals(String.valueOf(ServletParameters.Dispatcher.UI_MemberServlet_SEARCH.getUrl()),
+				"./WEB-INF/jsp/Member.jsp");
 	}
 
 }

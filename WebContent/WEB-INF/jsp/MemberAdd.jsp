@@ -23,7 +23,7 @@
 				<label>Phone</label>
 				<input type="text" class="form-control" name="phone">
 			</div>
-			<button type="button" class="btn btn-outline-dark">Cancel</button>
+			<button type="button" class="btn btn-outline-dark" onclick="doCancel()">Cancel</button>
 			<button type="submit" class="btn btn-primary" onclick="doConfirm()">Finish</button>
 		</form>
 	<script>
@@ -32,6 +32,11 @@
 				return true
 			}
 			return false
+		}
+		function doCancel() {
+			if (confirm('是否要取消新增帳號?')) {
+				window.location.href = 'member?action=search'
+			}
 		}
 	</script>
 </body>
