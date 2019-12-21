@@ -42,7 +42,8 @@
 					<td>${ list.getPhone() }</td>
 					<td>
 						<button type="button" class="btn btn-outline-primary">Edit</button>
-						<button type="button" class="btn btn-outline-danger">Remove</button>
+						<button type="button" class="btn btn-outline-danger"
+							onclick="doRemove('${ list.getId() }')">Remove</button>
 					</td>
 				</tr>
 			</c:forEach>
@@ -53,6 +54,11 @@
 		window.onload = function () {
 			if ('${ msg }' !== '') {
 				alert('${ msg }')
+			}
+		}
+		function doRemove (id) {
+			if (confirm('是否要刪除 id ' + id)) {
+				window.location.href = 'member?action=remove&id=' + id
 			}
 		}
 	</script>

@@ -107,6 +107,21 @@ public class MemberServlet extends HttpServlet {
 	
 	protected void remove(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		try {
+			Long id = Long.parseLong(req.getParameter(Member._ID));
+			
+			if (JudgeUtils.isNull(id)) {
+				Member member = memberDAO.find(Member.class, id);
+				memberDAO.delete(member);
+				req.setAttribute("msg", "\"" + member.getName() + "\" remove Success!!");
+			} else {
+				throw new Exception(">>> id is Null <<<");
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			req.setAttribute("msg", "Failed to remove Member, Please try again.");
+		}
+		search(req, resp);
 	}
 	
 	protected void search(HttpServletRequest req, HttpServletResponse resp)

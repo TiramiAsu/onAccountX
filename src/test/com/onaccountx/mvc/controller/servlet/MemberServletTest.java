@@ -78,7 +78,13 @@ class MemberServletTest {
 
 	@Test
 	final void testRemove() {
-		fail("Not yet implemented"); // TODO
+		// 模擬 Request 中參數
+		req.setAttribute("id", 2);
+		
+		// 進入 Servlet
+		Long id = Long.parseLong(req.getParameter(Member._ID));
+		
+		assertTrue(2L == id);
 	}
 	
 	@Test
