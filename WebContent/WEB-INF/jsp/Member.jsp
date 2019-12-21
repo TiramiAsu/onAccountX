@@ -41,7 +41,8 @@
 					<td>${ list.getEmail() }</td>
 					<td>${ list.getPhone() }</td>
 					<td>
-						<button type="button" class="btn btn-outline-primary">Edit</button>
+						<button type="button" class="btn btn-outline-primary"
+							onclick="location.href='member?action=uiEdit&id=' + '${ list.getId() }'">Edit</button>
 						<button type="button" class="btn btn-outline-danger"
 							onclick="doRemove('${ list.getId() }')">Remove</button>
 					</td>

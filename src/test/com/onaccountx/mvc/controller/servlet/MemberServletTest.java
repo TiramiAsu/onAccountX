@@ -12,7 +12,7 @@ package com.onaccountx.mvc.controller.servlet;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.List;
 
@@ -48,7 +48,12 @@ class MemberServletTest {
 
 	@Test
 	final void testUiEdit() {
-		fail("Not yet implemented"); // TODO
+		// 要轉發
+		assertEquals(String.valueOf(ServletParameters.Dispatcher.UI_MemberServlet_EDIT.getUrl()),
+				"./WEB-INF/jsp/MemberAdd.jsp");
+		// 要重定向
+		assertEquals(String.valueOf(ServletParameters.Redirect.UI_Member.getUrl()),
+				"./WEB-INF/jsp/Member.jsp");
 	}
 
 	@Test
@@ -73,7 +78,27 @@ class MemberServletTest {
 
 	@Test
 	final void testEdit() {
-		fail("Not yet implemented"); // TODO
+		// 模擬 Request 中參數
+		req.setAttribute("id", 4);
+		req.setAttribute("name", "sandy");
+		req.setAttribute("email", "sandy@gmail.com");
+		req.setAttribute("phone", "0987654987");
+		
+		// 進入 Servlet
+		Long id = Long.parseLong(req.getParameter(Member._ID));
+		String name = req.getParameter(Member._NAME);
+		String email = req.getParameter(Member._EMAIL);
+		String phone = req.getParameter(Member._PHONE);
+		
+		// 輸入參數不可為 null 或空字串
+		assertNotNull(id);
+		assertNotNull(name);
+		assertNotNull(email);
+		assertNotNull(phone);
+		assertNotEquals("", id);
+		assertNotEquals("", name);
+		assertNotEquals("", email);
+		assertNotEquals("", phone);
 	}
 
 	@Test

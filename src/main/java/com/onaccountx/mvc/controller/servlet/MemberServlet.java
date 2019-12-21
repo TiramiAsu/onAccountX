@@ -76,6 +76,21 @@ public class MemberServlet extends HttpServlet {
 	
 	protected void uiEdit(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		try {
+			Long id = Long.parseLong(req.getParameter("id"));
+			if (JudgeUtils.isNull(id)) {
+				Member member = memberDAO.find(Member.class, id);
+				req.setAttribute("member", member);
+			} else {
+				throw new Exception(">>> id is Null <<<");
+			}
+			req.getRequestDispatcher(String.valueOf(ServletParameters.Dispatcher.UI_MemberServlet_EDIT.getUrl()))
+			   .forward(req, resp);
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 重導至所有列表
+			resp.sendRedirect(String.valueOf(ServletParameters.Redirect.UI_Member.getUrl()));
+		}
 	}
 	
 	protected void add(HttpServletRequest req, HttpServletResponse resp)
@@ -103,6 +118,30 @@ public class MemberServlet extends HttpServlet {
 	
 	protected void edit(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		try {
+			Long id = Long.parseLong(req.getParameter(Member._ID));
+			String name = req.getParameter(Member._NAME);
+			String email = req.getParameter(Member._EMAIL);
+			String phone = req.getParameter(Member._PHONE);
+			
+			if (JudgeUtils.isNullOrEmptyString(id, name, email, phone)) {
+				Member member = memberDAO.find(Member.class, id);
+				if (JudgeUtils.isNull(member)) {
+					member = new Member(name, email, phone, new Date(), new Date());
+					member.setId(id);
+					memberDAO.update(member);
+					req.setAttribute("msg", "\"" + member.getName() + "\" edit Success!!");
+				} else {
+					throw new Exception(">>> Not Found Member by ID: " + id + " <<<");
+				}
+			} else {
+				throw new Exception(">>> Some attribute is Null <<<");
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			req.setAttribute("msg", "Failed to edit Member, Please try again.");
+		}
+		search(req, resp);
 	}
 	
 	protected void remove(HttpServletRequest req, HttpServletResponse resp)

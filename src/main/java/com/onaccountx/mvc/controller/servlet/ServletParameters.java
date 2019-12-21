@@ -9,9 +9,6 @@
  */
 package com.onaccountx.mvc.controller.servlet;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * <pre>
  * [Servlet 參數] 2019-12-21 15:36
@@ -21,28 +18,31 @@ import java.util.Map;
  * @author TiramiAsu (Email)
  */
 public class ServletParameters {
-
-	public static Map<String, Object> dispatcherURL = new HashMap<>();
-	
-	{
-		dispatcherURL.put(Dispatcher.UI_MemberServlet_ADD.name, Dispatcher.UI_MemberServlet_ADD.url);
-		dispatcherURL.put(Dispatcher.UI_MemberServlet_SEARCH.name, Dispatcher.UI_MemberServlet_SEARCH.url);
-	}
 	
 	public static enum Dispatcher {
-		UI_MemberServlet_ADD("UI_member_ADD", "./WEB-INF/jsp/MemberAdd.jsp"),
-		UI_MemberServlet_SEARCH("UI_member_SEARCH", "./WEB-INF/jsp/Member.jsp");
+		UI_MemberServlet_ADD("./WEB-INF/jsp/MemberAdd.jsp"),
+		UI_MemberServlet_SEARCH("./WEB-INF/jsp/Member.jsp"),
+		UI_MemberServlet_EDIT("./WEB-INF/jsp/MemberAdd.jsp"); // 與 ADD 同 path
 		
-		private String name;
 		private String url;
 		
-		private Dispatcher(String name, String url) {
-			this.name = name;
+		private Dispatcher(String url) {
 			this.url = url;
 		}
 
-		public String getName() {
-			return name;
+		public String getUrl() {
+			return url;
+		}
+		
+	}
+	
+	public static enum Redirect {
+		UI_Member("./WEB-INF/jsp/Member.jsp");
+		
+		private String url;
+		
+		private Redirect(String url) {
+			this.url = url;
 		}
 
 		public String getUrl() {
