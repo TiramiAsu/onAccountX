@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.onaccountx.mvc.model.dao.MemberDAO;
 import com.onaccountx.mvc.model.dao.impl.MemberDAOImpl;
 import com.onaccountx.mvc.model.entity.Member;
-import com.onaccountx.utils.JudgeUtils;
+import static com.onaccountx.utils.JudgeUtils.*;
 
 /**
  * <pre>
@@ -77,8 +77,8 @@ public class MemberServlet extends HttpServlet {
 	protected void uiEdit(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		try {
-			Long id = Long.parseLong(req.getParameter("id"));
-			if (JudgeUtils.isNull(id)) {
+			Long id = Long.parseLong(req.getParameter(Member._ID));
+			if (isNotNull(id)) {
 				Member member = memberDAO.find(Member.class, id);
 				req.setAttribute("member", member);
 			} else {
@@ -100,9 +100,7 @@ public class MemberServlet extends HttpServlet {
 			String email = req.getParameter(Member._EMAIL);
 			String phone = req.getParameter(Member._PHONE);
 			
-			boolean b = JudgeUtils.isNullOrEmptyString(name, email, phone);
-			
-			if (b) {
+			if (isNotNullOrEmptyString(name, email, phone)) {
 				Member member = new Member(name, email, phone, new Date(), new Date());
 				memberDAO.create(member);
 				req.setAttribute("msg", "\"" + member.getName() + "\" add Success!!");
@@ -124,11 +122,12 @@ public class MemberServlet extends HttpServlet {
 			String email = req.getParameter(Member._EMAIL);
 			String phone = req.getParameter(Member._PHONE);
 			
-			if (JudgeUtils.isNullOrEmptyString(id, name, email, phone)) {
+			if (isNotNullOrEmptyString(id, name, email, phone)) {
 				Member member = memberDAO.find(Member.class, id);
-				if (JudgeUtils.isNull(member)) {
-					member = new Member(name, email, phone, new Date(), new Date());
-					member.setId(id);
+				if (isNotNull(member)) {
+					member.setName(name);
+					member.setEmail(email);
+					member.setPhone(phone);
 					memberDAO.update(member);
 					req.setAttribute("msg", "\"" + member.getName() + "\" edit Success!!");
 				} else {
@@ -149,10 +148,14 @@ public class MemberServlet extends HttpServlet {
 		try {
 			Long id = Long.parseLong(req.getParameter(Member._ID));
 			
-			if (JudgeUtils.isNull(id)) {
+			if (isNotNullOrEmptyString(id)) {
 				Member member = memberDAO.find(Member.class, id);
-				memberDAO.delete(member);
-				req.setAttribute("msg", "\"" + member.getName() + "\" remove Success!!");
+				if (isNotNull(member)) {
+					memberDAO.delete(member);
+					req.setAttribute("msg", "\"" + member.getName() + "\" remove Success!!");
+				} else {
+					throw new Exception(">>> Not Found Member by ID: " + id + " <<<");
+				}
 			} else {
 				throw new Exception(">>> id is Null <<<");
 			}

@@ -41,7 +41,6 @@ class MemberServletTest {
 	
 	@Test
 	final void testUiAdd() {
-		// 測試轉發路徑是否正確
 		assertEquals(String.valueOf(ServletParameters.Dispatcher.UI_MemberServlet_ADD.getUrl()),
 				"./WEB-INF/jsp/MemberAdd.jsp");
 	}
@@ -59,21 +58,22 @@ class MemberServletTest {
 	@Test
 	final void testAdd() {
 		// 模擬 Request 中參數
-		req.setAttribute("id", 1);
 		req.setAttribute("name", "asd");
 		req.setAttribute("email", "zxc@gmail.com");
 		req.setAttribute("phone", "zzxxcc");
 		
 		// 進入 Servlet
-		Long id = Long.parseLong(req.getParameter(Member._ID));
 		String name = req.getParameter(Member._NAME);
 		String email = req.getParameter(Member._EMAIL);
 		String phone = req.getParameter(Member._PHONE);
-		
-		assertTrue((1L == id) &&
-				("asd".equals(name)) &&
-				("zxc@gmail.com".equals(email)) &&
-				("zzxxcc".equals(phone)));
+
+		// 輸入參數不可為 null 或空字串
+		assertNotNull(name);
+		assertNotNull(email);
+		assertNotNull(phone);
+		assertNotEquals("", name);
+		assertNotEquals("", email);
+		assertNotEquals("", phone);
 	}
 
 	@Test

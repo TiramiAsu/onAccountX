@@ -9,8 +9,6 @@
  */
 package com.onaccountx.utils;
 
-import java.util.Map;
-
 /**
  * <pre>
  * [判斷工具] 2019-12-22 00:39
@@ -20,7 +18,7 @@ import java.util.Map;
  */
 public class JudgeUtils {
 	
-	public static boolean isNull(Object... objs) {
+	public static boolean isNotNull(Object... objs) {
 		for (Object obj : objs) {
 			if (obj.equals(null)) {
 				return false;
@@ -29,7 +27,7 @@ public class JudgeUtils {
 		return true;
 	}
 	
-	public static boolean isEmptyString(Object... objs) {
+	public static boolean isNotEmptyString(Object... objs) {
 		for (Object obj : objs) {
 			if (obj.equals("")) {
 				return false;
@@ -38,13 +36,8 @@ public class JudgeUtils {
 		return true;
 	}
 	
-	public static boolean isNullOrEmptyString(Object... objs) {
-		for (Object obj : objs) {
-			if (obj.equals("") || obj.equals(null)) {
-				return false;
-			}
-		}
-		return true;
+	public static boolean isNotNullOrEmptyString(Object... objs) {
+		return isNotEmptyString(objs) || isNotNull(objs);
 	}
 	
 }
