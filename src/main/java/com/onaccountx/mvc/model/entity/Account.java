@@ -9,6 +9,7 @@
  */
 package com.onaccountx.mvc.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,7 +30,9 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="accounts")
-public class Account {
+public class Account implements Serializable {
+	
+	private static final long serialVersionUID = -9210792137073570228L;
 	
 	public final static int VALUE_ENABLE = Account.STATUS.ENABLE.value;
 	public final static int VALUE_LOCK = Account.STATUS.LOCK.value;
@@ -38,7 +41,7 @@ public class Account {
 	public final static String TEXT_LOCK = Account.STATUS.LOCK.text;
 	public final static String TEXT_DISABLE = Account.STATUS.DISABLE.text;
 
-	public final static String _ENTITY_NAME = "account";
+	public final static String _ENTITY_NAME = "Account";
 	public final static String _ID = "id";
 	public final static String _ACCOUNT = "account";
 	public final static String _PASSWORD = "password";
@@ -191,12 +194,6 @@ public class Account {
 			this.text = text;
 		}
 		
-	}
-	
-	public static void main(String[] args) {
-		Account acc = new Account("asc", "zxc", Account.VALUE_ENABLE, 0,
-				new Date(), new Date(), new Date(), 1L);
-		System.out.println(acc.toString());
 	}
 
 }

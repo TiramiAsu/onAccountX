@@ -22,7 +22,11 @@ public class ServletParameters {
 	public static enum Dispatcher {
 		UI_MemberServlet_ADD("./WEB-INF/jsp/MemberAdd.jsp"),
 		UI_MemberServlet_SEARCH("./WEB-INF/jsp/Member.jsp"),
-		UI_MemberServlet_EDIT("./WEB-INF/jsp/MemberAdd.jsp"); // 與 ADD 同 path
+		UI_MemberServlet_EDIT("./WEB-INF/jsp/MemberAdd.jsp"), // 與 ADD 同 path
+
+		UI_AccountServlet_ADD("./WEB-INF/jsp/AccountAdd.jsp"),
+		UI_AccountServlet_SEARCH("./WEB-INF/jsp/Account.jsp"),
+		UI_AccountServlet_EDIT("./WEB-INF/jsp/AccountAdd.jsp");
 		
 		private String url;
 		
@@ -37,7 +41,8 @@ public class ServletParameters {
 	}
 	
 	public static enum Redirect {
-		UI_Member("./WEB-INF/jsp/Member.jsp");
+		UI_Member("./WEB-INF/jsp/Member.jsp"),
+		UI_Account("./WEB-INF/jsp/Account.jsp");
 		
 		private String url;
 		
