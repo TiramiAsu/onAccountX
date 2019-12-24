@@ -20,8 +20,6 @@
 				<th>Phone</th>
 				<th>Operate</th>
 			</tr>
-		</thead>
-		<tbody>
 			<tr>
 				<th></th>
 				<th></th>
@@ -34,6 +32,8 @@
 						onclick="location.href='member?action=search'">Search</button>
 				</th>
 			</tr>
+		</thead>
+		<tbody>
 			<c:forEach var="list" items="${ memberList }">
 				<tr>
 					<td>${ list.getId() }</td>

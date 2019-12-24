@@ -9,8 +9,13 @@
  */
 package com.onaccountx.mvc.controller.servlet;
 
+import static com.onaccountx.utils.JudgeUtils.isNotNull;
+import static com.onaccountx.utils.JudgeUtils.isNotNullOrEmptyString;
+
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.onaccountx.mvc.model.dao.MemberDAO;
 import com.onaccountx.mvc.model.dao.impl.MemberDAOImpl;
 import com.onaccountx.mvc.model.entity.Member;
-import static com.onaccountx.utils.JudgeUtils.*;
 
 /**
  * <pre>
@@ -168,7 +172,11 @@ public class MemberServlet extends HttpServlet {
 	
 	protected void search(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		req.setAttribute("memberList", memberDAO.query(" from " + Member._ENTITY_NAME + " "));
+		List<Member> memberList = memberDAO.query(" from " + Member._ENTITY_NAME + " ")
+				.stream()
+				.sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
+				.collect(Collectors.toList());
+		req.setAttribute("memberList", memberList);
 		req.getRequestDispatcher(String.valueOf(ServletParameters.Dispatcher.UI_MemberServlet_SEARCH.getUrl()))
 		   .forward(req, resp);
 	}
