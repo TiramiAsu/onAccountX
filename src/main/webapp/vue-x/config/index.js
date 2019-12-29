@@ -52,7 +52,8 @@ module.exports = {
     // assetsRoot: path.resolve(__dirname, '../dist'),
     assetsRoot: path.resolve(__dirname, '../../../../../WebContent/vue/dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: 'vue/dist',
+    // assetsPublicPath: '/',
+    assetsPublicPath: './vue/dist',
 
     /**
      * Source Maps
