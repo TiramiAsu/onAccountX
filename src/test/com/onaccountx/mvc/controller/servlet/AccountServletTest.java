@@ -44,7 +44,7 @@ class AccountServletTest {
 	static SimulateRequest req = new JUnitUtils().getSimulateRequest();
 
 	@Test
-	final void testUiAdd() {
+	final void testUiAdd() throws Exception {
 		List<Member> members = memberDAO.query(" SELECT m FROM " + Member._ENTITY_NAME + " m ");
 		assertNotNull(members);
 		assertEquals(String.valueOf(ServletParameters.Dispatcher.UI_AccountServlet_ADD.getUrl()),
@@ -113,7 +113,7 @@ class AccountServletTest {
 	}
 
 	@Test
-	final void testSearch() {
+	final void testSearch() throws Exception {
 		List<Account> list = accountDAO.query(" from " + Member._ENTITY_NAME + " ");
 		assertNotNull(list);
 		assertEquals(String.valueOf(ServletParameters.Dispatcher.UI_AccountServlet_SEARCH.getUrl()),

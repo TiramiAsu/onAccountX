@@ -113,7 +113,7 @@ class MemberServletTest {
 	}
 	
 	@Test
-	final void testSearch() {
+	final void testSearch() throws Exception {
 		List<Member> list = memberDAO.query(" from " + Member._ENTITY_NAME + " ");
 		// list.stream().forEach(System.out::println);
 		assertNotNull(list);

@@ -78,9 +78,13 @@ public class AccountServlet extends HttpServlet {
 	
 	protected void uiAdd(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		List<Member> members = memberDAO.query(" SELECT m FROM " + Member._ENTITY_NAME + " m ");
-		req.setAttribute("memberList", members);
-		
+		List<Member> members;
+		try {
+			members = memberDAO.query(" SELECT m FROM " + Member._ENTITY_NAME + " m ");
+			req.setAttribute("memberList", members);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		req.getRequestDispatcher(String.valueOf(ServletParameters.Dispatcher.UI_AccountServlet_ADD.getUrl()))
 		   .forward(req, resp);
 	}
@@ -187,13 +191,18 @@ public class AccountServlet extends HttpServlet {
 	
 	protected void search(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		List<Account> accountList = accountDAO.query(" from " + Account._ENTITY_NAME + " ")
-				.stream()
-				.sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
+		List<Account> accountList;
+		try {
+			accountList = accountDAO.query(" from " + Account._ENTITY_NAME + " ")
+					.stream()
+					.sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
 //				.peek(System.out::println)
-				.collect(Collectors.toList());
-		req.setAttribute("accountList", accountList);
-		req.setAttribute("memberList", memberDAO.query(" from " + Member._ENTITY_NAME + " "));
+					.collect(Collectors.toList());
+			req.setAttribute("accountList", accountList);
+			req.setAttribute("memberList", memberDAO.query(" from " + Member._ENTITY_NAME + " "));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		req.getRequestDispatcher(String.valueOf(ServletParameters.Dispatcher.UI_AccountServlet_SEARCH.getUrl()))
 		   .forward(req, resp);
 	}

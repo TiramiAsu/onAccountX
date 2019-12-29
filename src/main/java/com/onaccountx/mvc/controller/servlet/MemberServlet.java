@@ -172,11 +172,16 @@ public class MemberServlet extends HttpServlet {
 	
 	protected void search(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		List<Member> memberList = memberDAO.query(" from " + Member._ENTITY_NAME + " ")
-				.stream()
-				.sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
-				.collect(Collectors.toList());
-		req.setAttribute("memberList", memberList);
+		List<Member> memberList;
+		try {
+			memberList = memberDAO.query(" from " + Member._ENTITY_NAME + " ")
+					.stream()
+					.sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
+					.collect(Collectors.toList());
+			req.setAttribute("memberList", memberList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		req.getRequestDispatcher(String.valueOf(ServletParameters.Dispatcher.UI_MemberServlet_SEARCH.getUrl()))
 		   .forward(req, resp);
 	}

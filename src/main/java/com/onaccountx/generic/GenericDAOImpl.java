@@ -70,7 +70,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T find(Class<? extends T> clazz, Long id) {
+	public T find(Class<T> clazz, Long id) {
 		Session session = HibernateUtils.getSession();
 		try {
 			session.beginTransaction();
