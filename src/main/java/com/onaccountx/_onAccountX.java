@@ -45,7 +45,11 @@ package com.onaccountx;
 public interface _onAccountX {
 	/**
 	 * TODO
+	 * [Java]
 	 * - OOP: design rule -> https://skyyen999.gitbooks.io/-study-design-pattern-in-java/content/oodPrinciple.html
 	 * - database: Sequence -> https://blog.csdn.net/zqg4919/article/details/74669886
+	 * 
+	 * [vue]
+	 * - route 刷新問題: https://www.itread01.com/content/1544493607.html
 	 */
 }

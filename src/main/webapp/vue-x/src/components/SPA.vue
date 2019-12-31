@@ -1,21 +1,26 @@
 <template>
   <div class="hello">
+    <div v-if="enable == -1">
+        <img src="/onAccountX/vue/dist/static/profiles.png" width="80%" alt="My Profiles">
+    </div>
     <div v-if="enable == 0">
       <!-- Vue Test -->
-      <!-- <img src="static/profiles.png" width="80%" alt="My Profiles"> -->
-      <img src="/onAccountX/vue/dist/static/profiles.png" width="80%" alt="My Profiles">
+      <!-- <img src="/static/loading_cat.gif" width="80%"> -->
+      <img src="/onAccountX/vue/dist/static/loading_cat.gif" width="80%">
     </div>
     <memberui v-if="enable == 1"/>
   </div>
 </template>
 
 <script>
+import loading from './Loading.vue'
 import memberUI from './Member.vue'
 
 export default {
   name: 'SPA',
   components: {
-    'memberui': memberUI
+    'memberui': memberUI,
+    'loading': loading
   },
   props: {
     enable: {

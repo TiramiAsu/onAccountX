@@ -2,12 +2,9 @@
   <div class="hello container-fluid row">
     <div class="list-group col-md-2" style="height: 1000px">
       <ul class="list-group">
-        <!--
-        <li><a class="list-group-item list-group-item-action" @click="enable = PARAM.Layout.loadingTest">Loading Test</a></li>
-        -->
         <li class="list-group-item list-group-item-secondary" @click="enable = PARAM.Layout.default">MANAGEMENT</li>
         <li><a class="list-group-item list-group-item-action" @click="enable = PARAM.Layout.members">Member</a></li>
-        <li><a class="list-group-item list-group-item-action" @click="enable = PARAM.Layout.account">Account</a></li>
+        <li><a class="list-group-item list-group-item-action" @click="enable = PARAM.Layout.profile">My Profile</a></li>
       </ul>
     </div>
     <div class="col-md-10">
@@ -28,10 +25,9 @@ export default {
     return {
       PARAM: {
         Layout: {
-          loadingTest: -1,
+          profile: -1,
           default: 0,
-          members: 1,
-          accounts: 2
+          members: 1
         }
       },
       enable: 0

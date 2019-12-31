@@ -41,24 +41,22 @@ export default {
     }
   },
   updated () {
-    this.uiCategory(this.code)
+    this.uiCategory()
   },
   methods: {
-    uiCategory (code) {
+    uiCategory () {
       var self = this
       var loading = this.PARAMS
-      if (code) {
-        switch (code) {
-          case loading.Default.value:
-            self.url = loading.Default.url
-            break
-          case loading.Circle.value:
-            self.url = loading.Circle.url
-            break
-          case loading.Cat.value:
-            self.url = loading.Cat.url
-            break
-        }
+      switch (self.code) {
+        case loading.Default.value:
+          self.url = loading.Default.url
+          break
+        case loading.Circle.value:
+          self.url = loading.Circle.url
+          break
+        case loading.Cat.value:
+          self.url = loading.Cat.url
+          break
       }
       console.log('uiCategory')
     }
