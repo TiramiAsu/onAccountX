@@ -25,6 +25,8 @@ import com.onaccountx.restful.bean.MemberRESTBean;
  * @author TiramiAsu (Email)
  */
 public interface MemberService extends GenericService<Member> {
+	
+	public static final String NAME = "txp_memberService";
 
 	public void create(JSONObject jsonObject);
 	public void update(JSONObject jsonObject);

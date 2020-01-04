@@ -20,5 +20,7 @@ import com.onaccountx.mvc.model.entity.Member;
  * @author TiramiAsu (Email)
  */
 public interface MemberDAO extends GenericDAO<Member> {
+	
+	public static final String NAME = "txp_memberDAO";
 
 }

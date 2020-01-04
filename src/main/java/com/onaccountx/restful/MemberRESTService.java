@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.json.JsonSanitizer;
 import com.onaccountx.generic.GenericRESTService;
@@ -33,6 +34,7 @@ import com.onaccountx.mvc.model.entity.Member;
 import com.onaccountx.mvc.service.MemberService;
 import com.onaccountx.mvc.service.impl.MemberServiceImpl;
 import com.onaccountx.restful.bean.MemberRESTBean;
+import com.onaccountx.utils.SpringUtils;
 
 /**
  * <pre>
@@ -54,7 +56,8 @@ import com.onaccountx.restful.bean.MemberRESTBean;
 @Path("/member")
 public class MemberRESTService implements GenericRESTService {
 	
-	MemberService memberService = new MemberServiceImpl();
+	@Autowired
+	MemberService memberService;
 
 	@POST
 	@Path("/create")
@@ -74,7 +77,7 @@ public class MemberRESTService implements GenericRESTService {
 		}
 		
 		// Service Enable
-		memberService = (memberService == null) ? new MemberServiceImpl() : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
 		
 		// Authenticate User
 		// TODO Json Web Token -> Filter
@@ -127,10 +130,7 @@ public class MemberRESTService implements GenericRESTService {
 		
 		// Data
 		JSONObject jsonObject = toJsonObj(in);
-		
-		if (jsonObject == null) {
-			return new ResponseREST(ERROR_INPUT).build();
-		}
+		List<MemberRESTBean> list = null;
 		
 		// Service Enable
 		memberService = (memberService == null) ? new MemberServiceImpl() : memberService;
@@ -139,7 +139,11 @@ public class MemberRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 		
 		// Handle
-		List<MemberRESTBean> list = memberService.query(jsonObject);
+		if (jsonObject == null) {
+			return new ResponseREST(ERROR_INPUT).build();
+		} else {
+			list = memberService.query(jsonObject);
+		}
 		
 		// Response
 		if (list == null) {
