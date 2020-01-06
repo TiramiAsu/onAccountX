@@ -20,10 +20,15 @@ import java.util.List;
  */
 public interface GenericService<T> {
 
+	// Basic
+	public List<T> query(String hql);
+	public T find(Long id);
+	public void delete(Long id);
 	public void create(T bean);
 	public void update(T bean);
-	public void delete(Long id);
-	public T find(Long id);
-	public List<T> query(String hql);
+	
+	// JSON
+	public List<T> query();
+	public List<T> query(Object json);
 	
 }

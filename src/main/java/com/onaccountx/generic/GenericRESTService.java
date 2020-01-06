@@ -21,11 +21,23 @@ import javax.ws.rs.core.Response;
  * @author TiramiAsu (Email)
  */
 public interface GenericRESTService {
-
-	public Response createREST(InputStream in);
-	public Response updateREST(InputStream in);
-	public Response deleteREST(InputStream in);
-	public Response findREST(InputStream in);
+	
+	// GET  | ../service
+	public Response queryREST();
+	
+	// POST | ../service
 	public Response queryREST(InputStream in);
+	
+	// GET | ../service/{id}
+	public Response findREST(String id);
+	
+	// PUT  | ../service
+	public Response createREST(InputStream in);
+	
+	// PUT  | ../service/{id}
+	public Response updateREST(InputStream in, String id);
+	
+	// DELETE | ../service/{id}
+	public Response deleteREST(String id);
 	
 }

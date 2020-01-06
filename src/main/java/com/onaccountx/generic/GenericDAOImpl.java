@@ -24,61 +24,6 @@ import com.onaccountx.utils.HibernateUtils;
  * @author TiramiAsu (Email)
  */
 public class GenericDAOImpl<T> implements GenericDAO<T> {
-	
-	@Override
-	public void create(T bean) {
-		Session session = HibernateUtils.getSession();
-		try {
-			Transaction tx = session.beginTransaction();
-			session.save(bean);
-			tx.commit();
-		} catch (Exception e) {
-			// 交易錯誤, 恢復交易前狀態
-			session.getTransaction().rollback();
-		} finally {
-			session.close();
-		}
-	}
-
-	@Override
-	public void update(T bean) {
-		Session session = HibernateUtils.getSession();
-		try {
-			Transaction tx = session.beginTransaction();
-			session.update(bean);
-			tx.commit();
-		} catch (Exception e) {
-			session.getTransaction().rollback();
-		} finally {
-			session.close();
-		}
-	}
-
-	@Override
-	public void delete(T bean) {
-		Session session = HibernateUtils.getSession();
-		try {
-			Transaction tx = session.beginTransaction();
-			session.delete(bean);
-			tx.commit();
-		} catch (Exception e) {
-			session.getTransaction().rollback();
-		} finally {
-			session.close();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public T find(Class<T> clazz, Long id) {
-		Session session = HibernateUtils.getSession();
-		try {
-			session.beginTransaction();
-			return (T)session.get(clazz, id);
-		} finally {
-			session.close();
-		}
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -94,6 +39,63 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
 			session.close();
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T find(Class<T> clazz, Long id) {
+		Session session = HibernateUtils.getSession();
+		try {
+			session.beginTransaction();
+			return (T)session.get(clazz, id);
+		} finally {
+			session.close();
+		}
+	}
+	
+	@Override
+	public void delete(T bean) {
+		Session session = HibernateUtils.getSession();
+		try {
+			Transaction tx = session.beginTransaction();
+			session.delete(bean);
+			tx.commit();
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+		} finally {
+			session.close();
+		}
+	}
+	
+	@Override
+	public void create(T bean) {
+		System.out.println(bean);
+		Session session = HibernateUtils.getSession();
+		try {
+			Transaction tx = session.beginTransaction();
+			session.save(bean);
+			tx.commit();
+		} catch (Exception e) {
+			// 交易錯誤, 恢復交易前狀態
+			session.getTransaction().rollback();
+			System.out.println(">>> HQL Error, Create Failed <<<");
+		} finally {
+			session.close();
+		}
+	}
+	
+	@Override
+	public void update(T bean) {
+		Session session = HibernateUtils.getSession();
+		try {
+			Transaction tx = session.beginTransaction();
+			session.update(bean);
+			tx.commit();
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+		} finally {
+			session.close();
+		}
 	}
 
 }

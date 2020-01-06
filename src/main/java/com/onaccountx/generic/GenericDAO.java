@@ -20,10 +20,10 @@ import java.util.List;
  */
 public interface GenericDAO<T> {
 
+	public List<T> query(String hql) throws Exception;
+	public T find(Class<T> clazz, Long id) throws Exception;
+	public void delete(T bean) throws Exception;
 	public void create(T bean) throws Exception;
 	public void update(T bean) throws Exception;
-	public void delete(T bean) throws Exception;
-	public T find(Class<T> clazz, Long id) throws Exception;
-	public List<T> query(String hql) throws Exception;
 	
 }
