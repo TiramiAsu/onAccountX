@@ -58,7 +58,7 @@ export default {
           self.url = loading.Cat.url
           break
       }
-      console.log('uiCategory')
+      console.log('>>> loading <<<')
     }
   }
 }

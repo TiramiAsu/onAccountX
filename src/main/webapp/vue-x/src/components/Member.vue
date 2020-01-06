@@ -2,47 +2,76 @@
   <div class="hello bs-glyphicons bs-glyphicons-list">
     <div class="card">
       <div class="card-header">
-        <h2>會員管理  </h2>
+        <h2>
+          <span v-if="thisLayout === PARAMS.Layout.Manage.value">{{ PARAMS.Layout.Manage.text }}</span>
+          <span v-if="thisLayout === PARAMS.Layout.Add.value">{{ PARAMS.Layout.Add.text }}</span>
+          <span v-if="thisLayout === PARAMS.Layout.Edit.value">{{ PARAMS.Layout.Edit.text }}</span>
+        </h2>
       </div>
       <div class="card-body">
         <h3>members</h3>
-        <loading :display="display" :code="code" />
-        <div v-if="display === false">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Operate</th>
-              </tr>
-              <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>
-                  <!-- <button type="button" class="btn btn-primary" onclick="location.href='member?action=uiAdd'">Add</button>
-                  <button type="button" class="btn btn-outline-info" onclick="location.href='member?action=search'">Search</button> -->
-                  <button type="button" class="btn btn-primary">Add</button>
-                  <button type="button" class="btn btn-outline-info">Search</button>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(bean, index) in memberList" :key="index">
-                <td>{{ bean.id }}</td>
-                <td>{{ bean.name }}</td>
-                <td>{{ bean.email }}</td>
-                <td>{{ bean.phone }}</td>
-                <td>
-                  <button type="button" class="btn btn-outline-primary">Edit</button>
-                  <button type="button" class="btn btn-outline-danger">Remove</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Manage UI -->
+        <div v-if="thisLayout === PARAMS.Layout.Manage.value">
+          <loading :display="display" :code="code" />
+          <div v-if="display === false">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Operate</th>
+                </tr>
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th>
+                    <!-- <button type="button" class="btn btn-primary" onclick="location.href='member?action=uiAdd'">Add</button>
+                    <button type="button" class="btn btn-outline-info" onclick="location.href='member?action=search'">Search</button> -->
+                    <button type="button" class="btn btn-primary" @click="mainFunction('add', null)">Add</button>
+                    <button type="button" class="btn btn-outline-info">Search</button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(bean, index) in memberList" :key="index">
+                  <td>{{ bean.id }}</td>
+                  <td>{{ bean.name }}</td>
+                  <td>{{ bean.email }}</td>
+                  <td>{{ bean.phone }}</td>
+                  <td>
+                    <button type="button" class="btn btn-outline-primary" @click="mainFunction('edit', bean)">Edit</button>
+                    <button type="button" class="btn btn-outline-danger" @click="mainFunction('remove', bean)">Remove</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Add/Edit UI -->
+        <div v-if="thisLayout !== PARAMS.Layout.Manage.value">
+          <br>
+          <div class="form-group">
+            <label>Name</label>
+            <input v-model="member.name" type="text" class="form-control" placeholder="Member Name">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input v-model="member.email" type="email" class="form-control" placeholder="Email">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input v-model="member.phone" type="text" class="form-control" placeholder="Phone">
+          </div>
+          <br>
+          <button type="button" class="btn btn-outline-dark" @click="mainFunction('cancel', null)">Cancel</button>
+          <button v-if="thisLayout === PARAMS.Layout.Add.value"
+                  type="button" class="btn btn-outline-primary" @click="mainFunction('finish', null)">Finish</button>
+          <button v-if="thisLayout === PARAMS.Layout.Edit.value"
+                  type="button" class="btn btn-outline-primary" @click="mainFunction('update', null)">Update</button>
         </div>
       </div>
     </div>
@@ -59,6 +88,13 @@ export default {
   },
   data () {
     return {
+      PARAMS: {
+        Layout: {
+          Manage: { value: 0, text: '會員管理' },
+          Add: { value: 1, text: '會員新增' },
+          Edit: { value: 2, text: '會員編輯' }
+        }
+      },
       member: {
         id: 0,
         name: '',
@@ -69,6 +105,9 @@ export default {
       memberList: [],
       message: '',
 
+      // layout
+      thisLayout: 0,
+
       // loading
       display: true,
       code: 0
@@ -78,6 +117,63 @@ export default {
     this.queryMember()
   },
   methods: {
+    mainFunction (slosilo, bean) {
+      var self = this
+      var layout = this.PARAMS.Layout
+      if (slosilo) {
+        switch (slosilo) {
+          case 'add':
+            self.initBean()
+            self.thisLayout = layout.Add.value
+            break
+          case 'finish':
+            self.createMember(self.member)
+            self.thisLayout = layout.Manage.value
+            break
+          case 'edit':
+            self.member.id = bean.id
+            self.member.name = bean.name
+            self.member.email = bean.email
+            self.member.phone = bean.phone
+
+            self.thisLayout = layout.Edit.value
+            break
+          case 'update':
+            self.updateMember(self.member)
+            self.thisLayout = layout.Manage.value
+            break
+          case 'cancel':
+            self.thisLayout = layout.Manage.value
+            break
+          case 'remove':
+            if (confirm('確定要刪除 id: ' + bean.id + ' ?')) {
+              self.deleteMember(bean.id)
+            } else {
+              alert('已取消刪除 id: ' + bean.id)
+            }
+            break
+          case 'search':
+            break
+        }
+      } else {
+        console.log('>>> Error, slosilo is null <<<')
+      }
+    },
+    initBean () {
+      this.member = {
+        name: null,
+        email: null,
+        phone: null
+      }
+    },
+    toApiBean (bean) {
+      return {
+        id: bean.id,
+        name: bean.name,
+        email: bean.email,
+        phone: bean.phone
+      }
+    },
     // 頁面載入完, 執行方法檢查是否有資訊
     // doRemove (id) {
     //   if (confirm('是否要刪除 id ' + id)) {
@@ -87,23 +183,85 @@ export default {
     queryMember () {
       var self = this
       axios({
-        method: 'post',
-        url: '/onAccountX/srv/member/query',
+        method: 'get',
+        url: '/onAccountX/srv/member',
+        headers: {
+          'Content-Type': 'application/json',
+          'mac': 'helloJWT'
+        },
+        data: {}
+      }).then(function (response) {
+        if (response) {
+          self.memberList = response.data.data
+          console.log(response)
+          console.log('>>> Add Success <<<')
+        }
+        self.display = false
+      }).catch(function (error) {
+        console.log('>>> Error: query member failed: ', error)
+      })
+    },
+    createMember (bean) {
+      var self = this
+      var mbr = this.toApiBean(bean)
+      axios({
+        method: 'put',
+        url: '/onAccountX/srv/member',
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
         },
         data: {
-          member: self.member
+          Member: mbr
         }
       }).then(function (response) {
         if (response) {
-          self.memberList = response.data.data
-          console.log(response)
+          self.queryMember()
+          console.log('>>> Add Success <<<')
         }
-        self.display = false
       }).catch(function (error) {
-        console.log('>>> Error: query member failed: ', error)
+        console.log('>>> Error: Add member failed: ', error)
+      })
+    },
+    updateMember (bean) {
+      var self = this
+      var mbr = this.toApiBean(bean)
+      axios({
+        method: 'put',
+        url: '/onAccountX/srv/member/' + mbr.id,
+        headers: {
+          'Content-Type': 'application/json',
+          'mac': 'helloJWT'
+        },
+        data: {
+          Member: mbr
+        }
+      }).then(function (response) {
+        if (response) {
+          self.queryMember()
+          console.log('>>> Edit Success <<<')
+        }
+      }).catch(function (error) {
+        console.log('>>> Error: Edit member failed: ', error)
+      })
+    },
+    deleteMember (id) {
+      var self = this
+      axios({
+        method: 'delete',
+        url: '/onAccountX/srv/member/' + id,
+        headers: {
+          'Content-Type': 'application/json',
+          'mac': 'helloJWT'
+        },
+        data: {}
+      }).then(function (response) {
+        if (response) {
+          self.queryMember()
+          console.log('>>> Delete Success <<<')
+        }
+      }).catch(function (error) {
+        console.log('>>> Error: Delete member failed: ', error)
       })
     }
   }
