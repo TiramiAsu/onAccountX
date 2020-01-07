@@ -16,6 +16,9 @@ import javax.ws.rs.core.Response;
 /**
  * <pre>
  * [通用 REST Service 定義] 2019-12-24 23:11
+ * - JSONParser > com.googlecode.json-simple | json-simple | 1.1.1
+ * - ObjectMapper > org.codehaus.jackson | jackson-mapper-asl | 1.9.13
+ * - JsonSanitizer > com.mikesamuel | json-sanitizer | 1.2.0
  * </pre>
  * 
  * @author TiramiAsu (Email)

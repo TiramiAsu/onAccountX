@@ -12,7 +12,7 @@ package com.onaccountx.utils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.onaccountx.mvc.service.MemberService;
 
@@ -25,20 +25,21 @@ import com.onaccountx.mvc.service.MemberService;
  */
 public class SpringUtils implements ApplicationContextAware {
 
-	private static ApplicationContext context = new FileSystemXmlApplicationContext("./src/main/resources/spring.cfg.xml");
+	private static ApplicationContext context = new ClassPathXmlApplicationContext("./spring.cfg.xml");
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		SpringUtils.context = applicationContext;
+		context = applicationContext;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public static <T>T getBean(String beanName){
-		return (T) SpringUtils.context.getBean(beanName);
+		// System.out.println(context.getBean(beanName));
+		return (T) context.getBean(beanName);
 	}
 	
 	public static void main(String[] args) {
-		MemberService memberService = SpringUtils.getBean("memberService");
+		MemberService memberService = SpringUtils.getBean("txp_memberService");
 		if (memberService == null) {
 			System.out.println(">>> null <<<");
 		} else {

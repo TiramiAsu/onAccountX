@@ -39,15 +39,12 @@ import com.google.json.JsonSanitizer;
 import com.onaccountx.generic.GenericRESTService;
 import com.onaccountx.mvc.model.entity.Member;
 import com.onaccountx.mvc.service.MemberService;
-import com.onaccountx.mvc.service.impl.MemberServiceImpl;
 import com.onaccountx.restful.bean.MemberRESTBean;
+import com.onaccountx.utils.SpringUtils;
 
 /**
  * <pre>
  * [會員 REST Service] 2019-12-24 21:33
- * - JSONParser > com.googlecode.json-simple | json-simple | 1.1.1
- * - ObjectMapper > org.codehaus.jackson | jackson-mapper-asl | 1.9.13
- * - JsonSanitizer > com.mikesamuel | json-sanitizer | 1.2.0
  * 
  * [Process]
  * // Data
@@ -76,8 +73,7 @@ public class MemberRESTService implements GenericRESTService {
 		List<MemberRESTBean> beanList = new ArrayList<>();
 		
 		// Service Enable
-//		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
-		memberService = (memberService == null) ? new MemberServiceImpl() : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
 		
 		// Authenticate User
 		// TODO Json Web Token -> Filter
@@ -125,8 +121,7 @@ public class MemberRESTService implements GenericRESTService {
 		MemberRESTBean bean = null;
 		
 		// Service Enable
-//		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
-		memberService = (memberService == null) ? new MemberServiceImpl() : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
 		
 		// Authenticate User
 		// TODO Json Web Token -> Filter
@@ -167,8 +162,7 @@ public class MemberRESTService implements GenericRESTService {
 		}
 
 		// Service Enable
-//		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
-		memberService = (memberService == null) ? new MemberServiceImpl() : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
 
 		// Authenticate User
 		// TODO Json Web Token -> Filter
@@ -211,8 +205,7 @@ public class MemberRESTService implements GenericRESTService {
 		}
 
 		// Service Enable
-//		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
-		memberService = (memberService == null) ? new MemberServiceImpl() : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
 
 		// Authenticate User
 		// TODO Json Web Token -> Filter
@@ -249,8 +242,7 @@ public class MemberRESTService implements GenericRESTService {
 		// Data
 
 		// Service Enable
-//		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
-		memberService = (memberService == null) ? new MemberServiceImpl() : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
 
 		// Authenticate User
 		// TODO Json Web Token -> Filter
