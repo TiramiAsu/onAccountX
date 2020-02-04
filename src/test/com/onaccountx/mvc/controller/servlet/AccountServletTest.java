@@ -45,7 +45,7 @@ class AccountServletTest {
 
 	@Test
 	final void testUiAdd() throws Exception {
-		List<Member> members = memberDAO.query(" SELECT m FROM " + Member._ENTITY_NAME + " m ");
+		List<Member> members = memberDAO.query();
 		assertNotNull(members);
 		assertEquals(String.valueOf(ServletParameters.Dispatcher.UI_AccountServlet_ADD.getUrl()),
 				"./WEB-INF/jsp/AccountAdd.jsp");
@@ -114,7 +114,7 @@ class AccountServletTest {
 
 	@Test
 	final void testSearch() throws Exception {
-		List<Account> list = accountDAO.query(" from " + Member._ENTITY_NAME + " ");
+		List<Account> list = accountDAO.query();
 		assertNotNull(list);
 		assertEquals(String.valueOf(ServletParameters.Dispatcher.UI_AccountServlet_SEARCH.getUrl()),
 				"./WEB-INF/jsp/Account.jsp");

@@ -9,6 +9,7 @@
  */
 package com.onaccountx.generic;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,14 +20,16 @@ import java.util.Map;
  * 
  * @author TiramiAsu (Email)
  */
-public class GenericRESTBean {
+public class GenericRESTBean implements Serializable {
+
+	private static final long serialVersionUID = 7165659882175196253L;
 
 	private Map<String, Object> bean = new HashMap<>();
 	
 	String sloslio = "";
 	Object value = "";
 	
-	private GenericRESTBean() {}
+	public GenericRESTBean() {}
 	
 	public GenericRESTBean put(String sloslio, Object value) {
 		bean.put(sloslio, value);
@@ -37,6 +40,13 @@ public class GenericRESTBean {
 		return bean;
 	}
 	
+	@Override
+	public String toString() {
+		return "GenericRESTBean [sloslio=" + sloslio +
+				", value=" + value +
+				"]";
+	}
+
 	// sample
 	public static void main(String[] args) {
 		Map<String, Object> restBean = new GenericRESTBean()

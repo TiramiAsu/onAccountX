@@ -27,6 +27,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   },
   globals: {
-    axios: true
+    axios: true,
+    moment: true
   }
 }

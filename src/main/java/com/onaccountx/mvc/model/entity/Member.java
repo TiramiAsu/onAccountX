@@ -26,14 +26,14 @@ import javax.persistence.TemporalType;
  * [會員] 2019-12-06 00:24
  * </pre>
  * 
- * @author  TiramiAsu (Email)
+ * @author TiramiAsu (Email)
  */
 @Entity
-@Table(name="members")
+@Table(name = "members")
 public class Member implements Serializable {
 
 	private static final long serialVersionUID = 3063969525003747477L;
-	
+
 	public final static String _ENTITY_NAME = "Member";
 	public final static String _ID = "id";
 	public final static String _NAME = "name";
@@ -41,39 +41,38 @@ public class Member implements Serializable {
 	public final static String _PHONE = "phone";
 	public final static String _TIME_MODIFY = "timeModify";
 	public final static String _TIME_BUILD = "timeBuild";
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "name")
 	private String name;
-	
+
 	@Column(name = "email")
 	private String email;
-	
+
 	@Column(name = "phone")
 	private String phone;
-	
+
 	@Column(name = "time_modify")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeModify;
-	
+
 	@Column(name = "time_build")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
-	
+
 	public Member() {}
-	
-	public Member(String name, String email, String phone,
-			Date timeModify, Date timeBuild) {
+
+	public Member(String name, String email, String phone, Date timeModify, Date timeBuild) {
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
 		this.timeModify = timeModify;
 		this.timeBuild = timeBuild;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -124,12 +123,13 @@ public class Member implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Member [id=" + id
-				+ ", name=" + name
-				+ ", email=" + email
-				+ ", phone=" + phone
-				+ ", timeModify=" + timeModify
-				+ ", timeBuild=" + timeBuild + "]";
+		return "Member [id=" + id +
+				", name=" + name +
+				", email=" + email +
+				", phone=" + phone +
+				", timeModify=" + timeModify +
+				", timeBuild=" + timeBuild +
+				"]";
 	}
-	
+
 }

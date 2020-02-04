@@ -21,9 +21,11 @@
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>Time Modify</th>
                   <th>Operate</th>
                 </tr>
                 <tr>
+                  <th></th>
                   <th></th>
                   <th></th>
                   <th></th>
@@ -42,6 +44,7 @@
                   <td>{{ bean.name }}</td>
                   <td>{{ bean.email }}</td>
                   <td>{{ bean.phone }}</td>
+                  <td>{{ toFormatDateTime(bean.timeModify) }}</td>
                   <td>
                     <button type="button" class="btn btn-outline-primary" @click="mainFunction('edit', bean)">Edit</button>
                     <button type="button" class="btn btn-outline-danger" @click="mainFunction('remove', bean)">Remove</button>
@@ -193,8 +196,8 @@ export default {
       }).then(function (response) {
         if (response) {
           self.memberList = response.data.data
-          console.log(response)
-          console.log('>>> Add Success <<<')
+          // console.log(response)
+          console.log('>>> Query Success <<<')
         }
         self.display = false
       }).catch(function (error) {
@@ -263,6 +266,30 @@ export default {
       }).catch(function (error) {
         console.log('>>> Error: Delete member failed: ', error)
       })
+    },
+
+    /* 時間格式 */
+
+    // 取得格式化(YYY-MM-DD HH:mm)後的日期時間字串
+    toFormatDateTime (timestamp, formatStr) {
+      /* 1: timestamp 傳入是日期(string)   '2019-7-12 9:17', 則回傳 '2019-07-12 09:17'
+       * 2: timestamp 傳入是時間戳(number) 1562894220000, 則回傳 '2019-07-12 09:17'
+       * 3: timestamp 傳入是空的(null)     (null), 則回傳 'null'
+       * p.s. formatStr 為 Y(年) M(月) D(日) H(時) m(分) s(秒) 組成 */
+      // 變成 Date 物件，再拿時間戳(getTime() 回傳的是 number 型態)
+      var fmtStr = (formatStr === undefined || formatStr === null) ? 'YYYY-MM-DD HH:mm' : formatStr
+      if (timestamp) {
+        switch (typeof timestamp) {
+          case 'number':
+            return moment(timestamp).format(fmtStr)
+          case 'string':
+            timestamp = new Date(timestamp).getTime()
+            return moment(timestamp).format(fmtStr)
+          default:
+            console.log('Error: 時間轉換型態必須是 Number 或 String')
+        }
+      }
+      return null
     }
   }
 }

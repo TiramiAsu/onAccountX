@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.onaccountx.mvc.model.dao.MemberDAO;
-import com.onaccountx.mvc.model.dao.impl.MemberDAOImpl;
 import com.onaccountx.mvc.model.entity.Member;
 import com.onaccountx.mvc.service.MemberService;
 
@@ -26,19 +27,49 @@ import com.onaccountx.mvc.service.MemberService;
  * 
  * @author TiramiAsu (Email)
  */
+@Service
 public class MemberServiceImpl implements MemberService {
 
-	private MemberDAO memberDAO = new MemberDAOImpl();
+	@Autowired
+	private MemberDAO memberDAO;
+	
+	public void setMemberDAO(MemberDAO memberDAO) {
+		this.memberDAO = memberDAO;
+	}
 	
 	@Override
-	public List<Member> query(String hql) {
-		List<Member> list = null;
+	public void create(Member bean) {
 		try {
-			list = memberDAO.query(hql);
+			memberDAO.create(bean);
 		} catch (Exception e) {
-			System.err.println(">>> Query Failed, HQL Error <<<");
+			System.err.println(">>> Create Failed <<<");
+			System.err.println(e.getMessage());
 		}
-		return list;
+	}
+	
+	@Override
+	public List<Member> query() {
+		
+		List<Member> memberList = null;
+		
+		/* Initial value */
+		/* Check */
+		/* Search Condition */
+		
+		try {
+			memberList = memberDAO.query()
+					.stream()
+					.sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
+//					.peek(System.out::println)
+					.collect(Collectors.toList());
+			if (memberList == null) {
+				throw new Exception(">>> Members Query Failed <<<");
+			}
+		} catch (Exception e) {
+			memberList = null;
+			e.printStackTrace();
+		}
+		return memberList;
 	}
 
 	@Override
@@ -53,57 +84,24 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void delete(Long id) {
-		Member member = null;
+	public void update(Long id, Member bean) {
 		try {
-			member = memberDAO.find(Member.class, id);
-			memberDAO.delete(member);
+			memberDAO.update(id, bean);
 		} catch (Exception e) {
-			System.err.println(">>> Delete Failed <<<");
-		}
-	}
-	
-	@Override
-	public void create(Member bean) {
-		try {
-			memberDAO.create(bean);
-		} catch (Exception e) {
-			System.err.println(">>> Create Failed <<<");
+			System.err.println(">>> Update Failed <<<");
+			System.err.println(e.getMessage());
 		}
 	}
 
 	@Override
-	public void update(Member bean) {
+	public void delete(Long id) {
 		try {
-			memberDAO.update(bean);
-		} catch (Exception e) {
-			System.err.println(">>> Update Failed <<<");
-		}
-	}
-	
-	@Override
-	public List<Member> query() {
-		
-		List<Member> memberList = null;
-		
-		/* Initial value */
-		/* Check */
-		/* Search Condition */
-		
-		try {
-			memberList = memberDAO.query(" from " + Member._ENTITY_NAME + " ")
-					.stream()
-					.sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
-					.peek(System.out::println)
-					.collect(Collectors.toList());
-			if (memberList == null) {
-				throw new Exception(">>> Members Query Failed <<<");
+			if (!memberDAO.find(Member.class, id).equals(null)) {
+				memberDAO.delete(id);
 			}
 		} catch (Exception e) {
-			memberList = null;
-			e.printStackTrace();
+			System.err.println(">>> Delete Failed <<<");
 		}
-		return memberList;
 	}
 	
 	@Override
@@ -129,10 +127,10 @@ public class MemberServiceImpl implements MemberService {
 		/* Search Condition */
 		
 		try {
-			memberList = memberDAO.query(" from " + Member._ENTITY_NAME + " ")
+			memberList = memberDAO.query()
 					.stream()
 					.sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
-					.peek(System.out::println)
+//					.peek(System.out::println)
 					.collect(Collectors.toList());
 			if (memberList == null) {
 				throw new Exception(">>> Members Query Failed <<<");
@@ -143,9 +141,5 @@ public class MemberServiceImpl implements MemberService {
 		}
 		return memberList;
 	}
-
-
-
-
 
 }

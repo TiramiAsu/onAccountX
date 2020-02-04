@@ -132,7 +132,7 @@ public class MemberServlet extends HttpServlet {
 					member.setName(name);
 					member.setEmail(email);
 					member.setPhone(phone);
-					memberDAO.update(member);
+					memberDAO.update(id, member);
 					req.setAttribute("msg", "\"" + member.getName() + "\" edit Success!!");
 				} else {
 					throw new Exception(">>> Not Found Member by ID: " + id + " <<<");
@@ -154,8 +154,8 @@ public class MemberServlet extends HttpServlet {
 			
 			if (isNotNullOrEmptyString(id)) {
 				Member member = memberDAO.find(Member.class, id);
-				if (isNotNull(member)) {
-					memberDAO.delete(member);
+				if (isNotNull(id)) {
+					memberDAO.delete(id);
 					req.setAttribute("msg", "\"" + member.getName() + "\" remove Success!!");
 				} else {
 					throw new Exception(">>> Not Found Member by ID: " + id + " <<<");
@@ -174,7 +174,7 @@ public class MemberServlet extends HttpServlet {
 			throws ServletException, IOException {
 		List<Member> memberList;
 		try {
-			memberList = memberDAO.query(" from " + Member._ENTITY_NAME + " ")
+			memberList = memberDAO.query()
 					.stream()
 					.sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
 					.collect(Collectors.toList());

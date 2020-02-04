@@ -80,7 +80,7 @@ public class AccountServlet extends HttpServlet {
 			throws ServletException, IOException {
 		List<Member> members;
 		try {
-			members = memberDAO.query(" SELECT m FROM " + Member._ENTITY_NAME + " m ");
+			members = memberDAO.query();
 			req.setAttribute("memberList", members);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -96,7 +96,7 @@ public class AccountServlet extends HttpServlet {
 			if (isNotNullOrEmptyString(id)) {
 				Account account = accountDAO.find(Account.class, id);
 				Member member = memberDAO.find(Member.class, account.getMemberId());
-				List<Member> members = memberDAO.query(" SELECT m FROM " + Member._ENTITY_NAME + " m ");
+				List<Member> members = memberDAO.query();
 				if (isNotNull(account, member, members)) {
 					req.setAttribute("account", account);
 					req.setAttribute("member", member);
@@ -147,12 +147,12 @@ public class AccountServlet extends HttpServlet {
 			
 			if (isNotNullOrEmptyString(id, memberId, account, password)) {
 				Account acc = accountDAO.find(Account.class, id);
-				if (isNotNull(acc)) {
+				if (isNotNull(id, acc)) {
 					acc.setAccount(account);
 					acc.setPassword(password);
 					acc.setMemberId(memberId);
 					acc.setTimeModify(new Date());
-					accountDAO.update(acc);
+					accountDAO.update(id, acc);
 					req.setAttribute("msg", "\"" + acc.getAccount() + "\" edit Success!!");
 				} else {
 					throw new Exception(">>> Not Found Account by ID: " + id + " <<<");
@@ -173,8 +173,8 @@ public class AccountServlet extends HttpServlet {
 			
 			if (isNotNullOrEmptyString(id)) {
 				Account account = accountDAO.find(Account.class, id);
-				if (isNotNull(account)) {
-					accountDAO.delete(account);
+				if (isNotNull(id)) {
+					accountDAO.delete(id);
 					req.setAttribute("msg", "\"" + account.getAccount() + "\" remove Success!!");
 				} else {
 					throw new Exception(">>> Not Found Account by ID: " + id + " <<<");
@@ -193,13 +193,13 @@ public class AccountServlet extends HttpServlet {
 			throws ServletException, IOException {
 		List<Account> accountList;
 		try {
-			accountList = accountDAO.query(" from " + Account._ENTITY_NAME + " ")
+			accountList = accountDAO.query()
 					.stream()
 					.sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
 //				.peek(System.out::println)
 					.collect(Collectors.toList());
 			req.setAttribute("accountList", accountList);
-			req.setAttribute("memberList", memberDAO.query(" from " + Member._ENTITY_NAME + " "));
+			req.setAttribute("memberList", memberDAO.query());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

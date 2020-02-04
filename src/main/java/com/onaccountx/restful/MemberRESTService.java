@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -34,8 +35,10 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.google.json.JsonSanitizer;
+import com.onaccountx.generic.GenericRESTBean;
 import com.onaccountx.generic.GenericRESTService;
 import com.onaccountx.mvc.model.entity.Member;
 import com.onaccountx.mvc.service.MemberService;
@@ -56,11 +59,16 @@ import com.onaccountx.utils.SpringUtils;
  * 
  * @author TiramiAsu (Email)
  */
+@Service
 @Path("/member")
 public class MemberRESTService implements GenericRESTService {
 
 	@Autowired
 	MemberService memberService;
+	
+	public void setMemberService(MemberService memberService) {
+		this.memberService = memberService;
+	}
 
 	@GET
 	@Override
@@ -70,10 +78,11 @@ public class MemberRESTService implements GenericRESTService {
 		
 		// Data
 		List<Member> memberList = null;
-		List<MemberRESTBean> beanList = new ArrayList<>();
+//		List<MemberRESTBean> beanList = new ArrayList<>();
+		List<Map<String, Object>> beanList = new ArrayList<>();
 		
 		// Service Enable
-		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.class) : memberService;
 		
 		// Authenticate User
 		// TODO Json Web Token -> Filter
@@ -86,13 +95,21 @@ public class MemberRESTService implements GenericRESTService {
 			return new ResponseREST(ERROR_DATABASE).build();
 		} else {
 			for (Member m : memberList) {
-				MemberRESTBean bean = new MemberRESTBean();
-				bean.setId(m.getId())
-					.setName(m.getName())
-					.setEmail(m.getEmail())
-					.setPhone(m.getPhone())
-					.setTimeModify(m.getTimeModify());
-				beanList.add(bean);
+//				MemberRESTBean bean = new MemberRESTBean();
+//				bean.setId(m.getId())
+//					.setName(m.getName())
+//					.setEmail(m.getEmail())
+//					.setPhone(m.getPhone())
+//					.setTimeModify(m.getTimeModify());
+//				beanList.add(bean);
+				Map<String, Object> restBean = new GenericRESTBean()
+						.put("id", m.getId())
+						.put("name", m.getName())
+						.put("email", m.getEmail())
+						.put("phone", m.getPhone())
+						.put("timeModify", m.getTimeModify().getTime())
+						.build();
+				beanList.add(restBean);
 			}
 			return new ResponseREST(SUCCESS)
 					.setData(beanList)
@@ -121,7 +138,7 @@ public class MemberRESTService implements GenericRESTService {
 		MemberRESTBean bean = null;
 		
 		// Service Enable
-		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.class) : memberService;
 		
 		// Authenticate User
 		// TODO Json Web Token -> Filter
@@ -162,7 +179,7 @@ public class MemberRESTService implements GenericRESTService {
 		}
 
 		// Service Enable
-		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.class) : memberService;
 
 		// Authenticate User
 		// TODO Json Web Token -> Filter
@@ -205,7 +222,7 @@ public class MemberRESTService implements GenericRESTService {
 		}
 
 		// Service Enable
-		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.class) : memberService;
 
 		// Authenticate User
 		// TODO Json Web Token -> Filter
@@ -223,7 +240,7 @@ public class MemberRESTService implements GenericRESTService {
 			member.setEmail(bean.getEmail() == null ? member.getEmail() : bean.getEmail());
 			member.setPhone(bean.getPhone() == null ? member.getPhone() : bean.getPhone());
 			member.setTimeModify(new Date());
-			memberService.update(member);
+			memberService.update(Long.parseLong(id), member);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
@@ -242,7 +259,7 @@ public class MemberRESTService implements GenericRESTService {
 		// Data
 
 		// Service Enable
-		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.NAME) : memberService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.class) : memberService;
 
 		// Authenticate User
 		// TODO Json Web Token -> Filter

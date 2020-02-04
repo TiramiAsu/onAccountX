@@ -16,7 +16,7 @@
     <footer>
       <div class="card">
         <div class="card-header">
-          2019 &copy; TiramiAsu
+          2020 &copy; TiramiAsu
         </div>
         <!-- <div class="card-body">
           <blockquote class="blockquote mb-0">

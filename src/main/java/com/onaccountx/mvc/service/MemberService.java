@@ -21,6 +21,6 @@ import com.onaccountx.mvc.model.entity.Member;
  */
 public interface MemberService extends GenericService<Member> {
 	
-	public static final String NAME = "txp_memberService";
+//	public static final String NAME = "txp_memberService";
 
 }

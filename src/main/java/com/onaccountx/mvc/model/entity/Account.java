@@ -26,14 +26,14 @@ import javax.persistence.TemporalType;
  * [帳號] 2019-12-11 15:26
  * </pre>
  * 
- * @author  TiramiAsu (Email)
+ * @author TiramiAsu (Email)
  */
 @Entity
-@Table(name="accounts")
+@Table(name = "accounts")
 public class Account implements Serializable {
-	
+
 	private static final long serialVersionUID = -9210792137073570228L;
-	
+
 	public final static int VALUE_ENABLE = Account.STATUS.ENABLE.value;
 	public final static int VALUE_LOCK = Account.STATUS.LOCK.value;
 	public final static int VALUE_DISABLE = Account.STATUS.DISABLE.value;
@@ -51,11 +51,11 @@ public class Account implements Serializable {
 	public final static String _TIME_LAST = "timeLast";
 	public final static String _TIME_MODIFY = "timeModify";
 	public final static String _MEMBER_ID = "memberId";
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "account")
 	private String account;
 
@@ -82,12 +82,11 @@ public class Account implements Serializable {
 
 	@Column(name = "m_id")
 	private Long memberId;
-	
+
 	public Account() {}
 
-	public Account(String account, String password, int status,
-			int errorTimes, Date timeBuild, Date timeLast, Date timeModify,
-			Long memberId) {
+	public Account(String account, String password, int status, int errorTimes, Date timeBuild, Date timeLast,
+			Date timeModify, Long memberId) {
 		this.account = account;
 		this.password = password;
 		this.status = status;
@@ -169,31 +168,32 @@ public class Account implements Serializable {
 	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Account [id=" + id
-				+ ", account=" + account
-				+ ", password=" + password
-				+ ", status=" + status
-				+ ", errorTimes=" + errorTimes
-				+ ", timeBuild=" + timeBuild
-				+ ", timeLast=" + timeLast
-				+ ", timeModify=" + timeModify
-				+ ", memberId=" + memberId + "]";
+		return "Account [id=" + id +
+				", account=" + account +
+				", password=" + password +
+				", status=" + status +
+				", errorTimes=" + errorTimes +
+				", timeBuild=" + timeBuild +
+				", timeLast=" + timeLast +
+				", timeModify=" + timeModify +
+				", memberId=" + memberId +
+				"]";
 	}
-	
+
 	private enum STATUS {
 		DISABLE(0, "停用"), ENABLE(1, "啟用中"), LOCK(4, "已鎖定");
-		
+
 		private int value;
 		private String text;
-		
+
 		private STATUS(int value, String text) {
 			this.value = value;
 			this.text = text;
 		}
-		
+
 	}
 
 }

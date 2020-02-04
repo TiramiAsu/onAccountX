@@ -114,7 +114,7 @@ class MemberServletTest {
 	
 	@Test
 	final void testSearch() throws Exception {
-		List<Member> list = memberDAO.query(" from " + Member._ENTITY_NAME + " ");
+		List<Member> list = memberDAO.query();
 		// list.stream().forEach(System.out::println);
 		assertNotNull(list);
 		assertEquals(String.valueOf(ServletParameters.Dispatcher.UI_MemberServlet_SEARCH.getUrl()),
