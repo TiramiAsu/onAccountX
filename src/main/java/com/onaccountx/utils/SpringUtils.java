@@ -9,9 +9,7 @@
  */
 package com.onaccountx.utils;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -25,34 +23,29 @@ import com.onaccountx.mvc.service.MemberService;
  * @author TiramiAsu (Email)
  */
 @Component
-public class SpringUtils implements ApplicationContextAware {
+public class SpringUtils {
 
 	private static ApplicationContext context;
-	
+
 	static {
 		context = new ClassPathXmlApplicationContext("spring.cfg.xml");
 	}
-	
-	public SpringUtils() {}
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		context = applicationContext;
+	public SpringUtils() {
 	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T>T getBean(String beanId){
-		return (T) context.getBean(beanId);
+
+	public static Object getBean(String beanId) {
+		return context.getBean(beanId, Object.class);
 	}
-	
-	public static <T>T getBean(Class<T> clazz){
+
+	public static <T> T getBean(Class<T> clazz) {
 		return context.getBean(clazz);
 	}
-	
-	public static <T>T getBean(String beanId, Class<T> clazz){
+
+	public static <T> T getBean(String beanId, Class<T> clazz) {
 		return context.getBean(beanId, clazz);
 	}
-	
+
 	public static void main(String[] args) {
 //		MemberService memberService = SpringUtils.getBean("memberService");
 //		MemberService memberService = SpringUtils.getBean("memberService", MemberService.class);
@@ -63,5 +56,5 @@ public class SpringUtils implements ApplicationContextAware {
 			System.out.println(">>> Success <<<");
 		}
 	}
-	
+
 }
