@@ -19,7 +19,7 @@
 	
 	<context:component-scan base-package="com.onaccountx.mvc.model.dao.impl" />
 	<context:component-scan base-package="com.onaccountx.mvc.service.impl" />
-	<context:component-scan base-package="com.onaccountx.generic" />
+	<context:component-scan base-package="com.onaccountx.restful" />
 	<context:component-scan base-package="com.onaccountx.utils" />
 	
 	<!--<bean id="memberService" class="com.onaccountx.mvc.service.impl.MemberServiceImpl" />-->

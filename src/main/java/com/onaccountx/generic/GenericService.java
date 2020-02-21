@@ -22,7 +22,7 @@ public interface GenericService<T> {
 
 	// Basic
 	public void create(T bean);
-	public List<T> query();
+	public List<T> query(); // 不寫
 	public T find(Long id);
 	public void update(Long id, T bean);
 	public void delete(Long id);

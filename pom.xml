@@ -128,6 +128,13 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- googleDAO -->
+		<dependency>
+			<groupId>com.googlecode.genericdao</groupId>
+			<artifactId>dao-hibernate</artifactId>
+			<version>1.2.0</version> <!-- use current version -->
+		</dependency>
+
 	</dependencies>
 
 	<build>

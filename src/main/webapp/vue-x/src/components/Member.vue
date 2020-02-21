@@ -187,7 +187,7 @@ export default {
       var self = this
       axios({
         method: 'get',
-        url: '/onAccountX/srv/member',
+        url: '/onAccountX/srv/memberG',
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
@@ -209,7 +209,7 @@ export default {
       var mbr = this.toApiBean(bean)
       axios({
         method: 'put',
-        url: '/onAccountX/srv/member',
+        url: '/onAccountX/srv/memberG',
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
@@ -231,7 +231,7 @@ export default {
       var mbr = this.toApiBean(bean)
       axios({
         method: 'put',
-        url: '/onAccountX/srv/member/' + mbr.id,
+        url: '/onAccountX/srv/memberG/' + mbr.id,
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
@@ -252,7 +252,7 @@ export default {
       var self = this
       axios({
         method: 'delete',
-        url: '/onAccountX/srv/member/' + id,
+        url: '/onAccountX/srv/memberG/' + id,
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
