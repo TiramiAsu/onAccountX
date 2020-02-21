@@ -9,19 +9,18 @@
  */
 package com.onaccountx.mvc.model.dao.impl;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import com.googlecode.genericdao.dao.hibernate.GenericDAOImpl;
+import com.googlecode.genericdao.search.Search;
+import com.googlecode.genericdao.search.SearchResult;
 import com.onaccountx.mvc.model.dao.MemberDAO;
 import com.onaccountx.mvc.model.entity.Member;
+import com.onaccountx.utils.db.SearchUtils;
 
 /**
  * <pre>
@@ -31,68 +30,38 @@ import com.onaccountx.mvc.model.entity.Member;
  * @author TiramiAsu (Email)
  */
 @Repository
-public class MemberDAOImpl implements MemberDAO {
+public class MemberDAOImpl extends GenericDAOImpl<Member, Long> implements MemberDAO {
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
 	@Override
-	public void create(Member member) throws Exception {
-		String sql = "INSERT INTO members(id, name, email, phone, time_build, time_modify) " +
-				"Values(default, ?, ?, ?, ?, ?)";
-		Object[] data = { member.getName(), member.getEmail(), member.getPhone(), new Date(), new Date() };
-		jdbcTemplate.update(sql, data);
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		super.setSessionFactory(sessionFactory);
 	}
 
 	@Override
-	public List<Member> query() throws Exception {
-		String sql = "SELECT * FROM members";
-		return jdbcTemplate.query(sql, new MemberRowMapper());
-	}
+	public SearchResult<Object> query(String sort, boolean asc, Map<String, Object> conditions, int page, int count)
+			throws Exception {
 
-	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Member find(Class<Member> clazz, Long id) throws Exception {
-		String sql = "SELECT * FROM members WHERE id=?";
-		return (Member) jdbcTemplate.queryForObject(sql, new Object[] { id }, new BeanPropertyRowMapper(Member.class));
-	}
+		Search search = SearchUtils.buildSearchCondition(new Search(Member.class), conditions);
 
-	@Override
-	public void update(Long id, Member member) throws Exception {
-		Member m = find(Member.class, id);
-		String sql = "UPDATE members SET name=?, email=?, phone=?, time_modify=? WHERE id=?";
-		Object[] args = {
-				member.getName().equals(null) ? m.getName() : member.getName(),
-				member.getEmail().equals(null) ? m.getEmail() : member.getEmail(),
-				member.getPhone().equals(null) ? m.getPhone() : member.getPhone(),
-				new Date(),
-				id };
-		jdbcTemplate.update(sql, args);
-	}
+		if (sort != null)
+			search.addSort(sort, asc);
 
-	@Override
-	public void delete(Long id) throws Exception {
-		String sql = "DELETE FROM members WHERE id=" + id;
-		jdbcTemplate.execute(sql);
-	}
-
-	@Override
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	private class MemberRowMapper implements RowMapper<Member> {
-		@Override
-		public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
-			Member member = new Member(
-					rs.getString("name"),
-					rs.getString("email"),
-					rs.getString("phone"),
-					rs.getTimestamp("time_modify"),
-					rs.getTimestamp("time_build"));
-			member.setId(rs.getLong("id"));
-			return member;
+		if (count > 0) {
+			search.setMaxResults(count); // a.k.a. results per page
+			search.setPage(page);
 		}
+		return super.searchAndCount(search);
 	}
 
+	@Override
+	public SearchResult<Object> query(String sort, boolean asc, Map<String, Object> conditions) throws Exception {
+
+		Search search = SearchUtils.buildSearchCondition(new Search(Member.class), conditions);
+
+		if (sort != null) {
+			search.addSort(sort, asc);
+		}
+		return super.searchAndCount(search);
+	}
 }

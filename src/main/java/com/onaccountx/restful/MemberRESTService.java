@@ -47,7 +47,7 @@ import com.onaccountx.utils.SpringUtils;
 
 /**
  * <pre>
- * [會員 REST Service] 2019-12-24 21:33
+ * [Member REST Service] 2019-12-24 21:33
  * 
  * [Process]
  * // Data
@@ -191,8 +191,7 @@ public class MemberRESTService implements GenericRESTService {
 			return new ResponseREST(ERROR_PARSE).build();
 		}
 
-		member = new Member(bean.getName(), bean.getEmail(), bean.getPhone(),
-				new Date(), new Date());
+		member = new Member(bean.getName(), bean.getEmail(), bean.getPhone());
 
 		try {
 			memberService.create(member);
@@ -301,5 +300,4 @@ public class MemberRESTService implements GenericRESTService {
 		}
 		return retBean;
 	}
-
 }

@@ -11,9 +11,11 @@ package com.onaccountx.generic;
 
 import java.util.List;
 
+import com.onaccountx.restful.ResponseREST;
+
 /**
  * <pre>
- * [通用 Service 定義] 2019-12-24 16:28
+ * [定義 GenericService ] 2019-12-24 16:28
  * </pre>
  * 
  * @author TiramiAsu (Email)
@@ -21,13 +23,12 @@ import java.util.List;
 public interface GenericService<T> {
 
 	// Basic
-	public void create(T bean);
+	public boolean create(T bean);
 	public List<T> query();
 	public T find(Long id);
-	public void update(Long id, T bean);
-	public void delete(Long id);
-	
+	public boolean update(Long id, T bean);
+	public boolean delete(Long id);
+
 	// JSON
-	public List<T> query(Object json);
-	
+	ResponseREST queryREST(Object json);
 }

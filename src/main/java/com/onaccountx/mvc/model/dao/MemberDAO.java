@@ -9,7 +9,10 @@
  */
 package com.onaccountx.mvc.model.dao;
 
-import com.onaccountx.generic.GenericDAO;
+import java.util.Map;
+
+import com.googlecode.genericdao.dao.hibernate.GenericDAO;
+import com.googlecode.genericdao.search.SearchResult;
 import com.onaccountx.mvc.model.entity.Member;
 
 /**
@@ -19,8 +22,7 @@ import com.onaccountx.mvc.model.entity.Member;
  * 
  * @author TiramiAsu (Email)
  */
-public interface MemberDAO extends GenericDAO<Member> {
-	
-//	public static final String NAME = "txp_memberDAO";
-
+public interface MemberDAO extends GenericDAO<Member, Long> {
+	SearchResult<Object> query(String sort, boolean asc, Map<String, Object> conditions, int page, int count) throws Exception;
+	SearchResult<Object> query(String sort, boolean asc, Map<String, Object> conditions)  throws Exception;
 }

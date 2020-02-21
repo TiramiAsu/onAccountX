@@ -32,7 +32,7 @@ import javax.persistence.TemporalType;
 @Table(name = "members")
 public class Member implements Serializable {
 
-	private static final long serialVersionUID = 3063969525003747477L;
+	private static final long serialVersionUID = -9089521043734096398L;
 
 	public final static String _ENTITY_NAME = "Member";
 	public final static String _ID = "id";
@@ -65,12 +65,10 @@ public class Member implements Serializable {
 
 	public Member() {}
 
-	public Member(String name, String email, String phone, Date timeModify, Date timeBuild) {
+	public Member(String name, String email, String phone) {
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
-		this.timeModify = timeModify;
-		this.timeBuild = timeBuild;
 	}
 
 	public Long getId() {
