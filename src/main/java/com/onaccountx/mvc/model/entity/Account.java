@@ -32,7 +32,7 @@ import javax.persistence.TemporalType;
 @Table(name = "accounts")
 public class Account implements Serializable {
 
-	private static final long serialVersionUID = -9210792137073570228L;
+	private static final long serialVersionUID = 3956649725795659120L;
 
 	public final static int VALUE_ENABLE = Account.STATUS.ENABLE.value;
 	public final static int VALUE_LOCK = Account.STATUS.LOCK.value;
@@ -85,15 +85,11 @@ public class Account implements Serializable {
 
 	public Account() {}
 
-	public Account(String account, String password, int status, int errorTimes, Date timeBuild, Date timeLast,
-			Date timeModify, Long memberId) {
+	public Account(String account, String password, int status, int errorTimes, Long memberId) {
 		this.account = account;
 		this.password = password;
 		this.status = status;
 		this.errorTimes = errorTimes;
-		this.timeBuild = timeBuild;
-		this.timeLast = timeLast;
-		this.timeModify = timeModify;
 		this.memberId = memberId;
 	}
 
