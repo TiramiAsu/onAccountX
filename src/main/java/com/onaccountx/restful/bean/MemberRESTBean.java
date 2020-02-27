@@ -85,5 +85,16 @@ public class MemberRESTBean implements Serializable {
 		this.timeBuild = timeBuild;
 		return this;
 	}
+
+	@Override
+	public String toString() {
+		return "MemberRESTBean [id=" + id +
+				", name=" + name +
+				", email=" + email +
+				", phone=" + phone +
+				", timeModify=" + timeModify +
+				", timeBuild=" + timeBuild +
+				"]";
+	}
 	
 }

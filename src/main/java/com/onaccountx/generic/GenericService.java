@@ -26,7 +26,7 @@ public interface GenericService<T> {
 	public boolean create(T bean);
 	public List<T> query();
 	public T find(Long id);
-	public boolean update(Long id, T bean);
+	public boolean update(T bean);
 	public boolean delete(Long id);
 
 	// JSON

@@ -43,6 +43,7 @@ public class Member implements Serializable {
 	public final static String _TIME_BUILD = "timeBuild";
 
 	@Id
+	@Column(name = "id", nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 

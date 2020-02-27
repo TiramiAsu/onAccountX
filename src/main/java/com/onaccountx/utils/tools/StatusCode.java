@@ -12,6 +12,7 @@ package com.onaccountx.utils.tools;
 /**
  * <pre>
  * [狀態碼] 2019-12-27 14:37
+ * - 新增後, 於 ResponseUtils 中設定參數
  * </pre>
  * 
  * @author TiramiAsu (Email)

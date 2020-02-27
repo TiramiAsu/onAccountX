@@ -30,6 +30,7 @@ import com.onaccountx.mvc.model.entity.Member;
 import com.onaccountx.mvc.service.MemberService;
 import com.onaccountx.restful.ResponseREST;
 import com.onaccountx.restful.bean.MemberRESTBean;
+import com.onaccountx.utils.JsonUtils;
 import com.onaccountx.utils.db.Operate;
 
 /**
@@ -44,6 +45,10 @@ public class MemberServiceImpl implements MemberService {
 
 	@Autowired
 	private MemberDAO memberDAO;
+
+	public void setMemberDAO(MemberDAO memberDAO) {
+		this.memberDAO = memberDAO;
+	}
 
 	@Override
 	@Transactional
@@ -61,11 +66,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public boolean update(Long id, Member bean) {
-		Member member = memberDAO.find(id);
-		bean.setId(member.getId());
-		bean.setTimeBuild(member.getTimeBuild());
-		bean.setTimeModify(new Date());
+	public boolean update(Member bean) {
 		return memberDAO.save(bean);
 	}
 
@@ -86,7 +87,9 @@ public class MemberServiceImpl implements MemberService {
 		/* Search Condition */
 
 		try {
-			memberList = memberDAO.findAll().stream().sorted((o1, o2) -> o2.getId().compareTo(o1.getId()))
+			memberList = memberDAO.findAll().stream()
+					.sorted((o1, o2) -> o2.getId()
+					.compareTo(o1.getId()))
 //					.peek(System.out::println)
 					.collect(Collectors.toList());
 			if (memberList == null) {
@@ -103,20 +106,18 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional
 	public ResponseREST queryREST(Object json) {
 
-		JSONObject jsonObject = (JSONObject) json;
+		JSONObject jsonObject = JsonUtils.parseAttributes("member", json);
 		List<MemberRESTBean> outputJson = new ArrayList<>();
 		Map<String, Object> conds = new HashMap<String, Object>();
 
 		/* initial value */
 
-		Long jId = 0L;
 		String jName = "";
 		String jEmail = "";
 		String jPhone = "";
 
 		/* check */
 
-		jId = (jsonObject.get(Member._ID) == null) ? jId : (long) jsonObject.get(Member._ID);
 		jName = (jsonObject.get(Member._NAME) == null) ? jName : (String) jsonObject.get(Member._NAME);
 		jEmail = (jsonObject.get(Member._EMAIL) == null) ? jEmail : (String) jsonObject.get(Member._EMAIL);
 		jPhone = (jsonObject.get(Member._PHONE) == null) ? jPhone : (String) jsonObject.get(Member._PHONE);
@@ -141,6 +142,7 @@ public class MemberServiceImpl implements MemberService {
 
 		// 以 "id" 為順序
 		ResponseREST responseMeg = null;
+
 		try {
 			sr = memberDAO.query(Member._ID, true, conds);
 
@@ -159,14 +161,13 @@ public class MemberServiceImpl implements MemberService {
 				bean.setPhone(member.getPhone());
 				bean.setTimeModify(member.getTimeModify());
 
-				System.out.println(bean.toString());
 				outputJson.add(bean);
 			}
 			responseMeg = new ResponseREST(OK).setData(outputJson);
 		} catch (Exception e) {
+			responseMeg = new ResponseREST(ERROR_DATABASE).setData(outputJson);
 			e.printStackTrace();
 		}
-		return (!responseMeg.equals(null)) ? responseMeg
-				: new ResponseREST(ERROR_DATABASE).setData(outputJson);
+		return responseMeg;
 	}
 }

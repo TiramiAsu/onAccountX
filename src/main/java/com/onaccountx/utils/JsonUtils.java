@@ -30,6 +30,11 @@ import com.onaccountx.mvc.model.entity.Member;
  */
 public class JsonUtils<T> {
 	
+	// 將 Object 取得 bean 後轉 JSONObject(都是屬性)
+	public static JSONObject parseAttributes(String beanName, Object json) {
+		return (JSONObject) ((JSONObject) json).get(beanName);
+	}
+	
 	// InputStream 轉 JSONObject
 	public static JSONObject toJsonObj(InputStream in) {
 		JSONObject jsonObj = null;
