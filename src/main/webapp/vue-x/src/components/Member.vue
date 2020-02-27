@@ -1,15 +1,16 @@
 <template>
   <div class="hello bs-glyphicons bs-glyphicons-list">
-    <div class="card">
-      <div class="card-header">
-        <h2>
+    <div style="padding-top: 1%">
+      <div>
+        <h1>Members</h1>
+        <h6 style="color: lightgray">
           <span v-if="thisLayout === PARAMS.Layout.Manage.value">{{ PARAMS.Layout.Manage.text }}</span>
           <span v-if="thisLayout === PARAMS.Layout.Add.value">{{ PARAMS.Layout.Add.text }}</span>
           <span v-if="thisLayout === PARAMS.Layout.Edit.value">{{ PARAMS.Layout.Edit.text }}</span>
-        </h2>
+        </h6>
       </div>
-      <div class="card-body">
-        <h3>members</h3>
+      <br />
+      <div>
         <!-- Manage UI -->
         <div v-if="thisLayout === PARAMS.Layout.Manage.value">
           <loading :display="display" :code="code" />
@@ -26,9 +27,15 @@
                 </tr>
                 <tr>
                   <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
+                  <th>
+                    <input v-model="member.name" @change="queryMember()" type="text" class="form-control">
+                  </th>
+                  <th>
+                    <input v-model="member.email" @change="queryMember()" type="text" class="form-control">
+                  </th>
+                  <th>
+                    <input v-model="member.phone" @change="queryMember()" type="text" class="form-control">
+                  </th>
                   <th></th>
                   <th>
                     <!-- <button type="button" class="btn btn-primary" onclick="location.href='member?action=uiAdd'">Add</button>
@@ -93,7 +100,7 @@ export default {
     return {
       PARAMS: {
         Layout: {
-          Manage: { value: 0, text: '會員管理' },
+          Manage: { value: 0, text: '會員維護' },
           Add: { value: 1, text: '會員新增' },
           Edit: { value: 2, text: '會員編輯' }
         }
@@ -132,6 +139,7 @@ export default {
           case 'finish':
             self.createMember(self.member)
             self.thisLayout = layout.Manage.value
+            self.initBean()
             break
           case 'edit':
             self.member.id = bean.id
@@ -144,13 +152,16 @@ export default {
           case 'update':
             self.updateMember(self.member)
             self.thisLayout = layout.Manage.value
+            self.initBean()
             break
           case 'cancel':
             self.thisLayout = layout.Manage.value
+            self.initBean()
             break
           case 'remove':
             if (confirm('確定要刪除 id: ' + bean.id + ' ?')) {
               self.deleteMember(bean.id)
+              self.initBean()
             } else {
               alert('已取消刪除 id: ' + bean.id)
             }
@@ -164,9 +175,11 @@ export default {
     },
     initBean () {
       this.member = {
-        name: null,
-        email: null,
-        phone: null
+        id: 0,
+        name: '',
+        email: '',
+        phone: '',
+        timeModify: 0
       }
     },
     toApiBean (bean) {
@@ -185,14 +198,22 @@ export default {
     // },
     queryMember () {
       var self = this
+      var apiMember = {
+        name: (self.member.name !== '') ? self.member.name : '',
+        email: (self.member.email !== '') ? self.member.email : '',
+        phone: (self.member.phone !== '') ? self.member.phone : ''
+      }
+      console.log(apiMember)
       axios({
-        method: 'get',
+        method: 'post',
         url: '/onAccountX/srv/member',
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
         },
-        data: {}
+        data: {
+          member: apiMember
+        }
       }).then(function (response) {
         if (response) {
           self.memberList = response.data.data

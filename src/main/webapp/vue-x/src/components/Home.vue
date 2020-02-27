@@ -2,13 +2,21 @@
   <div class="hello container-fluid row">
     <div class="list-group col-md-2" style="height: 1000px">
       <ul class="list-group">
-        <li class="list-group-item list-group-item-secondary" @click="enable = PARAM.Layout.default">MANAGEMENT</li>
-        <li><a class="list-group-item list-group-item-action" @click="enable = PARAM.Layout.members">Member</a></li>
+        <li><a class="list-group-item list-group-item-secondary" @click="enable = PARAM.Layout.default">Project</a></li>
+        <li><a class="list-group-item list-group-item-action" @click="enable = PARAM.Layout.members">Members</a></li>
         <li><a class="list-group-item list-group-item-action" @click="enable = PARAM.Layout.profile">My Profile</a></li>
       </ul>
     </div>
     <div class="col-md-10">
-      <spa :enable="enable"/>
+      <br />
+      <div v-if="enable == 0">
+        <!-- Vue Test -->
+        <!-- <img src="/static/loading_cat.gif" width="80%"> -->
+        <img src="/onAccountX/vue/img/tables.JPG" width="80%">
+      </div>
+      <div v-else>
+        <spa :enable="enable"/>
+      </div>
     </div>
   </div>
 </template>

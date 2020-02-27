@@ -19,17 +19,19 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home
-    },
-    {
-      path: '/ui/member',
-      name: 'Member',
-      component: Member
-    },
-    {
-      path: '/profile',
-      name: 'Profile',
-      component: Profile
+      component: Home,
+      children: [
+        {
+          path: 'ui/member',
+          name: 'Member',
+          component: Member
+        },
+        {
+          path: 'profile',
+          name: 'Profile',
+          component: Profile
+        }
+      ]
     }
     //   ]
     // }
