@@ -1,5 +1,5 @@
 <template>
-  <div class="hello bs-glyphicons bs-glyphicons-list">
+  <div>
     <div style="padding-top: 1%">
       <div>
         <h1>Members</h1>
@@ -41,6 +41,7 @@
                     <!-- <button type="button" class="btn btn-primary" onclick="location.href='member?action=uiAdd'">Add</button>
                     <button type="button" class="btn btn-outline-info" onclick="location.href='member?action=search'">Search</button> -->
                     <button type="button" class="btn btn-primary" @click="mainFunction('add', null)">Add</button>
+                    &nbsp;
                     <button type="button" class="btn btn-outline-info">Search</button>
                   </th>
                 </tr>
@@ -203,7 +204,6 @@ export default {
         email: (self.member.email !== '') ? self.member.email : '',
         phone: (self.member.phone !== '') ? self.member.phone : ''
       }
-      console.log(apiMember)
       axios({
         method: 'post',
         url: '/onAccountX/srv/member',
@@ -318,8 +318,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
+h1, h2, h6 {
   font-weight: normal;
+  text-align: center;
 }
 ul {
   list-style-type: none;

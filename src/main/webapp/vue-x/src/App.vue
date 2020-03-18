@@ -12,6 +12,7 @@
 
     <article style="height: 1000px">
       <div class="row">
+
         <!-- Menu -->
         <div class="col-2">
           <div class="list-group" id="list-tab" role="tablist">
@@ -33,8 +34,10 @@
 
           </div>
         </div>
+
         <!-- Main -->
         <div class="col">
+
           <div v-if="$route.path === '/home'">
             <img src="@/assets/tables.png" width="80%">
           </div>
@@ -44,6 +47,10 @@
           </div>
 
         </div>
+
+        <!-- space -->
+        <div class="col-1"></div>
+
       </div>
     </article>
 
@@ -70,9 +77,6 @@ export default {
       }
     }
   },
-  mounted () {
-    console.log(this.$route.path)
-  },
   updated () {
     this.nowRoute = this.$route.path
   }
@@ -84,7 +88,6 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 h1, h2 {
