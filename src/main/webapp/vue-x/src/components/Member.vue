@@ -13,7 +13,9 @@
       <div>
         <!-- Manage UI -->
         <div v-if="thisLayout === PARAMS.Layout.Manage.value">
-          <loading :display="display" :code="code" />
+          <span>
+            <loading :display="display" :code="code" />
+          </span>
           <div v-if="display === false">
             <table class="table">
               <thead>
@@ -27,15 +29,9 @@
                 </tr>
                 <tr>
                   <th></th>
-                  <th>
-                    <input v-model="member.name" @change="queryMember()" type="text" class="form-control">
-                  </th>
-                  <th>
-                    <input v-model="member.email" @change="queryMember()" type="text" class="form-control">
-                  </th>
-                  <th>
-                    <input v-model="member.phone" @change="queryMember()" type="text" class="form-control">
-                  </th>
+                  <th><input v-model="member.name" @change="queryMember()" type="text" class="form-control"></th>
+                  <th><input v-model="member.email" @change="queryMember()" type="text" class="form-control"></th>
+                  <th><input v-model="member.phone" @change="queryMember()" type="text" class="form-control"></th>
                   <th></th>
                   <th>
                     <!-- <button type="button" class="btn btn-primary" onclick="location.href='member?action=uiAdd'">Add</button>
@@ -62,22 +58,33 @@
             </table>
           </div>
         </div>
+
         <!-- Add/Edit UI -->
         <div v-if="thisLayout !== PARAMS.Layout.Manage.value">
-          <br>
-          <div class="form-group">
-            <label>Name</label>
-            <input v-model="member.name" type="text" class="form-control" placeholder="Member Name">
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input v-model="member.email" type="email" class="form-control" placeholder="Email">
-          </div>
-          <div class="form-group">
-            <label>Phone</label>
-            <input v-model="member.phone" type="text" class="form-control" placeholder="Phone">
-          </div>
-          <br>
+          <form class="was-validated">
+
+            <div>
+              <label for="memberName">Member Name</label>
+              <input v-model="member.name" type="text" class="form-control is-invalid" id="memberName" placeholder="Name" required>
+              <div v-if="validate.name" class="invalid-feedback">不可空白</div>
+            </div>
+            <br />
+
+            <div>
+              <label for="memberEmail">Email</label>
+              <input v-model="member.email" type="email" class="form-control is-invalid" id="memberEmail" placeholder="example@gmail.com" required>
+              <div v-if="validate.email" class="invalid-feedback">不可空白 / 格式錯誤</div>
+            </div>
+            <br />
+
+            <div>
+              <label for="memberPhone">Phone</label>
+              <input v-model="member.phone" type="text" class="form-control is-invalid" id="memberPhone" placeholder="Phone" required>
+              <div v-if="validate.phone" class="invalid-feedback">不可空白 / 格式錯誤</div>
+            </div>
+            <br />
+
+          </form>
           <button type="button" class="btn btn-outline-dark" @click="mainFunction('cancel', null)">Cancel</button>
           <button v-if="thisLayout === PARAMS.Layout.Add.value"
                   type="button" class="btn btn-outline-primary" @click="mainFunction('finish', null)">Finish</button>
@@ -121,11 +128,23 @@ export default {
 
       // loading
       display: true,
-      code: 0
+      code: 0,
+
+      // CSS
+      validate: {
+        name: false,
+        email: false,
+        phone: false
+      }
     }
   },
   mounted () {
     this.queryMember()
+  },
+  updated () {
+    this.validate.name = !(this.member.name !== '')
+    this.validate.email = !(this.member.email !== '' && /\S+@\S+\.\S+/.test(this.member.email))
+    this.validate.phone = !(this.member.phone !== '' && /[0]{1}\d{9}/.test(this.member.phone))
   },
   methods: {
     mainFunction (slosilo, bean) {
@@ -217,8 +236,6 @@ export default {
       }).then(function (response) {
         if (response) {
           self.memberList = response.data.data
-          // console.log(response)
-          console.log('>>> Query Success <<<')
         }
         self.display = false
       }).catch(function (error) {
@@ -241,7 +258,6 @@ export default {
       }).then(function (response) {
         if (response) {
           self.queryMember()
-          console.log('>>> Add Success <<<')
         }
       }).catch(function (error) {
         console.log('>>> Error: Add member failed: ', error)
@@ -263,7 +279,6 @@ export default {
       }).then(function (response) {
         if (response) {
           self.queryMember()
-          console.log('>>> Edit Success <<<')
         }
       }).catch(function (error) {
         console.log('>>> Error: Edit member failed: ', error)
@@ -282,7 +297,6 @@ export default {
       }).then(function (response) {
         if (response) {
           self.queryMember()
-          console.log('>>> Delete Success <<<')
         }
       }).catch(function (error) {
         console.log('>>> Error: Delete member failed: ', error)
@@ -318,7 +332,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2, h6 {
+h1, h2, h6, span {
   font-weight: normal;
   text-align: center;
 }

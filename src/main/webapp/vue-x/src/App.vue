@@ -10,7 +10,7 @@
       </div>
     </header>
 
-    <article style="height: 1000px">
+    <article>
       <div class="row">
 
         <!-- Menu -->
@@ -54,21 +54,16 @@
       </div>
     </article>
 
-    <footer>
-      <div class="card card-header">2020 &copy; TiramiAsu</div>
+    <footer style="margin-top: 20%">
+      <div class="card card-header" id="copyright">2020 &copy; TiramiAsu</div>
     </footer>
 
   </div>
 </template>
 
 <script>
-// import menux from './components/layout/menux.vue'
-
 export default {
   name: 'App',
-  // components: {
-  //   'menux': menux
-  // },
   data () {
     return {
       nowRoute: '/home',
@@ -89,6 +84,9 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+#copyright {
+  text-align: center;
 }
 h1, h2 {
   font-weight: normal;
