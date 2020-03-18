@@ -31,12 +31,12 @@ export default new Router({
     },
     {
       path: '/member',
-      name: 'member',
+      name: 'Member',
       component: Member
     },
     {
       path: '/profile',
-      name: 'profile',
+      name: 'Profile',
       component: Profile
     }
   ]
