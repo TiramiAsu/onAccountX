@@ -28,7 +28,6 @@ public class MemberRESTBean implements Serializable {
 	private String email;
 	private String phone;
 	private Date timeModify;
-	private Date timeBuild;
 
 	public MemberRESTBean() {}
 
@@ -77,15 +76,6 @@ public class MemberRESTBean implements Serializable {
 		return this;
 	}
 
-	public Date getTimeBuild() {
-		return timeBuild;
-	}
-
-	public MemberRESTBean setTimeBuild(Date timeBuild) {
-		this.timeBuild = timeBuild;
-		return this;
-	}
-
 	@Override
 	public String toString() {
 		return "MemberRESTBean [id=" + id +
@@ -93,7 +83,6 @@ public class MemberRESTBean implements Serializable {
 				", email=" + email +
 				", phone=" + phone +
 				", timeModify=" + timeModify +
-				", timeBuild=" + timeBuild +
 				"]";
 	}
 	

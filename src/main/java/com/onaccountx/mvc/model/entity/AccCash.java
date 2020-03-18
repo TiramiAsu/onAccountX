@@ -1,0 +1,133 @@
+/*
+ * 
+ * 
+ * 
+ * 
+ * 
+ * &copy;TiramiAsu
+ * 
+ */
+package com.onaccountx.mvc.model.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+/**
+ * <pre>
+ * [現金帳] 2020-03-18 14:54
+ * </pre>
+ * 
+ * @author TiramiAsu (Email)
+ */
+@Entity
+@Table(name = "acc_cash")
+public class AccCash implements Serializable {
+
+	private static final long serialVersionUID = 7810870757096959062L;
+
+	public final static String _ENTITY_NAME = "AccCash";
+	public final static String _ID = "id";
+	public final static String _INCRASE = "increase";
+	public final static String _REDUCE = "reduce";
+	public final static String _TIME_MODIFY = "timeModify";
+	public final static String _TIME_BUILD = "timeBuild";
+	public final static String _JOURNAL_ID = "jId";
+
+	@Id
+	@Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Column(name = "increase")
+	private Integer increase;
+
+	@Column(name = "reduce")
+	private Integer reduce;
+
+	@Column(name = "time_modify")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date timeModify;
+
+	@Column(name = "time_build")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date timeBuild;
+
+	@Column(name = "j_id", nullable = false)
+	private Long jId;
+
+	public AccCash() {}
+
+	public AccCash(Integer increase, Integer reduce, Long jId) {
+		this.increase = increase;
+		this.reduce = reduce;
+		this.jId = jId;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Integer getIncrease() {
+		return increase;
+	}
+
+	public void setIncrease(Integer increase) {
+		this.increase = increase;
+	}
+
+	public Integer getReduce() {
+		return reduce;
+	}
+
+	public void setReduce(Integer reduce) {
+		this.reduce = reduce;
+	}
+
+	public Date getTimeModify() {
+		return timeModify;
+	}
+
+	public void setTimeModify(Date timeModify) {
+		this.timeModify = timeModify;
+	}
+
+	public Date getTimeBuild() {
+		return timeBuild;
+	}
+
+	public void setTimeBuild(Date timeBuild) {
+		this.timeBuild = timeBuild;
+	}
+
+	public Long getJId() {
+		return jId;
+	}
+
+	public void setJId(Long jId) {
+		this.jId = jId;
+	}
+
+	@Override
+	public String toString() {
+		return "AccCash [id=" + id +
+				", increase=" + increase +
+				", reduce=" + reduce +
+				", timeModify=" + timeModify +
+				", timeBuild=" + timeBuild +
+				", jId=" + jId +
+				"]";
+	}
+}

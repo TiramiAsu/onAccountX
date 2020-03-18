@@ -43,7 +43,7 @@ public class SearchUtils {
 
 		if (conditions.size() > 0) {
 			for (String key : conditions.keySet()) {
-				System.out.println(">>>" + key);
+				// System.out.println(">>>" + key);
 				Object obj = conditions.get(key);
 
 				if (obj instanceof Operate) {

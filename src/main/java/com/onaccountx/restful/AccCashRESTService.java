@@ -40,14 +40,14 @@ import org.springframework.stereotype.Service;
 import com.google.json.JsonSanitizer;
 import com.onaccountx.generic.GenericRESTBean;
 import com.onaccountx.generic.GenericRESTService;
-import com.onaccountx.mvc.model.entity.Member;
-import com.onaccountx.mvc.service.MemberService;
-import com.onaccountx.restful.bean.MemberRESTBean;
+import com.onaccountx.mvc.model.entity.AccCash;
+import com.onaccountx.mvc.service.AccCashService;
+import com.onaccountx.restful.bean.AccCashRESTBean;
 import com.onaccountx.utils.SpringUtils;
 
 /**
  * <pre>
- * [Member REST Service] 2019-12-24 21:33
+ * [AccCash REST Service] 2020-03-18 15:40
  * 
  * [Process]
  * // Data
@@ -60,18 +60,18 @@ import com.onaccountx.utils.SpringUtils;
  * @author TiramiAsu (Email)
  */
 @Service
-@Path("/member")
-public class MemberRESTService implements GenericRESTService {
+@Path("/acccash")
+public class AccCashRESTService implements GenericRESTService {
 
 	@Autowired
-	MemberService memberService;
+	AccCashService accCashService;
 	
-	public void setMemberService(MemberService memberService) {
-		this.memberService = memberService;
+	public void setMemberService(AccCashService accCashService) {
+		this.accCashService = accCashService;
 	}
 	
 	private void enableService() {
-		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.class) : memberService;
+		accCashService = (accCashService == null) ? SpringUtils.getBean(AccCashService.class) : accCashService;
 	}
 
 	@GET
@@ -81,8 +81,7 @@ public class MemberRESTService implements GenericRESTService {
 	public Response queryREST() {
 		
 		// Data
-		List<Member> memberList = null;
-//		List<MemberRESTBean> beanList = new ArrayList<>();
+		List<AccCash> accCashList = null;
 		List<Map<String, Object>> beanList = new ArrayList<>();
 		
 		// Service Enable
@@ -92,26 +91,19 @@ public class MemberRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 		
 		// Handle
-		memberList = memberService.query();
+		accCashList = accCashService.query();
 		
 		// Response
-		if (memberList == null) {
+		if (accCashList == null) {
 			return new ResponseREST(ERROR_DATABASE).build();
 		} else {
-			for (Member m : memberList) {
-//				MemberRESTBean bean = new MemberRESTBean();
-//				bean.setId(m.getId())
-//					.setName(m.getName())
-//					.setEmail(m.getEmail())
-//					.setPhone(m.getPhone())
-//					.setTimeModify(m.getTimeModify());
-//				beanList.add(bean);
+			for (AccCash ac : accCashList) {
 				Map<String, Object> restBean = new GenericRESTBean()
-						.put("id", m.getId())
-						.put("name", m.getName())
-						.put("email", m.getEmail())
-						.put("phone", m.getPhone())
-						.put("timeModify", m.getTimeModify().getTime())
+						.put("id", ac.getId())
+						.put("increase", ac.getIncrease())
+						.put("reduce", ac.getReduce())
+						.put("jId", ac.getJId())
+						.put("timeModify", ac.getTimeModify().getTime())
 						.build();
 				beanList.add(restBean);
 			}
@@ -143,7 +135,7 @@ public class MemberRESTService implements GenericRESTService {
 		}
 
 		return Response.status(200)
-				.entity(memberService.queryREST(jsonObject))
+				.entity(accCashService.queryREST(jsonObject))
 				.build();
 	}
 
@@ -155,8 +147,8 @@ public class MemberRESTService implements GenericRESTService {
 	public Response findREST(@PathParam("id") String id) {
 		
 		// Data
-		Member member = null;
-		MemberRESTBean bean = null;
+		AccCash accCash = null;
+		AccCashRESTBean bean = null;
 		
 		// Service Enable
 		enableService();
@@ -165,18 +157,18 @@ public class MemberRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 		
 		// Handle
-		member = memberService.find(Long.parseLong(id));
+		accCash = accCashService.find(Long.parseLong(id));
 		
 		// Response
-		if (member == null) {
+		if (accCash == null) {
 			return new ResponseREST(ERROR_DATABASE).build();
 		} else {
-				bean = new MemberRESTBean();
-				bean.setId(member.getId())
-					.setName(member.getName())
-					.setEmail(member.getEmail())
-					.setPhone(member.getPhone())
-					.setTimeModify(member.getTimeModify());
+				bean = new AccCashRESTBean();
+				bean.setId(accCash.getId())
+					.setIncrease(accCash.getIncrease())
+					.setReduce(accCash.getReduce())
+					.setJId(accCash.getJId())
+					.setTimeModify(accCash.getTimeModify());
 			return new ResponseREST(SUCCESS)
 					.setData(bean)
 					.build();
@@ -190,8 +182,8 @@ public class MemberRESTService implements GenericRESTService {
 	public Response createREST(InputStream in) {
 
 		JSONObject jsonObj = toJsonObj(in);
-		MemberRESTBean bean = null;
-		Member member;
+		AccCashRESTBean bean = null;
+		AccCash accCash;
 
 		// Data
 
@@ -206,16 +198,16 @@ public class MemberRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 
 		// Handle
-		bean = mapMemberBean(jsonObj);
+		bean = mapAccCashBean(jsonObj);
 
 		if (bean == null) {
 			return new ResponseREST(ERROR_PARSE).build();
 		}
 
-		member = new Member(bean.getName(), bean.getEmail(), bean.getPhone());
+		accCash = new AccCash(bean.getIncrease(), bean.getReduce(), bean.getJId());
 
 		try {
-			memberService.create(member);
+			accCashService.create(accCash);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
@@ -232,8 +224,8 @@ public class MemberRESTService implements GenericRESTService {
 	public Response updateREST(InputStream in, @PathParam("id") String id) {
 
 		JSONObject jsonObj = toJsonObj(in);
-		MemberRESTBean bean = null;
-		Member member;
+		AccCashRESTBean bean = null;
+		AccCash accCash;
 
 		// Data
 
@@ -248,19 +240,19 @@ public class MemberRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 
 		// Handle
-		bean = mapMemberBean(jsonObj);
+		bean = mapAccCashBean(jsonObj);
 
 		if (bean == null) {
 			return new ResponseREST(ERROR_PARSE).build();
 		}
 
 		try {
-			member = memberService.find(Long.parseLong(id));
-			member.setName(bean.getName() == null ? member.getName() : bean.getName());
-			member.setEmail(bean.getEmail() == null ? member.getEmail() : bean.getEmail());
-			member.setPhone(bean.getPhone() == null ? member.getPhone() : bean.getPhone());
-			member.setTimeModify(new Date());
-			memberService.update(member);
+			accCash = accCashService.find(Long.parseLong(id));
+			accCash.setIncrease(bean.getIncrease() == null ? accCash.getIncrease() : bean.getIncrease());
+			accCash.setReduce(bean.getReduce() == null ? accCash.getReduce() : bean.getReduce());
+			accCash.setJId(bean.getJId() == null ? accCash.getJId() : bean.getJId());
+			accCash.setTimeModify(new Date());
+			accCashService.update(accCash);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
@@ -287,7 +279,7 @@ public class MemberRESTService implements GenericRESTService {
 		// Handle
 
 		try {
-			memberService.delete(Long.parseLong(id));
+			accCashService.delete(Long.parseLong(id));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
@@ -299,8 +291,8 @@ public class MemberRESTService implements GenericRESTService {
 	/** private method */
 	
 	// JSONObject 映射 RESTBean
-	private MemberRESTBean mapMemberBean(JSONObject jsonObj) {
-		MemberRESTBean retBean = null;
+	private AccCashRESTBean mapAccCashBean(JSONObject jsonObj) {
+		AccCashRESTBean retBean = null;
 		ObjectMapper mapper = new ObjectMapper();
 		String data = null;
 
@@ -309,13 +301,13 @@ public class MemberRESTService implements GenericRESTService {
 		}
 
 		try {
-			data = jsonObj.get(Member._ENTITY_NAME).toString();
+			data = jsonObj.get(AccCash._ENTITY_NAME).toString();
 			// System.out.println(data);
 			if (data == null || data.length() == 0) {
 				return null;
 			}
 
-			retBean = mapper.readValue(JsonSanitizer.sanitize(data), MemberRESTBean.class);
+			retBean = mapper.readValue(JsonSanitizer.sanitize(data), AccCashRESTBean.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
