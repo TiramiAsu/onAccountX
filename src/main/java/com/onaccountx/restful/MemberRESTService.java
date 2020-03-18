@@ -310,7 +310,6 @@ public class MemberRESTService implements GenericRESTService {
 
 		try {
 			data = jsonObj.get(Member._ENTITY_NAME).toString();
-			System.out.println(data);
 			if (data == null || data.length() == 0) {
 				return null;
 			}
