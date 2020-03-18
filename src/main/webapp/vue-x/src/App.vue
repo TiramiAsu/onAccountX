@@ -1,37 +1,81 @@
 <template>
   <div id="app">
+
     <header>
       <div class="card" align="left">
         <div class="card-header">
-          <a class="navbar-brand">
-            <img src="./assets/logo.png" width="30" height="30" class="d-inline-block align-top" alt="Vue.js">
-            onAccountX
-          </a>
+          <a class="navbar-brand"><img src="@/assets/logo.png"
+            width="30" height="30" class="d-inline-block align-top" alt="Vue.js">onAccountX</a>
         </div>
       </div>
     </header>
-    <div style="margin-top: 10px" align="left">
-      <router-view/>
-    </div>
-    <footer>
-      <div class="card">
-        <div class="card-header">
-          2020 &copy; TiramiAsu
+
+    <article style="height: 1000px">
+      <div class="row">
+        <!-- Menu -->
+        <div class="col-2">
+          <div class="list-group" id="list-tab" role="tablist">
+
+            <router-link to="home">
+              <span class="list-group-item list-group-item-action"
+                :class="(nowRoute === '/home') ? btn.select : ''" data-toggle="collapse" role="tab">Project</span>
+            </router-link>
+
+            <router-link to="member">
+              <span class="list-group-item list-group-item-action"
+                :class="(nowRoute === '/member') ? btn.select : ''" data-toggle="collapse" role="tab">Members</span>
+            </router-link>
+
+            <router-link to="profile">
+              <span class="list-group-item list-group-item-action"
+                :class="(nowRoute === '/profile') ? btn.select : ''" data-toggle="collapse" role="tab">My Profile</span>
+            </router-link>
+
+          </div>
         </div>
-        <!-- <div class="card-body">
-          <blockquote class="blockquote mb-0">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-            <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
-          </blockquote>
-        </div> -->
+        <!-- Main -->
+        <div class="col">
+          <div v-if="$route.path === '/home'">
+            <img src="@/assets/tables.png" width="80%">
+          </div>
+
+          <div v-else>
+            <router-view/>
+          </div>
+
+        </div>
       </div>
+    </article>
+
+    <footer>
+      <div class="card card-header">2020 &copy; TiramiAsu</div>
     </footer>
+
   </div>
 </template>
 
 <script>
+// import menux from './components/layout/menux.vue'
+
 export default {
-  name: 'App'
+  name: 'App',
+  // components: {
+  //   'menux': menux
+  // },
+  data () {
+    return {
+      nowRoute: '/home',
+      btn: {
+        select: 'active'
+      }
+    }
+  },
+  mounted () {
+    console.log(this.$route.path)
+  },
+  updated () {
+    this.nowRoute = this.$route.path
+  }
 }
 </script>
 
@@ -42,5 +86,19 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+h1, h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 2px 2px;
+}
+a {
+  color: #42b983;
 }
 </style>

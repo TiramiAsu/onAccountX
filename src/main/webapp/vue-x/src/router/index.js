@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/Home'
-import Member from '@/components/Member'
-import Profile from '@/components/Profile'
+const App = () => import(/* webpackChunkName: "chunk-base" */ '../App.vue')
+const Member = () => import(/* webpackChunkName: "chunk-base" */ '../components/Member.vue')
+const Profile = () => import(/* webpackChunkName: "chunk-base" */ '../components/Profile.vue')
 
 Vue.use(Router)
 
@@ -10,30 +10,34 @@ export default new Router({
   mode: 'history',
   base: 'onAccountX',
   routes: [
-    // {
-    //   path: '/',
-    //   redirect: '/home',
-    //   name: 'Home',
-    //   component: Home,
-    //   children: [
+    /*
     {
       path: '/',
-      name: 'Home',
-      component: Home,
+      name: 'Root',
+      component: Auth
+    },
+    */
+    {
+      path: '/',
+      redirect: '/home',
+      name: 'App',
       children: [
         {
-          path: 'ui/member',
-          name: 'Member',
-          component: Member
-        },
-        {
-          path: 'profile',
-          name: 'Profile',
-          component: Profile
+          path: '/home',
+          name: 'Home',
+          component: App
         }
       ]
+    },
+    {
+      path: '/member',
+      name: 'member',
+      component: Member
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile
     }
-    //   ]
-    // }
   ]
 })
