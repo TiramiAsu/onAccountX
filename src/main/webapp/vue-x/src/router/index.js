@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 const App = () => import(/* webpackChunkName: "chunk-base" */ '../App.vue')
 const Member = () => import(/* webpackChunkName: "chunk-base" */ '../components/Member.vue')
+const Subject = () => import(/* webpackChunkName: "chunk-base" */ '../components/Subject.vue')
 const Profile = () => import(/* webpackChunkName: "chunk-base" */ '../components/Profile.vue')
 
 Vue.use(Router)
@@ -33,6 +34,11 @@ export default new Router({
       path: '/member',
       name: 'Member',
       component: Member
+    },
+    {
+      path: '/subject',
+      name: 'Subject',
+      component: Subject
     },
     {
       path: '/profile',

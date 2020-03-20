@@ -89,8 +89,7 @@ public class SubjectServiceImpl implements SubjectService {
 
 		try {
 			subjectList = subjectDAO.findAll().stream()
-					.sorted((o1, o2) -> o2.getId()
-					.compareTo(o1.getId()))
+					.sorted((o1, o2) -> o1.getId().compareTo(o2.getId()))
 //					.peek(System.out::println)
 					.collect(Collectors.toList());
 			if (subjectList == null) {
@@ -143,7 +142,7 @@ public class SubjectServiceImpl implements SubjectService {
 		ResponseREST responseMeg = null;
 
 		try {
-			sr = subjectDAO.query(Subject._ID, true, conds);
+			sr = subjectDAO.query(Subject._CODE, false, conds);
 
 			/* choose output data */
 
