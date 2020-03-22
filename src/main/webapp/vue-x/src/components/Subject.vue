@@ -60,7 +60,7 @@
 
             <div>
               <label for="subjectCode">Code</label>
-              <input v-model="subject.code" type="code" class="form-control is-invalid" id="subjectCode" placeholder="x-x-x-x..." required>
+              <input v-model="subject.code" type="text" class="form-control is-invalid" id="subjectCode" placeholder="x-x-x-x..." required>
               <div v-if="validate.code" class="invalid-feedback">不可空白</div>
             </div>
             <br />
@@ -163,7 +163,7 @@ export default {
             break
           case 'remove':
             if (confirm('確定要刪除 id: ' + bean.id + ' ?')) {
-              self.deleteMember(bean.id)
+              self.deleteSubject(bean.id)
               self.initBean()
             } else {
               alert('已取消刪除 id: ' + bean.id)
@@ -264,7 +264,7 @@ export default {
         console.log('>>> Error: Edit subject failed: ', error)
       })
     },
-    deleteMember (id) {
+    deleteSubject (id) {
       var self = this
       axios({
         method: 'delete',
