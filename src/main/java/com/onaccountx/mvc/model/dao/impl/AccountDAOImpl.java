@@ -9,7 +9,7 @@
  */
 package com.onaccountx.mvc.model.dao.impl;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.onaccountx.mvc.model.dao.AccountDAO;
 import com.onaccountx.mvc.model.entity.Account;
@@ -21,5 +21,5 @@ import com.onaccountx.mvc.model.entity.Account;
  * 
  * @author TiramiAsu (Email)
  */
-@Component
+@Repository
 public class AccountDAOImpl extends _DAOImpl<Account> implements AccountDAO {}

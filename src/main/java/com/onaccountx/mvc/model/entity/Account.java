@@ -14,9 +14,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -50,22 +53,22 @@ public class Account implements Serializable {
 	public final static String _TIME_BUILD = "timeBuild";
 	public final static String _TIME_LAST = "timeLast";
 	public final static String _TIME_MODIFY = "timeModify";
-	public final static String _MEMBER_ID = "memberId";
+	public final static String _MEMBER_ID = "mId";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "account")
+	@Column(name = "account", nullable = false, length = 255)
 	private String account;
 
-	@Column(name = "password")
+	@Column(name = "password", nullable = false, length = 255)
 	private String password;
 
-	@Column(name = "status")
+	@Column(name = "status", nullable = false)
 	private int status;
 
-	@Column(name = "error_times")
+	@Column(name = "error_times", nullable = false)
 	private int errorTimes;
 
 	@Column(name = "time_build")
@@ -80,17 +83,18 @@ public class Account implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeModify;
 
-	@Column(name = "m_id")
-	private Long memberId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "m_id", referencedColumnName = "id")
+	private Member member;
 
 	public Account() {}
 
-	public Account(String account, String password, int status, int errorTimes, Long memberId) {
+	public Account(String account, String password, int status, int errorTimes, Member member) {
 		this.account = account;
 		this.password = password;
 		this.status = status;
 		this.errorTimes = errorTimes;
-		this.memberId = memberId;
+		this.member = member;
 	}
 
 	public Long getId() {
@@ -157,12 +161,12 @@ public class Account implements Serializable {
 		this.timeModify = timeModify;
 	}
 
-	public Long getMemberId() {
-		return memberId;
+	public Member getMember() {
+		return member;
 	}
 
-	public void setMemberId(Long memberId) {
-		this.memberId = memberId;
+	public void setMember(Member member) {
+		this.member = member;
 	}
 
 	@Override
@@ -175,7 +179,6 @@ public class Account implements Serializable {
 				", timeBuild=" + timeBuild +
 				", timeLast=" + timeLast +
 				", timeModify=" + timeModify +
-				", memberId=" + memberId +
 				"]";
 	}
 

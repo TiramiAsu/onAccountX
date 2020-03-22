@@ -11,12 +11,16 @@ package com.onaccountx.mvc.model.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -63,6 +67,9 @@ public class Member implements Serializable {
 	@Column(name = "time_build")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<Account> accounts;
 
 	public Member() {}
 
@@ -118,6 +125,14 @@ public class Member implements Serializable {
 
 	public void setTimeBuild(Date timeBuild) {
 		this.timeBuild = timeBuild;
+	}
+
+	public Set<Account> getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(Set<Account> accounts) {
+		this.accounts = accounts;
 	}
 
 	@Override
