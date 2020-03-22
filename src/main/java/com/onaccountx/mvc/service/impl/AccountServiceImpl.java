@@ -149,6 +149,7 @@ public class AccountServiceImpl implements AccountService {
 				bean.setId(account.getId())
 					.setAccount(account.getAccount())
 					.setStatus(account.getStatus())
+					.setErrorTimes(account.getErrorTime())
 					.setTimeLast(account.getTimeLast())
 					.setTimeModify(account.getTimeModify());
 

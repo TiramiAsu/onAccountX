@@ -32,6 +32,11 @@
                 :class="(nowRoute === '/member') ? btn.select : ''" data-toggle="collapse" role="tab">Members</span>
             </router-link>
 
+            <router-link to="account">
+              <span class="list-group-item list-group-item-action"
+                :class="(nowRoute === '/account') ? btn.select : ''" data-toggle="collapse" role="tab">Accounts</span>
+            </router-link>
+
             <router-link to="profile">
               <span class="list-group-item list-group-item-action"
                 :class="(nowRoute === '/profile') ? btn.select : ''" data-toggle="collapse" role="tab">My Profile</span>
