@@ -74,6 +74,16 @@
               <label for="account">Account</label>
               <input v-model="entity.account" type="text" class="form-control is-invalid" id="account" placeholder="Account" required>
               <div v-if="validate.account" class="invalid-feedback">不可空白</div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <button class="btn btn-outline-secondary btn btn-info"
+                    style="color: white" type="button" @click="validateAccount()">帳號同名驗證</button>
+                </div>
+                <input v-if="validate.sameName" style="color: green"
+                  type="text" class="form-control" value="驗證成功" aria-label="Example text with button addon" readonly>
+                <input v-if="!validate.sameName" style="color: red"
+                  type="text" class="form-control" value="驗證失敗, 請換一個帳號" aria-label="Example text with button addon" readonly>
+              </div>
             </div>
             <br />
 
@@ -158,9 +168,11 @@ export default {
 
       // validate option
       validate: {
+        sameName: false,
         account: false,
         status: false
       },
+      validateFinal: false,
 
       entityList: [],
 
@@ -178,6 +190,13 @@ export default {
   updated () {
     this.validate.account = !(this.entity.account !== '')
     this.validate.status = !(this.entity.status !== null || this.entity.status !== -1)
+    var b = true
+    this.validate.forEach(item => {
+      if (!item) {
+        b = false
+      }
+    })
+    this.validateFinal = b
   },
   methods: {
     initBean () {
@@ -187,6 +206,12 @@ export default {
         status: null,
         errorTimes: 0
       }
+      this.validate = {
+        sameName: false,
+        account: false,
+        status: false
+      }
+      this.validateFinal = false
     },
     editBean (bean) {
       this.entity = {
@@ -230,6 +255,19 @@ export default {
       return {
         account: apiBean
       }
+    },
+    validateAccount () {
+      var b = true
+      if (this.entity.account) {
+        this.entityList.forEach(acc => {
+          if (acc.account === this.entity.account) {
+            b = false
+          }
+        })
+      } else {
+        b = false
+      }
+      this.validate.sameName = b
     },
 
     /* API - 以下不必修改 */
@@ -292,46 +330,50 @@ export default {
         }
         self.display = false
       }).catch(function (error) {
-        console.log('>>> Error: query ' + this.API.entityName + 'failed: ', error)
+        console.log('>>> Error: query ' + this.API.entityName + ' failed: ', error)
       })
     },
     createEntity (bean) {
       var self = this
       var apiBean = this.toApiBean(bean)
-      axios({
-        method: this.API.create.method,
-        url: this.API.create.url,
-        headers: {
-          'Content-Type': 'application/json',
-          'mac': 'helloJWT'
-        },
-        data: this.getApiData(apiBean)
-      }).then(function (response) {
-        if (response) {
-          self.queryEntity()
-        }
-      }).catch(function (error) {
-        console.log('>>> Error: Add failed: ', error)
-      })
+      if (self.validateFinal) {
+        axios({
+          method: this.API.create.method,
+          url: this.API.create.url,
+          headers: {
+            'Content-Type': 'application/json',
+            'mac': 'helloJWT'
+          },
+          data: this.getApiData(apiBean)
+        }).then(function (response) {
+          if (response) {
+            self.queryEntity()
+          }
+        }).catch(function (error) {
+          console.log('>>> Error: Add failed: ', error)
+        })
+      }
     },
     updateEntity (bean) {
       var self = this
       var apiBean = this.toApiBean(bean)
-      axios({
-        method: this.API.update.method,
-        url: this.API.update.url + apiBean.id,
-        headers: {
-          'Content-Type': 'application/json',
-          'mac': 'helloJWT'
-        },
-        data: this.getApiData(apiBean)
-      }).then(function (response) {
-        if (response) {
-          self.queryEntity()
-        }
-      }).catch(function (error) {
-        console.log('>>> Error: Edit' + this.API.entityName + 'failed: ', error)
-      })
+      if (self.validateFinal) {
+        axios({
+          method: this.API.update.method,
+          url: this.API.update.url + apiBean.id,
+          headers: {
+            'Content-Type': 'application/json',
+            'mac': 'helloJWT'
+          },
+          data: this.getApiData(apiBean)
+        }).then(function (response) {
+          if (response) {
+            self.queryEntity()
+          }
+        }).catch(function (error) {
+          console.log('>>> Error: Edit ' + this.API.entityName + ' failed: ', error)
+        })
+      }
     },
     deleteEntity (id) {
       var self = this
@@ -347,7 +389,7 @@ export default {
           self.queryEntity()
         }
       }).catch(function (error) {
-        console.log('>>> Error: Delete' + this.API.entityName + 'failed: ', error)
+        console.log('>>> Error: Delete ' + this.API.entityName + ' failed: ', error)
       })
     },
 
