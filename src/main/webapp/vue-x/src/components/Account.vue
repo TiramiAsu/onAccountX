@@ -75,7 +75,8 @@
 
             <div>
               <label for="account">Account</label>
-              <input v-model="entity.account" type="text" class="form-control is-invalid" id="account" placeholder="Account" required>
+              <input v-model="entity.account" type="text" class="form-control is-invalid" id="account"
+                placeholder="Account" @change="validate.sameName = false" required>
               <div v-if="!validate.account" class="invalid-feedback">不可空白</div>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
@@ -83,9 +84,9 @@
                     style="color: white" type="button" @click="validateAccount()">帳號同名驗證</button>
                 </div>
                 <input v-if="validate.sameName" style="color: green"
-                  type="text" class="form-control" value="驗證成功" aria-label="Example text with button addon" readonly>
+                  type="text" class="form-control" value="驗證成功, 此帳號可使用" aria-label="Example text with button addon" readonly>
                 <input v-if="!validate.sameName" style="color: red"
-                  type="text" class="form-control" value="驗證失敗, 請換一個帳號" aria-label="Example text with button addon" readonly>
+                  type="text" class="form-control" value="驗證失敗, 此帳號已存在" aria-label="Example text with button addon" readonly>
               </div>
             </div>
 
@@ -248,8 +249,10 @@ export default {
         if (!v[item]) {
           final = false
         }
+        // console.log(item + ':' + v[item])
       }
       this.validateFinal = final
+      // console.log('validate final: ', this.validateFinal)
     }
   },
   methods: {
@@ -331,9 +334,8 @@ export default {
       }
     },
     validateAccount () { // 驗證有無同名帳號
-      var b = true
       var self = this
-      axios({
+      var result = axios({
         method: this.API.validateAccount.method,
         url: this.API.validateAccount.url,
         headers: {
@@ -342,6 +344,7 @@ export default {
         },
         data: {}
       }).then(function (response) {
+        var b = true
         if (response) {
           var list = response.data.data
           // 驗證
@@ -350,15 +353,25 @@ export default {
               if (acc.account === self.entity.account) {
                 b = false
               }
+              // console.log(acc.account + ':' + self.entity.account + '=' + b)
             })
           } else {
-            b = false
+            b = false // account 欄位有問題
           }
-          self.validate.sameName = b
+        } else {
+          b = false // response 有問題
         }
+        return b
       }).catch(function (error) {
         console.log('>>> Error: validate ' + this.API.entityName + ' failed: ', error)
+        return false
       })
+      // 取得 Pormise Value
+      result.then(function (value) {
+        // console.log('Promise Value: ', value)
+        self.validate.sameName = value
+      })
+      // console.log('self.validate.sameName: ', self.validate.sameName)
     },
     queryMemberName () {
       var self = this
@@ -452,12 +465,6 @@ export default {
       var self = this
       var apiBean = this.saveBean(bean)
       var result = false
-      /*
-      for (var att in self.validate) {
-        console.log(att + ':' + self.validate[att])
-      }
-      console.log('validate: ', self.validateFinal)
-      */
       if (self.validateFinal) {
         result = axios({
           method: this.API.create.method,
@@ -480,6 +487,7 @@ export default {
         alert('>>> 請檢查是否有欄位未填寫 / 帳號名稱未驗證')
         result = false
       }
+      // console.log('result: ', result)
       return result
     },
     updateEntity (bean) {

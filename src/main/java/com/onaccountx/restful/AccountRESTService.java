@@ -101,7 +101,7 @@ public class AccountRESTService implements GenericRESTService {
 			for (Account acc : accountList) {
 				Map<String, Object> restBean = new GenericRESTBean()
 						.put("id", acc.getId())
-						.put("name", acc.getAccount())
+						.put("account", acc.getAccount())
 						.build();
 				beanList.add(restBean);
 			}
