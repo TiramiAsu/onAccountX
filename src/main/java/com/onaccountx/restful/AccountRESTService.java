@@ -42,6 +42,7 @@ import com.onaccountx.generic.GenericRESTBean;
 import com.onaccountx.generic.GenericRESTService;
 import com.onaccountx.mvc.model.entity.Account;
 import com.onaccountx.mvc.service.AccountService;
+import com.onaccountx.mvc.service.MemberService;
 import com.onaccountx.restful.bean.AccountRESTBean;
 import com.onaccountx.utils.SpringUtils;
 
@@ -65,13 +66,13 @@ public class AccountRESTService implements GenericRESTService {
 
 	@Autowired
 	AccountService accountService;
-	
-	public void setMemberService(AccountService accountService) {
-		this.accountService = accountService;
-	}
+
+	@Autowired
+	MemberService memberService;
 	
 	private void enableService() {
 		accountService = (accountService == null) ? SpringUtils.getBean(AccountService.class) : accountService;
+		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.class) : memberService;
 	}
 
 	@GET
@@ -101,6 +102,7 @@ public class AccountRESTService implements GenericRESTService {
 				Map<String, Object> restBean = new GenericRESTBean()
 						.put("id", acc.getId())
 						.put("account", acc.getAccount())
+						.put("memberId", acc.getMember().getId())
 						.put("status", acc.getStatus())
 						.put("timeLast", acc.getTimeLast())
 						.put("timeModify", acc.getTimeModify().getTime())
@@ -182,7 +184,7 @@ public class AccountRESTService implements GenericRESTService {
 	public Response createREST(InputStream in) {
 
 		JSONObject jsonObj = toJsonObj(in);
-		AccountRESTBean bean = null;
+		AccountRESTBean restBean = null;
 		Account account;
 
 		// Data
@@ -198,15 +200,17 @@ public class AccountRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 
 		// Handle
-		bean = mapAccountBean(jsonObj);
+		restBean = mapAccountEntity(jsonObj);
 
-		if (bean == null) {
+		if (restBean == null) {
 			return new ResponseREST(ERROR_PARSE).build();
 		}
 
-		account = new Account(bean.getAccount(),bean.getPassword(), bean.getStatus(),
-				bean.getErrorTimes(), bean.getMember());
-
+		account = new Account(restBean.getAccount(),
+				restBean.getPassword(),
+				restBean.getStatus(),
+				restBean.getErrorTimes(),
+				memberService.find(restBean.getMemberId()));
 		try {
 			accountService.create(account);
 		} catch (Exception e) {
@@ -225,7 +229,7 @@ public class AccountRESTService implements GenericRESTService {
 	public Response updateREST(InputStream in, @PathParam("id") String id) {
 
 		JSONObject jsonObj = toJsonObj(in);
-		AccountRESTBean bean = null;
+		AccountRESTBean restBean = null;
 		Account account;
 
 		// Data
@@ -241,19 +245,20 @@ public class AccountRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 
 		// Handle
-		bean = mapAccountBean(jsonObj);
+		restBean = mapAccountEntity(jsonObj);
 
-		if (bean == null) {
+		if (restBean == null) {
 			return new ResponseREST(ERROR_PARSE).build();
 		}
 
 		try {
 			account = accountService.find(Long.parseLong(id));
-			account.setAccount(bean.getAccount() == null ? account.getAccount() : bean.getAccount());
-			account.setPassword(bean.getPassword() == null ? account.getPassword() : bean.getPassword());
-			account.setStatus(bean.getStatus() == 0 ? account.getStatus() : bean.getStatus());
-			account.setErrorTime(bean.getErrorTimes() == 0 ? account.getErrorTime() : bean.getErrorTimes());
+			account.setAccount(restBean.getAccount() == null ? account.getAccount() : restBean.getAccount());
+			account.setPassword(restBean.getPassword() == null ? account.getPassword() : restBean.getPassword());
+			account.setStatus(restBean.getStatus() == 0 ? account.getStatus() : restBean.getStatus());
+			account.setErrorTimes(restBean.getErrorTimes() == 0 ? account.getErrorTimes() : restBean.getErrorTimes());
 			account.setTimeModify(new Date());
+			account.setMember(memberService.find(restBean.getMemberId()));
 			accountService.update(account);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -293,8 +298,8 @@ public class AccountRESTService implements GenericRESTService {
 	/** private method */
 	
 	// JSONObject 映射 RESTBean
-	private AccountRESTBean mapAccountBean(JSONObject jsonObj) {
-		AccountRESTBean retBean = null;
+	private AccountRESTBean mapAccountEntity(JSONObject jsonObj) {
+		AccountRESTBean restBean = null;
 		ObjectMapper mapper = new ObjectMapper();
 		String data = null;
 
@@ -303,16 +308,16 @@ public class AccountRESTService implements GenericRESTService {
 		}
 
 		try {
-			data = jsonObj.get(Account._ENTITY_NAME).toString();
+			data = jsonObj.get(Account._JSON_NAME).toString();
 			// System.out.println(data);
 			if (data == null || data.length() == 0) {
 				return null;
 			}
 
-			retBean = mapper.readValue(JsonSanitizer.sanitize(data), AccountRESTBean.class);
+			restBean = mapper.readValue(JsonSanitizer.sanitize(data), AccountRESTBean.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return retBean;
+		return restBean;
 	}
 }

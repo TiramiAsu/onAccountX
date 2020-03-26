@@ -58,7 +58,7 @@ public class JsonUtils<T> {
 		}
 
 		try {
-			data = jsonObj.get(Member._ENTITY_NAME).toString();
+			data = jsonObj.get(entityName).toString();
 			if (data == null || data.length() == 0) {
 				return null;
 			}

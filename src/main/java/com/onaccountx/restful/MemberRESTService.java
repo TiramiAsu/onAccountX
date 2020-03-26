@@ -75,6 +75,42 @@ public class MemberRESTService implements GenericRESTService {
 	}
 
 	@GET
+	@Path("/min")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response queryRESTmin() {
+
+		// Data
+		List<Member> memberList = null;
+		List<Map<String, Object>> beanList = new ArrayList<>();
+		
+		// Service Enable
+		enableService();
+		
+		// Authenticate User
+		// TODO Json Web Token -> Filter
+		
+		// Handle
+		memberList = memberService.query();
+		
+		// Response
+		if (memberList == null) {
+			return new ResponseREST(ERROR_DATABASE).build();
+		} else {
+			for (Member m : memberList) {
+				Map<String, Object> restBean = new GenericRESTBean()
+						.put("id", m.getId())
+						.put("name", m.getName())
+						.build();
+				beanList.add(restBean);
+			}
+			return new ResponseREST(SUCCESS)
+					.setData(beanList)
+					.build();
+		}
+	}
+
+	@GET
 	@Override
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

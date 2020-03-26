@@ -32,12 +32,12 @@ public class AccountRESTBean implements Serializable {
 	private int errorTimes;
 	private Date timeLast;
 	private Date timeModify;
-	private Member member;
+	private Long memberId;
 
 	public AccountRESTBean() {}
 
 	public AccountRESTBean(Long id, String account, String password, int status, int errorTimes,
-			Date timeLast, Date timeModify, Member member) {
+			Date timeLast, Date timeModify, Long memberId) {
 		this.id = id;
 		this.account = account;
 		this.password = password;
@@ -45,7 +45,7 @@ public class AccountRESTBean implements Serializable {
 		this.errorTimes = errorTimes;
 		this.timeLast = timeLast;
 		this.timeModify = timeModify;
-		this.member = member;
+		this.memberId = memberId;
 	}
 
 	public Long getId() {
@@ -111,12 +111,12 @@ public class AccountRESTBean implements Serializable {
 		return this;
 	}
 
-	public Member getMember() {
-		return member;
+	public Long getMemberId() {
+		return memberId;
 	}
 
-	public AccountRESTBean setMember(Member member) {
-		this.member = member;
+	public AccountRESTBean setMember(Long memberId) {
+		this.memberId = memberId;
 		return this;
 	}
 
@@ -129,7 +129,7 @@ public class AccountRESTBean implements Serializable {
 				", errorTimes=" + errorTimes +
 				", timeLast=" + timeLast +
 				", timeModify=" + timeModify +
-				", member=" + member +
+				", memberId=" + memberId +
 				"]";
 	}
 }

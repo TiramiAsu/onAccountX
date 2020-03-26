@@ -25,11 +25,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.googlecode.genericdao.search.SearchResult;
+import com.onaccountx.generic.GenericRESTBean;
 import com.onaccountx.mvc.model.dao.AccountDAO;
 import com.onaccountx.mvc.model.entity.Account;
 import com.onaccountx.mvc.service.AccountService;
 import com.onaccountx.restful.ResponseREST;
-import com.onaccountx.restful.bean.AccountRESTBean;
 import com.onaccountx.utils.JsonUtils;
 import com.onaccountx.utils.db.Operate;
 
@@ -106,7 +106,7 @@ public class AccountServiceImpl implements AccountService {
 	public ResponseREST queryREST(Object json) {
 
 		JSONObject jsonObject = JsonUtils.parseAttributes("account", json);
-		List<AccountRESTBean> outputJson = new ArrayList<>();
+		List<Map<String, Object>> outputJson = new ArrayList<>();
 		Map<String, Object> conds = new HashMap<String, Object>();
 
 		/* initial value */
@@ -144,16 +144,17 @@ public class AccountServiceImpl implements AccountService {
 			}
 
 			for (Account account : accountList) {
-				AccountRESTBean bean = new AccountRESTBean();
+				Map<String, Object> restBean = new GenericRESTBean()
+						.put("id", account.getId())
+						.put("account", account.getAccount())
+						.put("memberId", account.getMember().getId())
+						.put("status", account.getStatus())
+						.put("errorTimes", account.getErrorTimes())
+						.put("timeLast", account.getTimeLast())
+						.put("timeModify", account.getTimeModify())
+						.build();
 
-				bean.setId(account.getId())
-					.setAccount(account.getAccount())
-					.setStatus(account.getStatus())
-					.setErrorTimes(account.getErrorTime())
-					.setTimeLast(account.getTimeLast())
-					.setTimeModify(account.getTimeModify());
-
-				outputJson.add(bean);
+				outputJson.add(restBean);
 			}
 			responseMeg = new ResponseREST(OK).setData(outputJson);
 		} catch (Exception e) {

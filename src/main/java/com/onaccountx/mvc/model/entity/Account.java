@@ -44,7 +44,7 @@ public class Account implements Serializable {
 	public final static String TEXT_LOCK = Account.STATUS.LOCK.text;
 	public final static String TEXT_DISABLE = Account.STATUS.DISABLE.text;
 
-	public final static String _ENTITY_NAME = "Account";
+	public final static String _JSON_NAME = "account";
 	public final static String _ID = "id";
 	public final static String _ACCOUNT = "account";
 	public final static String _PASSWORD = "password";
@@ -59,7 +59,7 @@ public class Account implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "account", nullable = false, length = 255)
+	@Column(name = "account", nullable = false, length = 255, unique = true)
 	private String account;
 
 	@Column(name = "password", nullable = false, length = 255)
@@ -129,11 +129,11 @@ public class Account implements Serializable {
 		this.status = status;
 	}
 
-	public int getErrorTime() {
+	public int getErrorTimes() {
 		return errorTimes;
 	}
 
-	public void setErrorTime(int errorTimes) {
+	public void setErrorTimes(int errorTimes) {
 		this.errorTimes = errorTimes;
 	}
 
