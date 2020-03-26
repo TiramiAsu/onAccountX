@@ -76,6 +76,42 @@ public class AccountRESTService implements GenericRESTService {
 	}
 
 	@GET
+	@Path("/list/account")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response queryRESTmin() {
+
+		// Data
+		List<Account> accountList = null;
+		List<Map<String, Object>> beanList = new ArrayList<>();
+		
+		// Service Enable
+		enableService();
+		
+		// Authenticate User
+		// TODO Json Web Token -> Filter
+		
+		// Handle
+		accountList = accountService.query();
+		
+		// Response
+		if (accountList == null) {
+			return new ResponseREST(ERROR_DATABASE).build();
+		} else {
+			for (Account acc : accountList) {
+				Map<String, Object> restBean = new GenericRESTBean()
+						.put("id", acc.getId())
+						.put("name", acc.getAccount())
+						.build();
+				beanList.add(restBean);
+			}
+			return new ResponseREST(SUCCESS)
+					.setData(beanList)
+					.build();
+		}
+	}
+
+	@GET
 	@Override
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

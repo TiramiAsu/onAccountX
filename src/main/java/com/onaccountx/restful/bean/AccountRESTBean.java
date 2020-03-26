@@ -12,8 +12,6 @@ package com.onaccountx.restful.bean;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.onaccountx.mvc.model.entity.Member;
-
 /**
  * <pre>
  * [帳號 REST Bean] 2020-03-20 16:46

@@ -55,6 +55,7 @@ public class AccountServiceImpl implements AccountService {
 	public boolean create(Account bean) {
 		bean.setTimeBuild(new Date());
 		bean.setTimeModify(new Date());
+		bean.setTimeLast(new Date());
 		return accountDAO.save(bean);
 	}
 

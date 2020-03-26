@@ -75,7 +75,7 @@ public class MemberRESTService implements GenericRESTService {
 	}
 
 	@GET
-	@Path("/min")
+	@Path("/list/name")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response queryRESTmin() {
