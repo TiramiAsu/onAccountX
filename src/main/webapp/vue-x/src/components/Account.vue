@@ -464,9 +464,8 @@ export default {
     createEntity (bean) {
       var self = this
       var apiBean = this.saveBean(bean)
-      var result = false
       if (self.validateFinal) {
-        result = axios({
+        axios({
           method: this.API.create.method,
           url: this.API.create.url,
           headers: {
@@ -478,17 +477,13 @@ export default {
           if (response) {
             self.queryEntity()
           }
-          return true
         }).catch(function (error) {
           console.log('>>> Error: Add failed: ', error)
-          return false
         })
       } else {
         alert('>>> 請檢查是否有欄位未填寫 / 帳號名稱未驗證')
-        result = false
       }
-      // console.log('result: ', result)
-      return result
+      return this.validateFinal // 以驗證結果來決定是否跳轉頁面(API沒問題的情況下)
     },
     updateEntity (bean) {
       var self = this
