@@ -24,7 +24,7 @@
                   <th>Account</th>
                   <th>Status</th>
                   <th>Error Times</th>
-                  <th>Member ID</th>
+                  <th>Member</th>
                   <th>Last Login</th>
                   <th>Time Modify</th>
                   <th>Operate</th>
@@ -73,7 +73,8 @@
         <div v-if="thisLayout !== PARAMS.Layout.Manage.value">
           <form class="was-validated">
 
-            <div>
+            <!-- Account -->
+            <div v-if="thisLayout === PARAMS.Layout.Add.value">
               <label for="account">Account</label>
               <input v-model="entity.account" type="text" class="form-control is-invalid" id="account"
                 placeholder="Account" @change="validate.sameName = false" required>
@@ -89,21 +90,63 @@
                   type="text" class="form-control" value="驗證失敗, 此帳號已存在" aria-label="Example text with button addon" readonly>
               </div>
             </div>
+            <div v-if="thisLayout === PARAMS.Layout.Edit.value">
+              <label>Account</label>
+              <input v-model="entity.account" type="text" class="form-control" placeholder="Account" readonly>
+              <br />
+            </div>
 
+            <!-- Password -->
             <div>
               <label for="password">Password</label>
-              <input v-model="entity.password" type="text" class="form-control is-invalid" id="password" placeholder="請輸入密碼" required>
-              <div v-if="!validate.password" class="invalid-feedback">不可空白</div>
-              <div class="input-group mb-3">
-                <input v-model="entity.passwordAgain" type="text" class="form-control" placeholder="再次輸入密碼" required>
-                <div class="input-group-append">
-                  <span v-if="validate.correctPassword" class="input-group-text" style="color: green">密碼正確</span>
-                  <span v-if="!validate.correctPassword" class="input-group-text" style="color: red">請再檢查一次, 密碼錯誤</span>
+              <!-- change password -->
+              <div v-if="thisLayout === PARAMS.Layout.Edit.value">
+                <div class="input-group">
+                  <div class="input-group-prepend input-group-text">
+                    <input type="radio" name="changePassword"
+                      v-model="changePassword" :value="true" aria-label="Radio button for following text input">
+                  </div>
+                  <input type="text" class="form-control" value="變更密碼" readonly />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-prepend input-group-text">
+                    <input type="radio" name="changePassword"
+                      v-model="changePassword" :value="false" aria-label="Radio button for following text input">
+                  </div>
+                  <input type="text" class="form-control" value="不變更密碼" readonly />
+                </div>
+                <br />
+              </div>
+
+              <div v-if="thisLayout === PARAMS.Layout.Add.value">
+                <input v-model="entity.password" type="text"
+                  class="form-control is-invalid" id="password" placeholder="請輸入密碼" required>
+                <div v-if="!validate.password" class="invalid-feedback">不可空白</div>
+                <div class="input-group mb-3">
+                  <input v-model="entity.passwordAgain" type="text"
+                    class="form-control" placeholder="再次輸入密碼" required>
+                  <div class="input-group-append">
+                    <span v-if="validate.correctPassword" class="input-group-text" style="color: green">密碼正確</span>
+                    <span v-if="!validate.correctPassword" class="input-group-text" style="color: red">請再檢查一次, 密碼錯誤</span>
+                  </div>
+                </div>
+              </div>
+              <div v-if="(thisLayout === PARAMS.Layout.Edit.value) && changePassword">
+                <input v-model="entity.password" type="text"
+                  class="form-control is-invalid" id="password" placeholder="請輸入新密碼" required>
+                <div v-if="!validate.password" class="invalid-feedback">不可空白</div>
+                <div class="input-group mb-3">
+                  <input v-model="entity.passwordAgain" type="text"
+                    class="form-control" placeholder="再次輸入新密碼" required>
+                  <div class="input-group-append">
+                    <span v-if="validate.correctPassword" class="input-group-text" style="color: green">密碼正確</span>
+                    <span v-if="!validate.correctPassword" class="input-group-text" style="color: red">請再檢查一次, 密碼錯誤</span>
+                  </div>
                 </div>
               </div>
             </div>
-            <br />
 
+            <!-- Member -->
             <div>
               <label for="member">Member</label>
               <div class="form-group">
@@ -114,6 +157,7 @@
               </div>
             </div>
 
+            <!-- Status -->
             <div>
               <label for="status">Status</label>
               <div class="form-group">
@@ -215,6 +259,7 @@ export default {
         status: false
       },
       validateFinal: false,
+      changePassword: false, // 是否變更密碼
 
       entityList: [],
       memberList: [{
@@ -239,12 +284,28 @@ export default {
       var final = true
       var v = this.validate
       var e = this.entity
+
+      // add validate
       v.account = e.account !== ''
       v.memberId = (e.memberId !== null) && (e.status !== -1)
       v.password = (e.password !== null) && (e.password !== '')
       v.passwordAgain = (e.passwordAgain !== null) && (e.passwordAgain !== '')
       v.correctPassword = v.password && v.passwordAgain && (e.password === e.passwordAgain)
       v.status = (e.status !== null) && (e.status !== -1)
+
+      // edit validate
+      // console.log('this.changePassword: ', this.changePassword)
+      if (this.changePassword) {
+        this.validate.password = false
+        this.validate.passwordAgain = false
+      } else { // 選擇 "不變更密碼" 清空密碼, 不需驗證
+        this.entity.password = ''
+        this.entity.passwordAgain = ''
+        this.validate.password = true
+        this.validate.passwordAgain = true
+      }
+
+      // total validate
       for (var item in v) {
         if (!v[item]) {
           final = false
@@ -278,14 +339,30 @@ export default {
       }
       this.validateFinal = false
     },
-    editBean (bean) { // 編輯時回填資料
+    editData (bean) { // 編輯時回填資料
       this.entity = {
         id: bean.id,
         account: bean.account,
+        password: '',
+        passwordAgain: '',
         memberId: bean.memberId,
         status: bean.status,
-        errorTimes: bean.errorTimes
+        errorTimes: bean.errorTimes,
+        // 編輯驗證資料
+        oldPassword: bean.password,
+        oldPasswordAgain: ''
       }
+      this.validate = {
+        password: false,
+        passwordAgain: false,
+        correctPassword: false,
+        memberId: false,
+        status: false,
+        // 編輯驗證資料
+        oldPassword: false,
+        oldPasswordAgain: false
+      }
+      this.validateFinal = false
     },
     getMemberName (id) {
       var name = ''
@@ -412,7 +489,7 @@ export default {
             }
             break
           case 'edit':
-            self.editBean(bean)
+            self.editData(bean)
             self.thisLayout = layout.Edit.value
             break
           case 'update':
