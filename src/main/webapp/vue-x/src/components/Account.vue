@@ -280,29 +280,41 @@ export default {
     this.queryMemberName()
   },
   updated () {
-    if ((this.thisLayout === this.PARAMS.Layout.Add.value) || (this.thisLayout === this.PARAMS.Layout.Edit.value)) {
+    if (this.thisLayout !== this.PARAMS.Layout.Manage.value) {
       var final = true
       var v = this.validate
       var e = this.entity
 
-      // add validate
+      /* validate empty */
+      // entity
       v.account = e.account !== ''
-      v.memberId = (e.memberId !== null) && (e.status !== -1)
       v.password = (e.password !== null) && (e.password !== '')
       v.passwordAgain = (e.passwordAgain !== null) && (e.passwordAgain !== '')
       v.correctPassword = v.password && v.passwordAgain && (e.password === e.passwordAgain)
+      v.memberId = (e.memberId !== null) && (e.status !== -1)
       v.status = (e.status !== null) && (e.status !== -1)
+      // create
+      // sameName -> 在 validateAccount() 驗證
+      // update
+      v.oldPasswordAgain = (this.thisLayout === this.PARAMS.Layout.Add) // 新增時不需驗證
 
-      // edit validate
+      /* [edit] validate */
       // console.log('this.changePassword: ', this.changePassword)
-      if (this.changePassword) {
-        this.validate.password = false
-        this.validate.passwordAgain = false
-      } else { // 選擇 "不變更密碼" 清空密碼, 不需驗證
-        this.entity.password = ''
-        this.entity.passwordAgain = ''
-        this.validate.password = true
-        this.validate.passwordAgain = true
+      if (this.thisLayout === this.PARAMS.Layout.Edit.value) {
+        if (this.changePassword) {
+          // 選擇 "變更密碼"
+          v.password = false
+          v.passwordAgain = false
+          v.correctPassword = false
+        } else {
+          // 選擇 "不變更密碼" -> 清空密碼, 不需驗證
+          e.password = ''
+          e.passwordAgain = ''
+          v.password = true
+          v.passwordAgain = true
+          v.correctPassword = true
+          v.sameName = true
+        }
       }
 
       // total validate
@@ -310,10 +322,8 @@ export default {
         if (!v[item]) {
           final = false
         }
-        // console.log(item + ':' + v[item])
       }
       this.validateFinal = final
-      // console.log('validate final: ', this.validateFinal)
     }
   },
   methods: {
