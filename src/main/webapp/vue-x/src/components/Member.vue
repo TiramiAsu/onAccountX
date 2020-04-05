@@ -34,11 +34,7 @@
                   <th><input v-model="member.phone" @change="queryMember()" type="text" class="form-control"></th>
                   <th></th>
                   <th>
-                    <!-- <button type="button" class="btn btn-primary" onclick="location.href='member?action=uiAdd'">Add</button>
-                    <button type="button" class="btn btn-outline-info" onclick="location.href='member?action=search'">Search</button> -->
                     <button type="button" class="btn btn-primary" @click="mainFunction('add', null)">Add</button>
-                    &nbsp;
-                    <button type="button" class="btn btn-outline-info">Search</button>
                   </th>
                 </tr>
               </thead>
@@ -50,8 +46,8 @@
                   <td>{{ bean.phone }}</td>
                   <td>{{ toFormatDateTime(bean.timeModify) }}</td>
                   <td>
-                    <button type="button" class="btn btn-outline-primary" @click="mainFunction('edit', bean)">Edit</button>
-                    <button type="button" class="btn btn-outline-danger" @click="mainFunction('remove', bean)">Remove</button>
+                    <button type="button" class="btn btn-outline-primary btn-circle" @click="mainFunction('edit', bean)"><i class="material-icons">create</i></button>
+                    <button type="button" class="btn btn-outline-danger btn-circle" @click="mainFunction('remove', bean)"><i class="material-icons">delete</i></button>
                   </td>
                 </tr>
               </tbody>
@@ -349,5 +345,14 @@ li {
 }
 a {
   color: #42b983;
+}
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.42857;
 }
 </style>
