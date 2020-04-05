@@ -258,6 +258,7 @@ export default {
       }).then(function (response) {
         if (response) {
           self.queryMember()
+          alert('新增完成')
         }
       }).catch(function (error) {
         console.log('>>> Error: Add member failed: ', error)
@@ -279,6 +280,7 @@ export default {
       }).then(function (response) {
         if (response) {
           self.queryMember()
+          alert('更新完成')
         }
       }).catch(function (error) {
         console.log('>>> Error: Edit member failed: ', error)
@@ -297,6 +299,7 @@ export default {
       }).then(function (response) {
         if (response) {
           self.queryMember()
+          alert('刪除完成')
         }
       }).catch(function (error) {
         console.log('>>> Error: Delete member failed: ', error)

@@ -331,11 +331,6 @@ export default {
     }
     v.memberId = (e.memberId !== null) && (e.status !== -1)
     v.status = (e.status !== null) && (e.status !== -1)
-    for (var item in v) {
-      if (!v[item]) {
-        // console.log(item + ':' + v[item])
-      }
-    }
   },
   methods: {
     /* Initial */
@@ -462,12 +457,17 @@ export default {
     },
     createEntity (bean) {
       var self = this
+      var v = this.validate
       var apiBean = self.saveBean(bean)
-      /* validate */
-      // account -> v.sameName
-      self.validateAccount()
+
       // all check
-      self.validateData(self.validate)
+      var final = true
+      for (var item in v) {
+        if (!v[item]) {
+          final = false
+        }
+      }
+      self.validateFinal = final
 
       // execute
       if (self.validateFinal) {
@@ -482,6 +482,7 @@ export default {
         }).then(function (response) {
           if (response) {
             self.queryEntity()
+            alert('新增完成')
           }
         }).catch(function (error) {
           console.log('>>> Error: Add failed: ', error)
@@ -548,6 +549,7 @@ export default {
         }).then(function (response) {
           if (response) {
             self.queryEntity()
+            alert('刪除完成')
           }
         }).catch(function (error) {
           console.log('>>> Error: Delete ' + self.API.entityName + ' failed: ', error)
@@ -576,22 +578,6 @@ export default {
       }).catch(function (error) {
         console.log('>>> Error: query member failed: ', error)
       })
-    },
-    // 資料驗證
-    validateData (validate) {
-      var self = this
-      // 檢查 null, space 由 updated () 即時檢查
-      var final = true
-      var v = validate
-
-      // total validate
-      for (var item in v) {
-        if (!v[item]) {
-          final = false
-          console.log(item + ':' + v[item])
-        }
-      }
-      self.validateFinal = final
     },
     // 驗證有無同名帳號
     validateAccount () {
