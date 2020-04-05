@@ -31,9 +31,9 @@
                 </tr>
                 <tr>
                   <th></th>
-                  <th><input v-model="entity.account" @change="queryEntity()" type="text" class="form-control" placeholder="請輸入..."></th>
+                  <th><input v-model="entity.account" @change="queryEntity(entity)" type="text" class="form-control" placeholder="請輸入..."></th>
                   <th>
-                    <select class="custom-select" v-model="entity.status" @change="queryEntity()">
+                    <select class="custom-select" v-model="entity.status" @change="queryEntity(entity)">
                       <option v-for="(option, index) in PARAMS.Status" :key="index" :value="option.value">{{ option.text }}</option>
                     </select>
                   </th>
@@ -461,7 +461,7 @@ export default {
           self.entityList = response.data.data
         }
         self.display = false
-        self.toLayout(self.PARAMS.Layout.Manage.symbol)
+        self.toLayout(self.PARAMS.Layout.Manage.symbol, null, 'filter')
       }).catch(function (error) {
         console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
       })
@@ -691,7 +691,7 @@ export default {
       return str
     },
     // Layout 切換
-    toLayout (symbol, bean) {
+    toLayout (symbol, bean, filter) {
       var self = this
       var layout = self.PARAMS.Layout
       var fromLayout = self.thisLayout
@@ -722,7 +722,11 @@ export default {
           console.log(`>>> Error: 'bean' is not defined.`)
         }
       } else {
-        self.initData(self)
+        if (filter) {
+          // filter 存在 -> 不初始化資料
+        } else {
+          self.initData(self)
+        }
       }
     },
 
