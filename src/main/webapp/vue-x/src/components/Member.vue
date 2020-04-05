@@ -46,8 +46,10 @@
                   <td>{{ bean.phone }}</td>
                   <td>{{ toFormatDateTime(bean.timeModify) }}</td>
                   <td>
-                    <button type="button" class="btn btn-outline-primary btn-circle" @click="mainFunction('edit', bean)"><i class="material-icons">create</i></button>
-                    <button type="button" class="btn btn-outline-danger btn-circle" @click="mainFunction('remove', bean)"><i class="material-icons">delete</i></button>
+                    <button type="button" class="btn btn-outline-primary btn-circle" title="Edit"
+                      @click="mainFunction('edit', bean)"><i class="material-icons">create</i></button>
+                    <button type="button" class="btn btn-outline-danger btn-circle" title="Remove"
+                      @click="mainFunction('remove', bean)"><i class="material-icons">delete</i></button>
                   </td>
                 </tr>
               </tbody>

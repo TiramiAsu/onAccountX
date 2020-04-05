@@ -56,16 +56,18 @@
                   <td>{{ toFormatDateTime(bean.timeLast) }}</td>
                   <td>{{ toFormatDateTime(bean.timeModify) }}</td>
                   <td>
-                    <button type="button" class="btn btn-outline-primary btn-circle" @click="toLayout(PARAMS.Layout.Edit.symbol, bean)">
-                      <i class="material-icons">create</i></button>
+                    <button type="button" class="btn btn-outline-primary btn-circle" title="Edit"
+                      @click="toLayout(PARAMS.Layout.Edit.symbol, bean)"><i class="material-icons">create</i></button>
 
-                    <button type="button" class="btn btn-outline-danger btn-circle" @click="deleteEntity(bean.id)">
-                      <i class="material-icons">delete</i></button>
+                    <button type="button" class="btn btn-outline-danger btn-circle" title="Remove"
+                      @click="deleteEntity(bean.id)"><i class="material-icons">delete</i></button>
 
-                    <button type="button" class="btn btn-outline-secondary btn-circle" v-if="bean.status === PARAMS.Status.lock.value">
+                    <button type="button" class="btn btn-outline-secondary btn-circle" title="Unlock"
+                      v-if="bean.status === PARAMS.Status.lock.value">
                       <i class="material-icons">lock_open</i></button>
 
-                    <button type="button" class="btn btn-outline-success btn-circle" v-if="bean.status === PARAMS.Status.disable.value">
+                    <button type="button" class="btn btn-outline-success btn-circle" title="Enable"
+                      v-if="bean.status === PARAMS.Status.disable.value">
                       <i class="material-icons">power_settings_new</i></button>
                   </td>
                 </tr>
