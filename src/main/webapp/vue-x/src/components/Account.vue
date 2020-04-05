@@ -63,12 +63,12 @@
                       @click="deleteEntity(bean.id)"><i class="material-icons">delete</i></button>
 
                     <button type="button" class="btn btn-outline-secondary btn-circle" title="Unlock"
-                      v-if="bean.status === PARAMS.Status.lock.value">
-                      <i class="material-icons">lock_open</i></button>
+                      v-if="bean.status === PARAMS.Status.lock.value"
+                      @click="enableAccount(bean.id, 'unlock')"><i class="material-icons">lock_open</i></button>
 
                     <button type="button" class="btn btn-outline-success btn-circle" title="Enable"
-                      v-if="bean.status === PARAMS.Status.disable.value">
-                      <i class="material-icons">power_settings_new</i></button>
+                      v-if="bean.status === PARAMS.Status.disable.value"
+                      @click="enableAccount(bean.id, 'enable')"><i class="material-icons">power_settings_new</i></button>
                   </td>
                 </tr>
               </tbody>
@@ -237,6 +237,10 @@ export default {
         validateAccount: {
           method: 'get',
           url: '/onAccountX/srv/account/list/account' // only id & account
+        },
+        enable: {
+          method: 'put',
+          url: '/onAccountX/srv/account/enable/' // +id
         }
       },
       PARAMS: {
@@ -620,6 +624,39 @@ export default {
         console.log('>>> Error: validate ' + self.API.entityName + ' failed: ', error)
         self.validate.sameName = false
       })
+    },
+    // 帳號狀態啟用
+    enableAccount (id, symbol) {
+      var self = this
+      var info = ''
+      switch (symbol) {
+        case 'unlock':
+          info = '解鎖'
+          break
+        case 'enable':
+          info = '啟用'
+          break
+      }
+      if (confirm('確定要 ' + info + ' 帳號 id ' + id + ' ?')) {
+        axios({
+          method: self.API.enable.method,
+          url: self.API.enable.url + id,
+          headers: {
+            'Content-Type': 'application/json',
+            'mac': 'helloJWT'
+          },
+          data: {}
+        }).then(function (response) {
+          if (response) {
+            self.queryEntity()
+            alert(info + ' 帳號完成')
+          }
+        }).catch(function (error) {
+          console.log('>>> Error: Edit ' + self.API.entityName + ' failed: ', error)
+        })
+      } else {
+        alert('已取消 ' + info + ' 帳號')
+      }
     },
 
     /* Util - custom */

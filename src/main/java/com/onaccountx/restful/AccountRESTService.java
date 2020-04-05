@@ -311,6 +311,36 @@ public class AccountRESTService implements GenericRESTService {
 		return new ResponseREST(SUCCESS).build();
 	}
 
+	@PUT
+	@Path("/enable/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response enableREST(@PathParam("id") String id) {
+
+		Account account;
+
+		// Data
+
+		// Service Enable
+		enableService();
+
+		// Authenticate User
+		// TODO Json Web Token -> Filter
+
+		// Handle
+
+		try {
+			account = accountService.find(Long.parseLong(id));
+			account.setStatus(Account.VALUE_ENABLE); // 無論解鎖或不停用, 都是啟用
+			accountService.update(account);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseREST(ERROR_DATABASE).build();
+		}
+		// Response
+		return new ResponseREST(SUCCESS).build();
+	}
+
 	@DELETE
 	@Path("/{id}")
 	@Override
