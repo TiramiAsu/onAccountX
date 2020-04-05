@@ -31,6 +31,7 @@ public class AccountRESTBean implements Serializable {
 	private Date timeLast;
 	private Date timeModify;
 	private Long memberId;
+	private String oldPassword;
 
 	public AccountRESTBean() {}
 
@@ -129,5 +130,13 @@ public class AccountRESTBean implements Serializable {
 				", timeModify=" + timeModify +
 				", memberId=" + memberId +
 				"]";
+	}
+
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
 	}
 }

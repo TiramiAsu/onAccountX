@@ -26,6 +26,7 @@ public enum StatusCode {
 	
 	// 4: Client Error
 	Unauthorized(401, "Unauthorized"),
+	Validate_Fail(499, "Validate Identity Fail"),
 	
 	// 5: Server Error
 	Connect_Timeout(599, "Connect Timeout Error"),

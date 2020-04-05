@@ -14,6 +14,7 @@ import static com.onaccountx.utils.ResponseUtils.ERROR_DATABASE;
 import static com.onaccountx.utils.ResponseUtils.ERROR_INPUT;
 import static com.onaccountx.utils.ResponseUtils.ERROR_PARSE;
 import static com.onaccountx.utils.ResponseUtils.SUCCESS;
+import static com.onaccountx.utils.ResponseUtils.VALIDATE_FAIL;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -73,58 +74,6 @@ public class AccountRESTService implements GenericRESTService {
 	private void enableService() {
 		accountService = (accountService == null) ? SpringUtils.getBean(AccountService.class) : accountService;
 		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.class) : memberService;
-	}
-
-	@POST
-	@Path("/validate/user")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response queryRESTvalidate(InputStream is) {
-
-		/** Enable Service*/
-
-		enableService();
-
-		/** JWT Authenticate */
-
-		/** Data */
-		List<Account> accountList = null;
-		AccountRESTBean restBean = null;
-
-		JSONObject jsonObj = toJsonObj(is);
-
-		if (jsonObj == null) {
-			return new ResponseREST()
-				.setStatusCode(ERROR_PARSE)
-				.build();
-		}
-
-		// Handle
-		restBean = mapAccountEntity(jsonObj);
-		accountList = accountService.query();
-
-		if (restBean == null) {
-			return new ResponseREST(ERROR_PARSE).build();
-		}
-
-		// Response
-		if (accountList == null) {
-			return new ResponseREST(ERROR_DATABASE).build();
-		} else {
-			String accountName = restBean.getAccount();
-			Account account = accountList.stream()
-				.filter(acc -> acc.getAccount().equals(accountName))
-				.findFirst()
-				.get();
-			Map<String, Object> restEntity = new GenericRESTBean()
-				.put("id", account.getId())
-				.put("account", account.getAccount())
-				.put("password", account.getPassword().equals(restBean.getPassword()) ? "pass" : "fail")
-				.build();
-			return new ResponseREST(SUCCESS)
-				.setData(restEntity)
-				.build();
-		}
 	}
 
 	@GET
@@ -337,6 +286,12 @@ public class AccountRESTService implements GenericRESTService {
 
 		if (restBean == null) {
 			return new ResponseREST(ERROR_PARSE).build();
+		}
+
+		// validate identity user
+		String oldPassword = restBean.getOldPassword();
+		if (!oldPassword.equals(accountService.find(restBean.getId()).getPassword())) {
+			return new ResponseREST(VALIDATE_FAIL).build();
 		}
 
 		try {
