@@ -31,9 +31,13 @@
                 </tr>
                 <tr>
                   <th></th>
-                  <th><input v-model="entity.account" @change="queryEntity(entity)" type="text" class="form-control" placeholder="請輸入..."></th>
                   <th>
-                    <select class="custom-select" v-model="entity.status" @change="queryEntity(entity)">
+                    <input type="text" class="form-control" placeholder="請輸入..."
+                      v-model="entity.account" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" >
+                  </th>
+                  <th>
+                    <select class="custom-select"
+                      v-model="entity.status" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)">
                       <option v-for="(option, index) in PARAMS.Status" :key="index" :value="option.value">{{ option.text }}</option>
                     </select>
                   </th>
@@ -249,6 +253,7 @@ export default {
           Add: { symbol: 'add', value: 1, text: '帳戶新增' },
           Edit: { symbol: 'edit', value: 2, text: '帳戶編輯' },
           Action: {
+            Filter: { symbol: 'filter', value: 8, text: 'Filter' },
             Cancel: { symbol: 'cancel', value: 9, text: 'Cancel' }
           }
         },
@@ -445,7 +450,7 @@ export default {
 
     /* API */
 
-    queryEntity (bean) {
+    queryEntity (bean, symbol) {
       var self = this
       var apiBean = this.queryBean(bean)
       axios({
@@ -461,7 +466,7 @@ export default {
           self.entityList = response.data.data
         }
         self.display = false
-        self.toLayout(self.PARAMS.Layout.Manage.symbol, null, 'filter')
+        self.toLayout(self.PARAMS.Layout.Manage.symbol, null, symbol)
       }).catch(function (error) {
         console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
       })
@@ -691,7 +696,7 @@ export default {
       return str
     },
     // Layout 切換
-    toLayout (symbol, bean, filter) {
+    toLayout (symbol, bean, actionSymbol) {
       var self = this
       var layout = self.PARAMS.Layout
       var fromLayout = self.thisLayout
@@ -722,7 +727,7 @@ export default {
           console.log(`>>> Error: 'bean' is not defined.`)
         }
       } else {
-        if (filter) {
+        if (actionSymbol === self.PARAMS.Layout.Action.Filter.symbol) {
           // filter 存在 -> 不初始化資料
         } else {
           self.initData(self)
