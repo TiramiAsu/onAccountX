@@ -36,7 +36,7 @@ import javax.persistence.TemporalType;
 @Table(name = "members")
 public class Member implements Serializable {
 
-	private static final long serialVersionUID = -9089521043734096398L;
+	private static final long serialVersionUID = 76211775763277297L;
 
 	public final static String _ENTITY_NAME = "Member";
 	public final static String _ID = "id";
@@ -51,24 +51,24 @@ public class Member implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "name")
+	@Column(name = "name", length = 255, nullable = false)
 	private String name;
 
-	@Column(name = "email")
+	@Column(name = "email", length = 255, nullable = false, unique = true)
 	private String email;
 
-	@Column(name = "phone")
+	@Column(name = "phone", length = 127, nullable = false, unique = true)
 	private String phone;
 
-	@Column(name = "time_modify")
+	@Column(name = "time_modify", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeModify;
 
-	@Column(name = "time_build")
+	@Column(name = "time_build", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
 
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	private Set<Account> accounts;
 
 	public Member() {}
