@@ -35,7 +35,7 @@ import javax.persistence.TemporalType;
 @Table(name = "accounts")
 public class Account implements Serializable {
 
-	private static final long serialVersionUID = 3956649725795659120L;
+	private static final long serialVersionUID = 6920640439969303401L;
 
 	public final static int VALUE_ENABLE = Account.STATUS.ENABLE.value;
 	public final static int VALUE_LOCK = Account.STATUS.LOCK.value;
@@ -71,20 +71,20 @@ public class Account implements Serializable {
 	@Column(name = "error_times", nullable = false)
 	private int errorTimes;
 
-	@Column(name = "time_build")
+	@Column(name = "time_build", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
 
-	@Column(name = "time_last")
+	@Column(name = "time_last", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeLast;
 
-	@Column(name = "time_modify")
+	@Column(name = "time_modify", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeModify;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "m_id", referencedColumnName = "id")
+	@JoinColumn(name = "m_id", referencedColumnName = "id", nullable = false)
 	private Member member;
 
 	public Account() {}
