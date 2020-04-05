@@ -56,31 +56,31 @@ public class Account implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "account")
+	@Column(name = "account", length = 255, nullable = false, unique = true)
 	private String account;
 
-	@Column(name = "password")
+	@Column(name = "password", length = 255, nullable = false)
 	private String password;
 
-	@Column(name = "status")
+	@Column(name = "status", nullable = false)
 	private int status;
 
-	@Column(name = "error_times")
+	@Column(name = "error_times", nullable = false)
 	private int errorTimes;
 
-	@Column(name = "time_build")
+	@Column(name = "time_build", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
 
-	@Column(name = "time_last")
+	@Column(name = "time_last", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeLast;
 
-	@Column(name = "time_modify")
+	@Column(name = "time_modify", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeModify;
 
-	@Column(name = "m_id")
+	@Column(name = "m_id", nullable = false)
 	private Long memberId;
 
 	public Account() {}
