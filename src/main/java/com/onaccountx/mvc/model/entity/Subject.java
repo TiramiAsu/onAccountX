@@ -45,10 +45,10 @@ public class Subject implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "code", nullable = false, length = 31, unique = true)
+	@Column(name = "code", length = 31, nullable = false, unique = true)
 	private String code;
 
-	@Column(name = "name", nullable = false, length = 63)
+	@Column(name = "name", length = 63, nullable = false)
 	private String name;
 
 	@Column(name = "time_build", nullable = false)
