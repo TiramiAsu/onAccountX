@@ -18,6 +18,7 @@ import static com.onaccountx.utils.ResponseUtils.SUCCESS;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -325,11 +326,105 @@ public class MemberRESTService implements GenericRESTService {
 		try {
 			memberService.delete(Long.parseLong(id));
 		} catch (Exception e) {
-			e.printStackTrace();
+			// 若此會員有連接帳號, 故無法刪除
+			System.err.println(e.getMessage());
 			return new ResponseREST(ERROR_DATABASE).build();
 		}
 		// Response
 		return new ResponseREST(SUCCESS).build();
+	}
+
+	@POST
+	@Path("/validate/email")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response emailREST(InputStream is) {
+
+		Map<String, Object> data = new HashMap<>();
+		Boolean result = false;
+
+		/** Enable Service*/
+
+		enableService();
+
+		/** JWT Authenticate */
+		/** Data */
+
+		JSONObject jsonObject = toJsonObj(is);
+
+		if (jsonObject == null) {
+			return new ResponseREST()
+					.setStatusCode(ERROR_PARSE)
+					.build();
+		}
+
+		// empty space
+		if (jsonObject.get("email").equals("")) {
+			data.put("result", false);
+			return Response.status(200)
+					.entity(data)
+					.build();
+		}
+
+		// email regex
+		String regexEmail = "^\\w{1,63}@[a-zA-Z0-9]{2,63}\\.[a-zA-Z]{2,63}(\\.[a-zA-Z]{2,63})?$";
+		if (!((jsonObject.get("email") + "").matches(regexEmail))) {
+			data.put("result", false);
+			return Response.status(200)
+					.entity(data)
+					.build();
+		}
+
+		result = memberService.query().stream()
+			.anyMatch(m -> m.getEmail().equals(jsonObject.get("email") + ""));
+		data.put("result", !result);
+
+		return Response.status(200)
+				.entity(data)
+				.build();
+	}
+
+	@POST
+	@Path("/validate/phone")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response phoneREST(InputStream is) {
+
+		Map<String, Object> data = new HashMap<>();
+		Boolean result = false;
+
+		/** Enable Service*/
+
+		enableService();
+
+		/** JWT Authenticate */
+		/** Data */
+
+		JSONObject jsonObject = toJsonObj(is);
+
+		if (jsonObject == null) {
+			return new ResponseREST()
+					.setStatusCode(ERROR_PARSE)
+					.build();
+		}
+
+		// empty space / regex
+		String regexPhone = "^[0][0-9]{9}$";
+		if (jsonObject.get("phone").equals("") ||
+			!((jsonObject.get("phone") + "").matches(regexPhone))) {
+			data.put("result", false);
+			return Response.status(200)
+					.entity(data)
+					.build();
+		}
+
+		result = memberService.query().stream()
+			.anyMatch(m -> m.getPhone().equals(jsonObject.get("phone") + ""));
+		data.put("result", !result);
+
+		return Response.status(200)
+				.entity(data)
+				.build();
 	}
 
 	/** private method */

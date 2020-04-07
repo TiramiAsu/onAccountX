@@ -38,7 +38,7 @@ public class Member implements Serializable {
 
 	private static final long serialVersionUID = 76211775763277297L;
 
-	public final static String _ENTITY_NAME = "Member";
+	public final static String _ENTITY_NAME = "member";
 	public final static String _ID = "id";
 	public final static String _NAME = "name";
 	public final static String _EMAIL = "email";
