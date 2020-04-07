@@ -28,25 +28,32 @@
                 </tr>
                 <tr>
                   <th></th>
-                  <th><input v-model="subject.code" @change="querySubject()" type="text" class="form-control"></th>
-                  <th><input v-model="subject.name" @change="querySubject()" type="text" class="form-control"></th>
+                  <th>
+                    <input type="text" class="form-control" placeholder="請輸入..."
+                      v-model="entity.code" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)">
+                  </th>
+                  <th>
+                    <input type="text" class="form-control" placeholder="請輸入..."
+                      v-model="entity.name" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)">
+                  </th>
                   <th></th>
                   <th>
-                    <button type="button" class="btn btn-primary" @click="mainFunction('add', null)">Add</button>
-                    &nbsp;
-                    <button type="button" class="btn btn-outline-info">Search</button>
+                    <button type="button" class="btn btn-primary" @click="toLayout(PARAMS.Layout.Add.symbol)">Add</button>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(bean, index) in subjectList" :key="index">
+                <tr v-for="(bean, index) in entityList" :key="index">
                   <td>{{ bean.id }}</td>
                   <td>{{ bean.code }}</td>
                   <td>{{ bean.name }}</td>
                   <td>{{ toFormatDateTime(bean.timeModify) }}</td>
                   <td>
-                    <button type="button" class="btn btn-outline-primary" @click="mainFunction('edit', bean)">Edit</button>
-                    <button type="button" class="btn btn-outline-danger" @click="mainFunction('remove', bean)">Remove</button>
+                    <button type="button" class="btn btn-outline-primary btn-circle" title="Edit"
+                      @click="toLayout(PARAMS.Layout.Edit.symbol, bean)"><i class="material-icons">create</i></button>
+
+                    <button type="button" class="btn btn-outline-danger btn-circle" title="Remove"
+                      @click="deleteEntity(bean.id)"><i class="material-icons">delete</i></button>
                   </td>
                 </tr>
               </tbody>
@@ -60,24 +67,26 @@
 
             <div>
               <label for="subjectCode">Code</label>
-              <input v-model="subject.code" type="code" class="form-control is-invalid" id="subjectCode" placeholder="x-x-x-x..." required>
-              <div v-if="validate.code" class="invalid-feedback">不可空白</div>
+              <input v-model="entity.code" type="text" class="form-control is-invalid" id="subjectCode" placeholder="x-x-x-x..." required>
+              <div v-if="!validate.code" class="invalid-feedback">不可空白</div>
             </div>
             <br />
 
             <div>
               <label for="subjectName">Subject Name</label>
-              <input v-model="subject.name" type="text" class="form-control is-invalid" id="subjectName" placeholder="Name" required>
-              <div v-if="validate.name" class="invalid-feedback">不可空白</div>
+              <input v-model="entity.name" type="text" class="form-control is-invalid" id="subjectName" placeholder="Name" required>
+              <div v-if="!validate.name" class="invalid-feedback">不可空白</div>
             </div>
             <br />
 
           </form>
-          <button type="button" class="btn btn-outline-dark" @click="mainFunction('cancel', null)">Cancel</button>
-          <button v-if="thisLayout === PARAMS.Layout.Add.value"
-                  type="button" class="btn btn-outline-primary" @click="mainFunction('finish', null)">Finish</button>
-          <button v-if="thisLayout === PARAMS.Layout.Edit.value"
-                  type="button" class="btn btn-outline-primary" @click="mainFunction('update', null)">Update</button>
+          <button type="button" class="btn btn-outline-dark" @click="toLayout(PARAMS.Layout.Action.Cancel.symbol)">Cancel</button>
+
+          <button type="button" class="btn btn-outline-primary"
+            v-if="thisLayout === PARAMS.Layout.Add.value" @click="createEntity(entity)">Finish</button>
+
+          <button type="button" class="btn btn-outline-primary"
+            v-if="thisLayout === PARAMS.Layout.Edit.value" @click="updateEntity(entity)">Update</button>
         </div>
       </div>
     </div>
@@ -94,198 +103,298 @@ export default {
   },
   data () {
     return {
-      PARAMS: {
-        Layout: {
-          Manage: { value: 0, text: '帳務科目維護' },
-          Add: { value: 1, text: '帳務科目新增' },
-          Edit: { value: 2, text: '帳務科目編輯' }
+      API: {
+        entityName: 'subject',
+        query: {
+          method: 'post',
+          url: '/onAccountX/srv/subject'
+        },
+        create: {
+          method: 'put',
+          url: '/onAccountX/srv/subject'
+        },
+        update: {
+          method: 'put',
+          url: '/onAccountX/srv/subject/' // +id
+        },
+        delete: {
+          method: 'delete',
+          url: '/onAccountX/srv/subject/' // +id
         }
       },
-      subject: {
-        id: 0,
+      PARAMS: {
+        Layout: {
+          Manage: { symbol: 'manage', value: 0, text: '帳務科目維護' },
+          Add: { symbol: 'add', value: 1, text: '帳務科目新增' },
+          Edit: { symbol: 'edit', value: 2, text: '帳務科目編輯' },
+          Action: {
+            Filter: { symbol: 'filter' },
+            Cancel: { symbol: 'cancel' }
+          }
+        }
+      },
+      entity: {
+        // Subject Object
+        id: -1,
         code: '',
         name: '',
         timeModify: 0
       },
-      subjectList: [],
+      validate: {
+        // empty
+        code: false,
+        name: false
+      },
+      validateFinal: false, // 檢查結果
+
+      entityList: [],
 
       // layout
       thisLayout: 0,
 
       // loading
       display: true,
-      loadingCode: 0,
-
-      // CSS
-      validate: {
-        code: false,
-        name: false
-      }
+      loadingCode: 0
     }
   },
   mounted () {
-    this.querySubject()
+    this.queryEntity()
   },
   updated () {
-    this.validate.code = !(this.subject.code !== '')
-    this.validate.name = !(this.subject.name !== '')
+    var v = this.validate
+    var e = this.entity
+    v.code = (e.code !== null) && (e.code !== '')
+    v.name = (e.name !== null) && (e.name !== '')
   },
   methods: {
-    mainFunction (slosilo, bean) {
-      var self = this
-      var layout = this.PARAMS.Layout
-      if (slosilo) {
-        switch (slosilo) {
-          case 'add':
-            self.initBean()
-            self.thisLayout = layout.Add.value
-            break
-          case 'finish':
-            self.createSubject(self.subject)
-            self.thisLayout = layout.Manage.value
-            self.initBean()
-            break
-          case 'edit':
-            self.subject.id = bean.id
-            self.subject.code = bean.code
-            self.subject.name = bean.name
+    /* Initial */
 
-            self.thisLayout = layout.Edit.value
-            break
-          case 'update':
-            self.updateSubject(self.subject)
-            self.thisLayout = layout.Manage.value
-            self.initBean()
-            break
-          case 'cancel':
-            self.thisLayout = layout.Manage.value
-            self.initBean()
-            break
-          case 'remove':
-            if (confirm('確定要刪除 id: ' + bean.id + ' ?')) {
-              self.deleteMember(bean.id)
-              self.initBean()
-            } else {
-              alert('已取消刪除 id: ' + bean.id)
+    // [初始化資料] 每次切換頁面
+    initData (self, bean) {
+      switch (self.thisLayout) {
+        // 編輯頁面 -> 需回填資料
+        case self.PARAMS.Layout.Edit.value:
+          if (bean) {
+            self.entity = {
+              // Subject Object
+              id: bean.id,
+              code: bean.code,
+              name: bean.name
             }
-            break
-          case 'search':
-            break
-        }
-      } else {
-        console.log('>>> Error, slosilo is null <<<')
+          } else {
+            console.log(`>>> Error: 'bean' is not defined.`)
+          }
+          break
+        // 其餘頁面
+        default:
+          self.entity = {
+            // Subject Object
+            id: -1,
+            code: '',
+            name: ''
+          }
+          break
       }
+      self.validate = {
+        // empty
+        code: false,
+        name: false
+      }
+      self.validateFinal = false
     },
-    initBean () {
-      this.subject = {
-        id: 0,
+
+    /* Bean */
+
+    // 查詢欄位 -> filter 資料用
+    queryBean (bean) {
+      var apiBean = {
         code: '',
-        name: '',
-        timeModify: 0
+        name: ''
       }
+      if (bean) {
+        apiBean = {
+          code: (bean.code !== '') ? bean.code : '',
+          name: (bean.name !== '') ? bean.name : ''
+        }
+      }
+      return apiBean
     },
-    toApiBean (bean) {
+    // 新增修改資料 -> create, update 資料用
+    saveBean (bean) {
       return {
         id: bean.id,
         code: bean.code,
         name: bean.name
       }
     },
-    // 頁面載入完, 執行方法檢查是否有資訊
-    // doRemove (id) {
-    //   if (confirm('是否要刪除 id ' + id)) {
-    //     window.location.href = 'subject?action=remove&id=' + id
-    //   }
-    // },
-    querySubject () {
-      var self = this
-      var apiBean = {
-        code: (self.subject.code !== '') ? self.subject.code : '',
-        name: (self.subject.name !== '') ? self.subject.name : ''
+    // 打包 API 用 Entity
+    pkgApiEntity (apiBean) {
+      return {
+        subject: apiBean
       }
+    },
+
+    /* API */
+
+    queryEntity (bean, actionSymbol) {
+      var self = this
+      var apiBean = this.queryBean(bean)
       axios({
-        method: 'post',
-        url: '/onAccountX/srv/subject',
+        method: self.API.query.method,
+        url: self.API.query.url,
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
         },
-        data: {
-          subject: apiBean
-        }
+        data: self.pkgApiEntity(apiBean)
       }).then(function (response) {
         if (response) {
-          self.subjectList = response.data.data
+          self.entityList = response.data.data
         }
         self.display = false
+        self.toLayout(self.PARAMS.Layout.Manage.symbol, null, actionSymbol)
       }).catch(function (error) {
-        console.log('>>> Error: query subject failed: ', error)
+        console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
       })
     },
-    createSubject (bean) {
+    createEntity (bean) {
       var self = this
-      var apiBean = this.toApiBean(bean)
-      axios({
-        method: 'put',
-        url: '/onAccountX/srv/subject',
-        headers: {
-          'Content-Type': 'application/json',
-          'mac': 'helloJWT'
-        },
-        data: {
-          Subject: apiBean
+      var v = this.validate
+      var apiBean = self.saveBean(bean)
+
+      // all check
+      var final = true
+      for (var item in v) {
+        if (!v[item]) {
+          final = false
         }
-      }).then(function (response) {
-        if (response) {
-          self.querySubject()
-        }
-      }).catch(function (error) {
-        console.log('>>> Error: Add subject failed: ', error)
-      })
+      }
+      self.validateFinal = final
+
+      // execute
+      if (self.validateFinal) {
+        axios({
+          method: self.API.create.method,
+          url: self.API.create.url,
+          headers: {
+            'Content-Type': 'application/json',
+            'mac': 'helloJWT'
+          },
+          data: self.pkgApiEntity(apiBean)
+        }).then(function (response) {
+          if (response) {
+            self.queryEntity()
+            alert('新增完成')
+          }
+        }).catch(function (error) {
+          console.log('>>> Error: Add ' + self.API.entityName + ' failed: ', error)
+        })
+      } else {
+        alert('請檢查是否有欄位未填寫')
+      }
     },
-    updateSubject (bean) {
+    updateEntity (bean) {
       var self = this
-      var apiBean = this.toApiBean(bean)
-      axios({
-        method: 'put',
-        url: '/onAccountX/srv/subject/' + apiBean.id,
-        headers: {
-          'Content-Type': 'application/json',
-          'mac': 'helloJWT'
-        },
-        data: {
-          Subject: apiBean
+      var v = this.validate
+      var apiBean = this.saveBean(bean)
+
+      // all check
+      var final = true
+      for (var item in v) {
+        if (!v[item]) {
+          final = false
         }
-      }).then(function (response) {
-        if (response) {
-          self.querySubject()
-        }
-      }).catch(function (error) {
-        console.log('>>> Error: Edit subject failed: ', error)
-      })
+      }
+      self.validateFinal = final
+
+      // execute
+      if (self.validateFinal) {
+        axios({
+          method: self.API.update.method,
+          url: self.API.update.url + apiBean.id,
+          headers: {
+            'Content-Type': 'application/json',
+            'mac': 'helloJWT'
+          },
+          data: self.pkgApiEntity(apiBean)
+        }).then(function (response) {
+          if (response) {
+            self.queryEntity()
+            alert('更新完成')
+          }
+        }).catch(function (error) {
+          console.log('>>> Error: Edit ' + self.API.entityName + ' failed: ', error)
+        })
+      } else {
+        alert('請檢查是否有欄位未填寫')
+      }
     },
-    deleteMember (id) {
+    deleteEntity (id) {
       var self = this
-      axios({
-        method: 'delete',
-        url: '/onAccountX/srv/subject/' + id,
-        headers: {
-          'Content-Type': 'application/json',
-          'mac': 'helloJWT'
-        },
-        data: {}
-      }).then(function (response) {
-        if (response) {
-          self.querySubject()
-        }
-      }).catch(function (error) {
-        console.log('>>> Error: Delete subject failed: ', error)
-      })
+      if (confirm('確定要刪除 ' + id + ' ?')) {
+        axios({
+          method: self.API.delete.method,
+          url: self.API.delete.url + id,
+          headers: {
+            'Content-Type': 'application/json',
+            'mac': 'helloJWT'
+          }
+        }).then(function (response) {
+          if (response) {
+            self.queryEntity()
+            alert('刪除完成')
+          }
+        }).catch(function (error) {
+          console.log('>>> Error: Delete ' + self.API.entityName + ' failed: ', error)
+        })
+      }
     },
 
-    /* 時間格式 */
+    /* Util - custom */
 
-    // 取得格式化(YYY-MM-DD HH:mm)後的日期時間字串
+    // Layout 切換
+    toLayout (symbol, bean, actionSymbol) {
+      var self = this
+      var layout = self.PARAMS.Layout
+      var fromLayout = self.thisLayout
+      switch (symbol) {
+        case layout.Manage.symbol:
+          self.thisLayout = layout.Manage.value
+          break
+        case layout.Action.Cancel.symbol:
+          var info = (fromLayout === layout.Add.value)
+            ? ('確定取消 ' + layout.Add.text)
+            : ('確定取消 ' + layout.Edit.text)
+          if (confirm(info + ' ?')) {
+            self.thisLayout = layout.Manage.value
+          }
+          break
+        case layout.Edit.symbol:
+          self.thisLayout = layout.Edit.value
+          break
+        case layout.Add.symbol:
+          self.thisLayout = layout.Add.value
+          break
+      }
+      // 編輯時需回填資料
+      if (self.thisLayout === layout.Edit.value) {
+        if (bean) {
+          self.initData(self, bean)
+        } else {
+          console.log(`>>> Error: 'bean' is not defined.`)
+        }
+      } else {
+        if (actionSymbol === self.PARAMS.Layout.Action.Filter.symbol) {
+          // filter 存在 -> 不初始化資料
+        } else {
+          self.initData(self)
+        }
+      }
+    },
+
+    /* Util */
+
+    // [時間格式] 取得格式化(YYY-MM-DD HH:mm)後的日期時間字串
     toFormatDateTime (timestamp, formatStr) {
       /* 1: timestamp 傳入是日期(string)   '2019-7-12 9:17', 則回傳 '2019-07-12 09:17'
        * 2: timestamp 傳入是時間戳(number) 1562894220000, 則回傳 '2019-07-12 09:17'
@@ -326,5 +435,14 @@ li {
 }
 a {
   color: #42b983;
+}
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.42857;
 }
 </style>

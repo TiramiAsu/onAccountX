@@ -48,6 +48,11 @@ export default new Router({
       component: Account
     },
     {
+      path: '/member',
+      name: 'Member',
+      component: Member
+    },
+    {
       path: '/profile',
       name: 'Profile',
       component: Profile

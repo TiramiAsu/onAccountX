@@ -34,7 +34,7 @@ public class Subject implements Serializable {
 
 	private static final long serialVersionUID = -2969733470340464227L;
 
-	public final static String _ENTITY_NAME = "Subject";
+	public final static String _ENTITY_NAME = "subject";
 	public final static String _ID = "id";
 	public final static String _CODE = "code";
 	public final static String _NAME = "name";
@@ -45,17 +45,17 @@ public class Subject implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "code", nullable = false, length = 31)
+	@Column(name = "code", nullable = false, length = 31, unique = true)
 	private String code;
 
 	@Column(name = "name", nullable = false, length = 63)
 	private String name;
 
-	@Column(name = "time_build")
+	@Column(name = "time_build", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
 
-	@Column(name = "time_modify")
+	@Column(name = "time_modify", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeModify;
 

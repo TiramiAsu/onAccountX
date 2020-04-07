@@ -59,10 +59,10 @@ public class Account implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "account", nullable = false, length = 255, unique = true)
+	@Column(name = "account", length = 255, nullable = false, unique = true)
 	private String account;
 
-	@Column(name = "password", nullable = false, length = 255)
+	@Column(name = "password", length = 255, nullable = false)
 	private String password;
 
 	@Column(name = "status", nullable = false)
@@ -192,7 +192,5 @@ public class Account implements Serializable {
 			this.value = value;
 			this.text = text;
 		}
-
 	}
-
 }
