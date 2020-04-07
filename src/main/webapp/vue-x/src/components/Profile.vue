@@ -5,13 +5,9 @@
 </template>
 
 <script>
-import SPA from './SPA.vue'
 
 export default {
   name: 'Profile',
-  components: {
-    'spa': SPA
-  },
   data () {
     return {
       PARAM: {

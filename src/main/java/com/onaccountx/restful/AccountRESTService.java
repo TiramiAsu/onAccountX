@@ -298,8 +298,8 @@ public class AccountRESTService implements GenericRESTService {
 			account = accountService.find(Long.parseLong(id));
 			account.setAccount(restBean.getAccount() == null ? account.getAccount() : restBean.getAccount());
 			account.setPassword(restBean.getPassword() == null ? account.getPassword() : restBean.getPassword());
-			account.setStatus(restBean.getStatus() == 0 ? account.getStatus() : restBean.getStatus());
-			account.setErrorTimes(restBean.getErrorTimes() == 0 ? account.getErrorTimes() : restBean.getErrorTimes());
+			account.setStatus(restBean.getStatus() == -1 ? account.getStatus() : restBean.getStatus());
+			account.setErrorTimes(restBean.getErrorTimes() == -1 ? account.getErrorTimes() : restBean.getErrorTimes());
 			account.setTimeModify(new Date());
 			account.setMember(memberService.find(restBean.getMemberId()));
 			accountService.update(account);

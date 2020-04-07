@@ -130,11 +130,11 @@
               </div>
 
               <div v-if="thisLayout === PARAMS.Layout.Add.value">
-                <input v-model="entity.password" type="text"
+                <input v-model="entity.password" type="password"
                   class="form-control is-invalid" id="password" placeholder="請輸入密碼" required>
                 <div v-if="!validate.password" class="invalid-feedback">不可空白</div>
                 <div class="input-group mb-3">
-                  <input v-model="entity.passwordAgain" type="text"
+                  <input v-model="entity.passwordAgain" type="password"
                     class="form-control" placeholder="再次輸入密碼" required>
                   <div class="input-group-append">
                     <span v-if="validate.correctPassword" class="input-group-text" style="color: green">密碼正確</span>
@@ -143,11 +143,11 @@
                 </div>
               </div>
               <div v-if="(thisLayout === PARAMS.Layout.Edit.value) && changePassword">
-                <input v-model="entity.password" type="text"
+                <input v-model="entity.password" type="password"
                   class="form-control is-invalid" id="password" placeholder="請輸入新密碼" required>
                 <div v-if="!validate.password" class="invalid-feedback">不可空白</div>
                 <div class="input-group mb-3">
-                  <input v-model="entity.passwordAgain" type="text"
+                  <input v-model="entity.passwordAgain" type="password"
                     class="form-control" placeholder="再次輸入新密碼" required>
                   <div class="input-group-append">
                     <span v-if="validate.correctPassword" class="input-group-text" style="color: green">密碼正確</span>
@@ -188,7 +188,7 @@
             <!-- update validate user-->
             <div v-if="thisLayout === PARAMS.Layout.Edit.value">
               <label for="oldPasswordAgain">Validate</label>
-              <input v-model="entity.oldPasswordAgain" type="text" class="form-control is-invalid" id="oldPasswordAgain"
+              <input v-model="entity.oldPasswordAgain" type="password" class="form-control is-invalid" id="oldPasswordAgain"
                 placeholder="請輸入舊密碼" @change="validate.oldPasswordAgain = false" required>
               <div v-if="!validate.oldPasswordAgain" class="invalid-feedback">不可空白</div>
             </div>
@@ -435,7 +435,7 @@ export default {
         account: bean.account,
         password: bean.password,
         memberId: bean.memberId,
-        status: bean.status,
+        status: (bean.status === null) ? -1 : bean.status,
         errorTimes: bean.errorTimes,
         // validate old password
         oldPassword: bean.oldPasswordAgain
@@ -521,6 +521,7 @@ export default {
         if (!v[item]) {
           final = false
         }
+        // console.log(item + ':' + v[item])
       }
       self.validateFinal = final
 
@@ -550,6 +551,8 @@ export default {
         }).catch(function (error) {
           console.log('>>> Error: Edit ' + self.API.entityName + ' failed: ', error)
         })
+      } else {
+        alert('請檢查是否有欄位未填寫')
       }
     },
     deleteEntity (id) {
