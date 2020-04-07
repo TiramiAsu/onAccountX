@@ -14,7 +14,7 @@
         <!-- Manage UI -->
         <div v-if="thisLayout === PARAMS.Layout.Manage.value">
           <span>
-            <loading :display="display" :status="loadingCode" />
+            <loading :display="display" :code="loadingCode" />
           </span>
           <div v-if="display === false">
             <table class="table">
