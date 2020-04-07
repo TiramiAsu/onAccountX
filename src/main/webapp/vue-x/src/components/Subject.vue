@@ -65,13 +65,19 @@
         <div v-if="thisLayout !== PARAMS.Layout.Manage.value">
           <form class="was-validated">
 
-            <div>
+            <!-- Code -->
+            <div v-if="thisLayout === PARAMS.Layout.Add.value">
               <label for="subjectCode">Code</label>
               <input v-model="entity.code" type="text" class="form-control is-invalid" id="subjectCode" placeholder="x-x-x-x..." required>
               <div v-if="!validate.code" class="invalid-feedback">不可空白</div>
             </div>
+            <div v-if="thisLayout === PARAMS.Layout.Edit.value">
+              <label>Code</label>
+              <input v-model="entity.code" type="text" class="form-control" placeholder="x-x-x-x..." required readonly>
+            </div>
             <br />
 
+            <!-- Name -->
             <div>
               <label for="subjectName">Subject Name</label>
               <input v-model="entity.name" type="text" class="form-control is-invalid" id="subjectName" placeholder="Name" required>
@@ -283,8 +289,12 @@ export default {
           data: self.pkgApiEntity(apiBean)
         }).then(function (response) {
           if (response) {
-            self.queryEntity()
-            alert('新增完成')
+            if (response.data.statusCode === 595) {
+              alert('科目編號重複, 請重新編號')
+            } else {
+              self.queryEntity()
+              alert('新增完成')
+            }
           }
         }).catch(function (error) {
           console.log('>>> Error: Add ' + self.API.entityName + ' failed: ', error)
