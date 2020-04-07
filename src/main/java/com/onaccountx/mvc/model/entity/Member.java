@@ -36,9 +36,9 @@ import javax.persistence.TemporalType;
 @Table(name = "members")
 public class Member implements Serializable {
 
-	private static final long serialVersionUID = 76211775763277297L;
+	private static final long serialVersionUID = 8321839073580729458L;
 
-	public final static String _ENTITY_NAME = "member";
+	public final static String _JSON_NAME = "member";
 	public final static String _ID = "id";
 	public final static String _NAME = "name";
 	public final static String _EMAIL = "email";

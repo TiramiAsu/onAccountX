@@ -32,9 +32,9 @@ import javax.persistence.TemporalType;
 @Table(name = "acc_cash")
 public class AccCash implements Serializable {
 
-	private static final long serialVersionUID = -6069818283617915777L;
+	private static final long serialVersionUID = -3240840189249944395L;
 
-	public final static String _ENTITY_NAME = "AccCash";
+	public final static String _JSON_NAME = "accCash";
 	public final static String _ID = "id";
 	public final static String _INCREASE = "increase";
 	public final static String _REDUCE = "reduce";

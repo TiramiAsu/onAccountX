@@ -298,7 +298,7 @@ public class SubjectRESTService implements GenericRESTService {
 		}
 
 		try {
-			data = jsonObj.get(Subject._ENTITY_NAME).toString();
+			data = jsonObj.get(Subject._JSON_NAME).toString();
 			// System.out.println(data);
 			if (data == null || data.length() == 0) {
 				return null;
