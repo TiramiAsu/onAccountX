@@ -227,10 +227,6 @@ export default {
     v.name = e.name !== ''
     v.email = (e.email !== '') && (/\S+@\S+\.\S+/.test(e.email))
     v.phone = (e.phone !== '') && (/[0]{1}\d{9}/.test(e.phone)) && (e.phone.length === 10)
-    console.log(e.phone !== '')
-    console.log(/[0]{1}\d{9}/.test(e.phone))
-    console.log(e.phone.length === 10)
-    console.log('---')
   },
   methods: {
     /* Initial */
@@ -448,7 +444,6 @@ export default {
         }
       }).then(function (response) {
         var b = true
-        console.log(response)
         if (response) {
           b = response.data.result
         } else {
@@ -463,7 +458,6 @@ export default {
     // 驗證 Phone 有無登錄過
     validatePhone () {
       var self = this
-      console.log(self.entity.phone)
       axios({
         method: self.API.validatePhone.method,
         url: self.API.validatePhone.url,
@@ -476,7 +470,6 @@ export default {
         }
       }).then(function (response) {
         var b = true
-        console.log(response)
         if (response) {
           b = response.data.result
         } else {
