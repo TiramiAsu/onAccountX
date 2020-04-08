@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.googlecode.genericdao.search.SearchResult;
 import com.onaccountx.generic.GenericRESTBean;
 import com.onaccountx.mvc.model.dao.JournalDAO;
+import com.onaccountx.mvc.model.dao.SubjectDAO;
 import com.onaccountx.mvc.model.entity.Journal;
 import com.onaccountx.mvc.service.JournalService;
 import com.onaccountx.restful.ResponseREST;
@@ -45,6 +46,9 @@ public class JournalServiceImpl implements JournalService {
 
 	@Autowired
 	private JournalDAO journalDAO;
+
+	@Autowired
+	private SubjectDAO subjectDAO;
 
 	@Override
 	@Transactional
@@ -108,8 +112,8 @@ public class JournalServiceImpl implements JournalService {
 		/* initial value */
 
 		Long jTimeDate = -1L;
-		String jDebitText = "";
-		String jCreditText = "";
+		Long jDebitId = -1L;
+		Long jCreditId = -1L;
 		String jItem = "";
 		String jPlace = "";
 		String jWho = "";
@@ -117,8 +121,8 @@ public class JournalServiceImpl implements JournalService {
 		/* check */
 
 		jTimeDate = (jsonObject.get(Journal._TIME_DATE) == null) ? jTimeDate : Long.parseLong(jsonObject.get(Journal._TIME_DATE) + "");
-		jDebitText = (jsonObject.get(Journal._DEBIT) == null) ? jDebitText : jsonObject.get(Journal._DEBIT) + "";
-		jCreditText = (jsonObject.get(Journal._CREDIT) == null) ? jCreditText : jsonObject.get(Journal._CREDIT) + "";
+		jDebitId = (jsonObject.get(Journal._DEBIT) == null) ? jDebitId : Long.parseLong(jsonObject.get(Journal._DEBIT) + "");
+		jCreditId = (jsonObject.get(Journal._CREDIT) == null) ? jCreditId : Long.parseLong(jsonObject.get(Journal._CREDIT) + "");
 		jItem = (jsonObject.get(Journal._ITEM) == null) ? jItem : jsonObject.get(Journal._ITEM) + "";
 		jPlace = (jsonObject.get(Journal._PLACE) == null) ? jPlace : jsonObject.get(Journal._PLACE) + "";
 		jWho = (jsonObject.get(Journal._WHO) == null) ? jWho : jsonObject.get(Journal._WHO) + "";
@@ -132,12 +136,12 @@ public class JournalServiceImpl implements JournalService {
 			conds.put(Journal._TIME_DATE, new Date(jTimeDate));
 		}
 
-		if (jDebitText != null && !jDebitText.equals("")) {
-			conds.put(Journal._DEBIT, Operate.like("%" + jDebitText + "%"));
+		if (jDebitId != -1L) {
+			conds.put(Journal._DEBIT, subjectDAO.find(jDebitId));
 		}
 
-		if (jCreditText != null && !jCreditText.equals("")) {
-			conds.put(Journal._CREDIT, Operate.like("%" + jCreditText + "%"));
+		if (jCreditId != -1L) {
+			conds.put(Journal._CREDIT, subjectDAO.find(jCreditId));
 		}
 
 		if (jItem != null && !jItem.equals("")) {
@@ -145,7 +149,7 @@ public class JournalServiceImpl implements JournalService {
 		}
 
 		if (jPlace != null && !jPlace.equals("")) {
-			conds.put(Journal._TIME_DATE, Operate.like("%" + jPlace + "%"));
+			conds.put(Journal._PLACE, Operate.like("%" + jPlace + "%"));
 		}
 
 		if (jWho != null && !jWho.equals("")) {
@@ -173,7 +177,7 @@ public class JournalServiceImpl implements JournalService {
 						.put(Journal._ITEM, journal.getItem())
 						.put(Journal._PLACE, journal.getPlace())
 						.put(Journal._WHO, journal.getWho())
-						.put(Journal._TIME_BUILD, journal.getTimeBuild().getTime())
+						.put(Journal._ACCOUNT_ID, journal.getAccount().getId())
 						.put(Journal._TIME_MODIFY, journal.getTimeModify().getTime())
 						.build();
 

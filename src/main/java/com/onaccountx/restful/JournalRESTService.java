@@ -215,8 +215,8 @@ public class JournalRESTService implements GenericRESTService {
 
 		journal = new Journal(
 				new Date(restBean.getTimeDate()),
-				subjectService.find(restBean.getDebit()),
-				subjectService.find(restBean.getCredit()),
+				subjectService.find(restBean.getDebitId()),
+				subjectService.find(restBean.getCreditId()),
 				restBean.getAmount(),
 				restBean.getItem(),
 				restBean.getPlace(),
@@ -265,8 +265,8 @@ public class JournalRESTService implements GenericRESTService {
 		try {
 			journal = journalService.find(Long.parseLong(id));
 			journal.setTimeDate(restBean.getTimeDate() == null ? journal.getTimeDate() : new Date(restBean.getTimeDate()));
-			journal.setDebit(restBean.getDebit() == null ? journal.getDebit() : subjectService.find(restBean.getDebit()));
-			journal.setCredit(restBean.getCredit() == null ? journal.getCredit() : subjectService.find(restBean.getCredit()));
+			journal.setDebit(restBean.getDebitId() == null ? journal.getDebit() : subjectService.find(restBean.getDebitId()));
+			journal.setCredit(restBean.getCreditId() == null ? journal.getCredit() : subjectService.find(restBean.getCreditId()));
 			journal.setAmount(restBean.getAmount() == null ? journal.getAmount() : restBean.getAmount());
 			journal.setItem(restBean.getItem() == null ? journal.getItem() : restBean.getItem());
 			journal.setPlace(restBean.getPlace() == null ? journal.getPlace() : restBean.getPlace());
