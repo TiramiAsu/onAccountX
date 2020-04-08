@@ -98,12 +98,15 @@ public class SubjectRESTService implements GenericRESTService {
 			return new ResponseREST(ERROR_DATABASE).build();
 		} else {
 			for (Subject subject : subjectList) {
-				Map<String, Object> restBean = new GenericRESTBean()
-						.put(Subject._ID, subject.getId())
-						.put(Subject._CODE, subject.getCode())
-						.put(Subject._NAME, subject.getName())
-						.build();
-				beanList.add(restBean);
+				// 代號 1 -> 大分類代號, 代號 1-1 -> 小分類代號
+				if (subject.getCode().length() > 3) { // 不可被選擇
+					Map<String, Object> restBean = new GenericRESTBean()
+							.put(Subject._ID, subject.getId())
+							.put(Subject._CODE, subject.getCode())
+							.put(Subject._NAME, subject.getName())
+							.build();
+					beanList.add(restBean);
+				}
 			}
 			return new ResponseREST(SUCCESS)
 					.setData(beanList)

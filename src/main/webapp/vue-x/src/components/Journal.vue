@@ -21,7 +21,7 @@
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Date</th>
+                  <th>Date <button type="button" class="btn btn-primary btn-circle" @click="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)"><i class="material-icons">search</i></button></th>
                   <th>Debit</th>
                   <th>Credit</th>
                   <th>Amount</th>
@@ -33,7 +33,7 @@
                 <tr>
                   <th></th>
                   <th>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                       <div class="block">
                         <el-date-picker
                           v-model="entity.timeDate"
@@ -43,9 +43,9 @@
                           align="right"
                           style="height:25px"/>
                       </div>
-                    </div>
-                    <input type="text" class="form-control" placeholder="請輸入..."
-                      v-model="entity.timeDate" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" >
+                    </div> -->
+                    <input type="date" class="form-control" placeholder="起始" v-model="entity.timeDate" >
+                    <input type="date" class="form-control" placeholder="迄止" v-model="entity.timeDateEnd" >
                   </th>
                   <th>
                     <select class="custom-select"
@@ -245,7 +245,7 @@ export default {
       entity: {
         // Journal Object
         id: -1,
-        timeDate: -1,
+        timeDate: null,
         debit: null, // ui 顯示 "請選擇..."
         credit: null,
         amount: -1,
@@ -253,7 +253,9 @@ export default {
         place: '',
         who: '',
         aId: null,
-        timeModify: -1
+        timeModify: -1,
+        // other
+        timeDateEnd: null
       },
 
       // validate option
@@ -341,7 +343,9 @@ export default {
               place: bean.palce,
               who: bean.who,
               aId: bean.aId,
-              timeModify: -1 // 由 API 處理
+              timeModify: -1, // 由 API 處理,
+              // other
+              timeDateEnd: null
             }
           } else {
             console.log(`>>> Error: 'bean' is not defined.`)
@@ -360,7 +364,9 @@ export default {
             place: '',
             who: '',
             aId: null,
-            timeModify: -1 // 不處理
+            timeModify: -1, // 不處理,
+            // other
+            timeDateEnd: null
           }
           break
       }
@@ -380,23 +386,29 @@ export default {
 
     // 查詢欄位 -> filter 資料用
     queryBean (bean) {
+      var self = this
       var apiBean = {
-        timeDate: -1,
+        timeDate: null,
         debit: null,
         credit: null,
         item: '',
         place: '',
-        who: ''
+        who: '',
+        // other
+        timeDateEnd: null
       }
       if (bean) {
-        apiBean = {
-          timeDate: (bean.timeDate !== -1) ? bean.timeDate : null,
-          debit: (bean.debit !== null) ? bean.debit : null,
-          credit: (bean.credit !== null) ? bean.credit : null,
-          item: (bean.item !== '') ? bean.item : null,
-          place: (bean.place !== '') ? bean.place : null,
-          who: (bean.who !== '') ? bean.who : null
-        }
+        var obj = self.checkTime(bean.timeDate, bean.timeDateEnd)
+        var start = obj.start
+        var ended = obj.ended
+        apiBean.timeDate = (start !== null) ? start : null
+        apiBean.debit = (bean.debit !== null) ? bean.debit : null
+        apiBean.credit = (bean.credit !== null) ? bean.credit : null
+        apiBean.item = (bean.item !== '') ? bean.item : null
+        apiBean.place = (bean.place !== '') ? bean.place : null
+        apiBean.who = (bean.who !== '') ? bean.who : null
+        // other
+        apiBean.timeDateEnd = (ended !== null) ? ended : null
       }
       return apiBean
     },
@@ -436,7 +448,6 @@ export default {
         },
         data: self.pkgApiEntity(apiBean)
       }).then(function (response) {
-        console.log('queryEntity: ', response)
         if (response) {
           self.entityList = response.data.data
         }
@@ -561,17 +572,13 @@ export default {
         },
         data: {}
       }).then(function (response) {
-        console.log(self.subjectList)
-        console.log('response: ', response)
         if (response) {
           self.subjectList = self.subjectList.concat(response.data.data)
-          console.log('self.subjectList: ', self.subjectList)
         }
         self.display = false
       }).catch(function (error) {
         console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
       })
-      console.log(self.subjectList)
     },
     // 取得 account list -> only id & account
     queryAccountName () {
@@ -587,38 +594,14 @@ export default {
       }).then(function (response) {
         if (response) {
           self.accountList = response.data.data
-          // console.log(response.data.data)
         }
       }).catch(function (error) {
         console.log('>>> Error: validate ' + self.API.entityName + ' failed: ', error)
       })
-      // console.log(self.accountList)
     },
 
     /* Util - custom */
 
-    // 取得 subject text by id
-    getSubjectText (id) {
-      var self = this
-      var str = 'Error'
-      self.subjectList.forEach(s => {
-        if (id === s.id) {
-          str = s.name
-        }
-      })
-      return str
-    },
-    // 取得 account text by id
-    getAccountText (id) {
-      var self = this
-      var str = 'Error'
-      self.accountList.forEach(a => {
-        if (id === a.id) {
-          str = a.account
-        }
-      })
-      return str
-    },
     // Layout 切換
     toLayout (symbol, bean, actionSymbol) {
       var self = this
@@ -657,6 +640,69 @@ export default {
           self.initData(self)
         }
       }
+    },
+    // 取得 subject text by id
+    getSubjectText (id) {
+      var self = this
+      var str = 'Error'
+      self.subjectList.forEach(s => {
+        if (id === s.id) {
+          str = s.name
+        }
+      })
+      return str
+    },
+    // 取得 account text by id
+    getAccountText (id) {
+      var self = this
+      var str = 'Error'
+      self.accountList.forEach(a => {
+        if (id === a.id) {
+          str = a.account
+        }
+      })
+      return str
+    },
+    // 檢查時間先後
+    checkTime (d1, d2) {
+      // console.log('typeof    bean.timeDate: ', typeof bean.timeDate)    // string
+      // console.log('typeof bean.timeDateEnd: ', typeof bean.timeDateEnd) // string
+      // 如果只選一個日期, 則只查當天
+      var tsTimeDate = -1
+      var tsTimeDateEnd = -1
+      var aDay = 24 * 60 * 60 * 1000
+      if (d1) {
+        tsTimeDate = new Date(d1).getTime()
+      }
+      if (d2) {
+        tsTimeDateEnd = new Date(d2).getTime()
+      }
+      var vStart = tsTimeDate !== -1
+      var vEnded = tsTimeDateEnd !== -1
+      var start = null
+      var ended = null
+      if (vStart && vEnded) {
+        if (tsTimeDate === tsTimeDateEnd) {
+          start = tsTimeDate - aDay
+          ended = tsTimeDateEnd
+        } else if (tsTimeDate < tsTimeDateEnd) {
+          start = tsTimeDate - aDay
+          ended = tsTimeDateEnd
+        } else {
+          start = tsTimeDateEnd
+          ended = tsTimeDate - aDay
+        }
+      } else if (vStart || vEnded) {
+        if (vStart) {
+          start = tsTimeDate - aDay
+          ended = null
+        }
+        if (vEnded) {
+          start = null
+          ended = tsTimeDateEnd
+        }
+      }
+      return { 'start': start, 'ended': ended }
     },
 
     /* Util */

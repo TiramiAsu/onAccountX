@@ -111,7 +111,8 @@ public class JournalServiceImpl implements JournalService {
 
 		/* initial value */
 
-		Long jTimeDate = -1L;
+		Long jTimeDate = 0L;
+		Long jTimeDateEnd = 0L;
 		Long jDebitId = -1L;
 		Long jCreditId = -1L;
 		String jItem = "";
@@ -121,6 +122,7 @@ public class JournalServiceImpl implements JournalService {
 		/* check */
 
 		jTimeDate = (jsonObject.get(Journal._TIME_DATE) == null) ? jTimeDate : Long.parseLong(jsonObject.get(Journal._TIME_DATE) + "");
+		jTimeDateEnd = (jsonObject.get("timeDateEnd") == null) ? jTimeDateEnd : Long.parseLong(jsonObject.get("timeDateEnd") + "");
 		jDebitId = (jsonObject.get(Journal._DEBIT) == null) ? jDebitId : Long.parseLong(jsonObject.get(Journal._DEBIT) + "");
 		jCreditId = (jsonObject.get(Journal._CREDIT) == null) ? jCreditId : Long.parseLong(jsonObject.get(Journal._CREDIT) + "");
 		jItem = (jsonObject.get(Journal._ITEM) == null) ? jItem : jsonObject.get(Journal._ITEM) + "";
@@ -132,8 +134,20 @@ public class JournalServiceImpl implements JournalService {
 		List<Journal> journalList = new ArrayList<>();
 		SearchResult<Object> sr = new SearchResult<Object>();
 
-		if (jTimeDate != -1L) {
-			conds.put(Journal._TIME_DATE, new Date(jTimeDate));
+		System.out.println(jTimeDate);
+		System.out.println(jTimeDateEnd + "\n------------");
+
+		if (jTimeDate != 0 && jTimeDateEnd == 0) {
+			conds.put(Journal._TIME_DATE, Operate.greaterEqual(new Date(jTimeDate)));
+		}
+
+		if (jTimeDate != 0 && jTimeDateEnd != 0) {
+			conds.put(Journal._TIME_DATE,
+					Operate.equalRange(new Date(jTimeDate), new Date(jTimeDateEnd)));
+		}
+
+		if (jTimeDate == 0 && jTimeDateEnd != 0) {
+			conds.put(Journal._TIME_DATE, Operate.lessEqual(new Date(jTimeDateEnd)));
 		}
 
 		if (jDebitId != -1L) {
