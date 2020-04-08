@@ -25,8 +25,8 @@ public class JournalRESTBean implements Serializable {
 
 	private Long id;
 	private Long timeDate;
-	private Long debit;  // subject id
-	private Long credit; // subject id
+	private Long debitId;  // subject id
+	private Long creditId; // subject id
 	private Integer amount;
 	private String item;
 	private String place;
@@ -40,8 +40,8 @@ public class JournalRESTBean implements Serializable {
 			String item, String place, String who, Long aId, Date timeModify) {
 		this.id = id;
 		this.timeDate = timeDate;
-		this.debit = debit;
-		this.credit = credit;
+		this.debitId = debit;
+		this.creditId = credit;
 		this.amount = amount;
 		this.item = item;
 		this.place = place;
@@ -66,20 +66,20 @@ public class JournalRESTBean implements Serializable {
 		this.timeDate = timeDate;
 	}
 
-	public Long getDebit() {
-		return debit;
+	public Long getDebitId() {
+		return debitId;
 	}
 
-	public void setDebit(Long debit) {
-		this.debit = debit;
+	public void setDebitId(Long debit) {
+		this.debitId = debit;
 	}
 
-	public Long getCredit() {
-		return credit;
+	public Long getCreditId() {
+		return creditId;
 	}
 
-	public void setCredit(Long credit) {
-		this.credit = credit;
+	public void setCreditId(Long credit) {
+		this.creditId = credit;
 	}
 
 	public Integer getAmount() {
@@ -134,8 +134,8 @@ public class JournalRESTBean implements Serializable {
 	public String toString() {
 		return "JournalRESTBean [id=" + id +
 				", timeDate=" + timeDate +
-				", debit=" + debit +
-				", credit=" + credit +
+				", debitId=" + debitId +
+				", creditId=" + creditId +
 				", amount=" + amount +
 				", item=" + item +
 				", place=" + place +

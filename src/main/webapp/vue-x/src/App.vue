@@ -27,6 +27,11 @@
                 :class="(nowRoute === '/subject') ? btn.select : ''" data-toggle="collapse" role="tab">Acc. Subjects</span>
             </router-link>
 
+            <router-link to="journal">
+              <span class="list-group-item list-group-item-action"
+                :class="(nowRoute === '/journal') ? btn.select : ''" data-toggle="collapse" role="tab">Acc. Journal</span>
+            </router-link>
+
             <router-link to="member">
               <span class="list-group-item list-group-item-action"
                 :class="(nowRoute === '/member') ? btn.select : ''" data-toggle="collapse" role="tab">Members</span>
