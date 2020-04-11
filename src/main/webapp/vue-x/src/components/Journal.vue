@@ -21,7 +21,7 @@
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Date <button type="button" class="btn btn-primary btn-circle" @click="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)"><i class="material-icons">search</i></button></th>
+                  <th>Date</th>
                   <th>Debit</th>
                   <th>Credit</th>
                   <th>Amount</th>
@@ -80,6 +80,12 @@
                   <th></th>
                   <th>
                     <button type="button" class="btn btn-primary" @click="toLayout(PARAMS.Layout.Add.symbol)">Add</button>
+                    <button type="button" class="btn btn-outline-info btn-circle" @click="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" title="search">
+                      <i class="material-icons">search</i>
+                    </button>
+                    <button type="button" class="btn btn-outline-warning btn-circle" @click="queryEntity()" title="reset">
+                      <i class="material-icons">restore</i>
+                    </button>
                   </th>
                 </tr>
               </thead>
@@ -91,7 +97,7 @@
                   <td>{{ getSubjectText(bean.credit) }}</td>
                   <td>{{ bean.amount }}</td>
                   <td>{{ bean.item }}<br/>{{ bean.place }}<br />{{ bean.who }}</td>
-                  <td>{{ getAccountText(bean.aId) }}</td>
+                  <td>{{ getAccountText(bean.accountId) }}</td>
                   <td>{{ toFormatDateTime(bean.timeModify) }}</td>
                   <td>
                     <button type="button" class="btn btn-outline-primary btn-circle" title="Edit"
@@ -115,14 +121,14 @@
               <label for="timeDate">Date</label>
               <input type="date" class="form-control is-invalid" placeholder="timeDate" required
                 v-model="entity.timeDate" id="timeDate">
-              <div v-if="!validate.account" class="invalid-feedback">不可空白</div>
+              <div v-if="!validate.timeDate" class="invalid-feedback">不可空白</div>
             </div>
             <div v-if="thisLayout === PARAMS.Layout.Edit.value">
               <label>Date</label>
               <input type="text" class="form-control" placeholder="timeDate" readonly
                 :value="toFormatDateTime(entity.timeDate, 'YYYY-MM-DD')">
-              <br />
             </div>
+            <br />
 
             <!-- debit -->
             <div>
@@ -162,14 +168,28 @@
             </div>
             <br />
 
+            <!-- Place -->
+            <div>
+              <label for="place">Place</label>
+              <input v-model="entity.place" type="text" class="form-control" id="place" placeholder="Place">
+            </div>
+            <br />
+
+            <!-- Who -->
+            <div>
+              <label for="who">Who</label>
+              <input v-model="entity.who" type="text" class="form-control" id="who" placeholder="Who">
+            </div>
+            <br />
+
             <!-- Account -->
             <div>
-              <label for="aId">Account</label>
+              <label for="accountId">Account</label>
               <div class="form-group">
-                <select class="custom-select" id="aId" v-model="entity.aId" required>
+                <select class="custom-select" id="accountId" v-model="entity.accountId" required>
                   <option v-for="(account, index) in accountList" :key="index" :value="account.id">{{ account.account }}</option>
                 </select>
-                <div v-if="!validate.aId" class="invalid-feedback">請選擇帳號</div>
+                <div v-if="!validate.accountId" class="invalid-feedback">請選擇帳號</div>
               </div>
             </div>
 
@@ -221,10 +241,6 @@ export default {
           method: 'get',
           url: '/onAccountX/srv/account/list/account' // only id & account
         }
-        // enable: {
-        //   method: 'put',
-        //   url: '/onAccountX/srv/account/enable/' // +id
-        // }
       },
       PARAMS: {
         Layout: {
@@ -232,16 +248,10 @@ export default {
           Add: { symbol: 'add', value: 1, text: '日記帳新增' },
           Edit: { symbol: 'edit', value: 2, text: '日記帳編輯' },
           Action: {
-            Filter: { symbol: 'filter', value: 8, text: 'Filter' },
-            Cancel: { symbol: 'cancel', value: 9, text: 'Cancel' }
+            Filter: { symbol: 'filter' },
+            Cancel: { symbol: 'cancel' }
           }
         }
-        // Status: {
-        //   default: { value: null, text: '請選擇...' },
-        //   disable: { value: 0, text: '停用' },
-        //   enable: { value: 1, text: '啟用中' },
-        //   lock: { value: 4, text: '已鎖定' }
-        // }
       },
       entity: {
         // Journal Object
@@ -253,7 +263,7 @@ export default {
         item: '',
         place: '',
         who: '',
-        aId: null,
+        accountId: null,
         timeModify: -1,
         // other
         timeDateEnd: null
@@ -267,7 +277,9 @@ export default {
         credit: false,
         amount: false,
         item: false,
-        aId: false
+        // place: false, // 不驗證
+        // who: false, // 不驗證
+        accountId: false
       },
       validateFinal: false, // 檢查結果
 
@@ -293,44 +305,22 @@ export default {
     this.queryAccountName()
   },
   updated () {
-    // var v = this.validate
-    // var e = this.entity
-    // // [add]
-    // if (this.thisLayout === this.PARAMS.Layout.Add.value) {
-    //   v.account = e.account !== ''
-    //   // v.sameName 由 validateAccount() 處理
-    //   v.password = (e.password !== null) && (e.password !== '')
-    //   v.passwordAgain = (e.passwordAgain !== null) && (e.passwordAgain !== '')
-    //   v.correctPassword = v.password && v.passwordAgain && (e.password === e.passwordAgain)
-    //   v.oldPasswordAgain = true
-    // }
-    // // [edit]
-    // if (this.thisLayout === this.PARAMS.Layout.Edit.value) {
-    //   v.account = true
-    //   v.sameName = true
-    //   // 是否變更密碼
-    //   if (this.changePassword) {
-    //     // 變更密碼 -> 新密碼
-    //     v.password = (e.password !== null) && (e.password !== '')
-    //     v.passwordAgain = (e.passwordAgain !== null) && (e.passwordAgain !== '')
-    //     v.correctPassword = v.password && v.passwordAgain && (e.password === e.passwordAgain)
-    //   } else {
-    //     // 不改密碼
-    //     v.password = true
-    //     v.passwordAgain = true
-    //     v.correctPassword = true
-    //   }
-    //   v.oldPasswordAgain = (e.oldPasswordAgain !== null) && (e.oldPasswordAgain !== '')
-    // }
-    // v.memberId = (e.memberId !== null) && (e.status !== -1)
-    // v.status = (e.status !== null) && (e.status !== -1)
+    var v = this.validate
+    var e = this.entity
+    v.timeDate = e.timeDate !== null
+    v.debit = e.debit !== null
+    v.credit = e.credit !== null
+    v.amount = (e.amount !== null) && (e.amount !== -1)
+    v.item = (e.item !== null) && (e.item !== '')
+    // place 不驗證
+    // who 不驗證
+    v.accountId = e.accountId !== null
   },
   methods: {
     /* Initial */
 
     // [初始化資料] 每次切換頁面
     initData (self, bean) {
-      console.log('initData.bean: ', bean)
       switch (self.thisLayout) {
         // 編輯頁面 -> 需回填資料
         case self.PARAMS.Layout.Edit.value:
@@ -345,7 +335,7 @@ export default {
               item: bean.item,
               place: bean.palce,
               who: bean.who,
-              aId: bean.aId,
+              accountId: bean.accountId,
               timeModify: -1, // 由 API 處理,
               // other
               timeDateEnd: null
@@ -362,11 +352,11 @@ export default {
             timeDate: null,
             debit: null,
             credit: null,
-            amount: -1,
+            amount: null, // 不使用 -1
             item: '',
             place: '',
             who: '',
-            aId: null,
+            accountId: null,
             timeModify: -1, // 不處理,
             // other
             timeDateEnd: null
@@ -380,10 +370,9 @@ export default {
         credit: false,
         amount: false,
         item: false,
-        aId: false
+        accountId: false
       }
       self.validateFinal = false
-      console.log('self.entity: ', self.entity)
     },
 
     /* Bean */
@@ -420,14 +409,15 @@ export default {
     saveBean (bean) {
       return {
         id: bean.id,
-        timeDate: (bean.timeDate === -1) ? null : bean.timeDate,
+        // bean,timeDate is String (yyyy-MM-dd)
+        timeDate: (bean.timeDate === null) ? null : new Date(bean.timeDate).getTime(),
         debit: bean.debit,
         credit: bean.credit,
         amount: bean.amount,
         item: bean.item,
         place: bean.place,
         who: bean.who,
-        aId: bean.aId,
+        accountId: bean.accountId,
         timeModify: bean.timeModify
       }
     },
@@ -440,7 +430,7 @@ export default {
 
     /* API */
 
-    queryEntity (bean, symbol) {
+    queryEntity (bean, actionSymbol) {
       var self = this
       var apiBean = this.queryBean(bean)
       axios({
@@ -456,7 +446,7 @@ export default {
           self.entityList = response.data.data
         }
         self.display = false
-        self.toLayout(self.PARAMS.Layout.Manage.symbol, null, symbol)
+        self.toLayout(self.PARAMS.Layout.Manage.symbol, null, actionSymbol)
       }).catch(function (error) {
         console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
       })
@@ -487,8 +477,12 @@ export default {
           data: self.pkgApiEntity(apiBean)
         }).then(function (response) {
           if (response) {
-            self.queryEntity()
-            alert('新增完成')
+            if (response.data.statusCode !== 200) {
+              alert('新增失敗')
+            } else {
+              self.queryEntity()
+              alert('新增完成')
+            }
           }
         }).catch(function (error) {
           console.log('>>> Error: Add failed: ', error)
@@ -502,9 +496,6 @@ export default {
       var v = this.validate
       var apiBean = this.saveBean(bean)
 
-      /* validate */
-      // account -> v.sameName
-      v.sameName = true
       // all check
       var final = true
       for (var item in v) {
@@ -527,8 +518,8 @@ export default {
           data: self.pkgApiEntity(apiBean)
         }).then(function (response) {
           if (response) {
-            if (response.data.statusCode === 499) {
-              alert('驗證身分失敗, 請重新輸入舊密碼')
+            if (response.data.statusCode !== 200) {
+              alert('更新失敗')
             } else {
               self.queryEntity()
               alert('更新完成')
@@ -543,7 +534,7 @@ export default {
     },
     deleteEntity (id) {
       var self = this
-      if (confirm('確定要刪除 ' + id + ' ?')) {
+      if (confirm('確定要刪除 id ' + id + ' ?')) {
         axios({
           method: self.API.delete.method,
           url: self.API.delete.url + id,
@@ -553,8 +544,12 @@ export default {
           }
         }).then(function (response) {
           if (response) {
-            self.queryEntity()
-            alert('刪除完成')
+            if (response.data.statusCode !== 200) {
+              alert('刪除失敗')
+            } else {
+              self.queryEntity()
+              alert('刪除完成')
+            }
           }
         }).catch(function (error) {
           console.log('>>> Error: Delete ' + self.API.entityName + ' failed: ', error)

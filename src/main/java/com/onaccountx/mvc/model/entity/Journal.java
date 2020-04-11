@@ -47,7 +47,7 @@ public class Journal implements Serializable {
 	public final static String _ITEM = "item";
 	public final static String _PLACE = "place";
 	public final static String _WHO = "who";
-	public final static String _ACCOUNT_ID = "aId";
+	public final static String _ACCOUNT_ID = "accountId";
 	public final static String _TIME_BUILD = "timeBuild";
 	public final static String _TIME_MODIFY = "timeModify";
 

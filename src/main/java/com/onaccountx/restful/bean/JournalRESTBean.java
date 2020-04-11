@@ -25,28 +25,28 @@ public class JournalRESTBean implements Serializable {
 
 	private Long id;
 	private Long timeDate;
-	private Long debitId;  // subject id
-	private Long creditId; // subject id
+	private Long debit;     // subject id
+	private Long credit;    // subject id
 	private Integer amount;
 	private String item;
 	private String place;
 	private String who;
-	private Long aId;    // account id
+	private Long accountId; // account id
 	private Date timeModify;
 
 	public JournalRESTBean() {}
 
 	public JournalRESTBean(Long id, Long timeDate, Long debit, Long credit, Integer amount,
-			String item, String place, String who, Long aId, Date timeModify) {
+			String item, String place, String who, Long accountId, Date timeModify) {
 		this.id = id;
 		this.timeDate = timeDate;
-		this.debitId = debit;
-		this.creditId = credit;
+		this.debit = debit;
+		this.credit = credit;
 		this.amount = amount;
 		this.item = item;
 		this.place = place;
 		this.who = who;
-		this.aId = aId;
+		this.accountId = accountId;
 		this.timeModify = timeModify;
 	}
 
@@ -66,20 +66,20 @@ public class JournalRESTBean implements Serializable {
 		this.timeDate = timeDate;
 	}
 
-	public Long getDebitId() {
-		return debitId;
+	public Long getDebit() {
+		return debit;
 	}
 
-	public void setDebitId(Long debit) {
-		this.debitId = debit;
+	public void setDebit(Long debit) {
+		this.debit = debit;
 	}
 
-	public Long getCreditId() {
-		return creditId;
+	public Long getCredit() {
+		return credit;
 	}
 
-	public void setCreditId(Long credit) {
-		this.creditId = credit;
+	public void setCredit(Long credit) {
+		this.credit = credit;
 	}
 
 	public Integer getAmount() {
@@ -114,12 +114,12 @@ public class JournalRESTBean implements Serializable {
 		this.who = who;
 	}
 
-	public Long getAId() {
-		return aId;
+	public Long getAccountId() {
+		return accountId;
 	}
 
-	public void setAId(Long aId) {
-		this.aId = aId;
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
 	}
 
 	public Date getTimeModify() {
@@ -134,13 +134,13 @@ public class JournalRESTBean implements Serializable {
 	public String toString() {
 		return "JournalRESTBean [id=" + id +
 				", timeDate=" + timeDate +
-				", debitId=" + debitId +
-				", creditId=" + creditId +
+				", debit=" + debit +
+				", credit=" + credit +
 				", amount=" + amount +
 				", item=" + item +
 				", place=" + place +
 				", who=" + who +
-				", aId=" + aId +
+				", accountId=" + accountId +
 				", timeModify=" + timeModify +
 				"]";
 	}

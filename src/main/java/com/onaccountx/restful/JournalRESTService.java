@@ -215,13 +215,13 @@ public class JournalRESTService implements GenericRESTService {
 
 		journal = new Journal(
 				new Date(restBean.getTimeDate()),
-				subjectService.find(restBean.getDebitId()),
-				subjectService.find(restBean.getCreditId()),
+				subjectService.find(restBean.getDebit()),
+				subjectService.find(restBean.getCredit()),
 				restBean.getAmount(),
 				restBean.getItem(),
 				restBean.getPlace(),
 				restBean.getWho(),
-				accountService.find(restBean.getAId()));
+				accountService.find(restBean.getAccountId()));
 		try {
 			journalService.create(journal);
 		} catch (Exception e) {
@@ -265,13 +265,13 @@ public class JournalRESTService implements GenericRESTService {
 		try {
 			journal = journalService.find(Long.parseLong(id));
 			journal.setTimeDate(restBean.getTimeDate() == null ? journal.getTimeDate() : new Date(restBean.getTimeDate()));
-			journal.setDebit(restBean.getDebitId() == null ? journal.getDebit() : subjectService.find(restBean.getDebitId()));
-			journal.setCredit(restBean.getCreditId() == null ? journal.getCredit() : subjectService.find(restBean.getCreditId()));
+			journal.setDebit(restBean.getDebit() == null ? journal.getDebit() : subjectService.find(restBean.getDebit()));
+			journal.setCredit(restBean.getCredit() == null ? journal.getCredit() : subjectService.find(restBean.getCredit()));
 			journal.setAmount(restBean.getAmount() == null ? journal.getAmount() : restBean.getAmount());
 			journal.setItem(restBean.getItem() == null ? journal.getItem() : restBean.getItem());
 			journal.setPlace(restBean.getPlace() == null ? journal.getPlace() : restBean.getPlace());
 			journal.setWho(restBean.getWho() == null ? journal.getWho() : restBean.getWho());
-			journal.setAccount(restBean.getAId() == null ? journal.getAccount() : accountService.find(restBean.getAId()));
+			journal.setAccount(restBean.getAccountId() == null ? journal.getAccount() : accountService.find(restBean.getAccountId()));
 			journal.setTimeModify(new Date());
 			journalService.update(journal);
 		} catch (Exception e) {
