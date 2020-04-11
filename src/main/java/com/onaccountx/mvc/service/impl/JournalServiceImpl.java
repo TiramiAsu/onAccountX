@@ -134,8 +134,8 @@ public class JournalServiceImpl implements JournalService {
 		List<Journal> journalList = new ArrayList<>();
 		SearchResult<Object> sr = new SearchResult<Object>();
 
-		System.out.println(jTimeDate);
-		System.out.println(jTimeDateEnd + "\n------------");
+//		System.out.println(jTimeDate);
+//		System.out.println(jTimeDateEnd + "\n------------");
 
 		if (jTimeDate != 0 && jTimeDateEnd == 0) {
 			conds.put(Journal._TIME_DATE, Operate.greaterEqual(new Date(jTimeDate)));

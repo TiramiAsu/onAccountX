@@ -113,13 +113,14 @@
             <!-- timeDate: datetimepicker -->
             <div v-if="thisLayout === PARAMS.Layout.Add.value">
               <label for="timeDate">Date</label>
-              <input v-model="entity.timeDate" type="text" class="form-control is-invalid" id="timeDate"
-                placeholder="timeDate" required>
+              <input type="date" class="form-control is-invalid" placeholder="timeDate" required
+                v-model="entity.timeDate" id="timeDate">
               <div v-if="!validate.account" class="invalid-feedback">不可空白</div>
             </div>
             <div v-if="thisLayout === PARAMS.Layout.Edit.value">
-              <label>Account</label>
-              <input v-model="entity.account" type="text" class="form-control" placeholder="timeDate" readonly>
+              <label>Date</label>
+              <input type="text" class="form-control" placeholder="timeDate" readonly
+                :value="toFormatDateTime(entity.timeDate, 'YYYY-MM-DD')">
               <br />
             </div>
 
@@ -156,7 +157,7 @@
             <!-- Item -->
             <div>
               <label for="item">Item</label>
-              <input v-model="entity.item" type="number" class="form-control is-invalid" id="item" placeholder="Item" required>
+              <input v-model="entity.item" type="text" class="form-control is-invalid" id="item" placeholder="Item" required>
               <div v-if="!validate.item" class="invalid-feedback">不可空白</div>
             </div>
             <br />
@@ -166,7 +167,7 @@
               <label for="aId">Account</label>
               <div class="form-group">
                 <select class="custom-select" id="aId" v-model="entity.aId" required>
-                  <option v-for="(account, index) in accountList" :key="index" :value="account.id">{{ account.name }}</option>
+                  <option v-for="(account, index) in accountList" :key="index" :value="account.id">{{ account.account }}</option>
                 </select>
                 <div v-if="!validate.aId" class="invalid-feedback">請選擇帳號</div>
               </div>
@@ -329,6 +330,7 @@ export default {
 
     // [初始化資料] 每次切換頁面
     initData (self, bean) {
+      console.log('initData.bean: ', bean)
       switch (self.thisLayout) {
         // 編輯頁面 -> 需回填資料
         case self.PARAMS.Layout.Edit.value:
@@ -336,6 +338,7 @@ export default {
             self.entity = {
               // Journal Object
               id: bean.id,
+              timeDate: bean.timeDate,
               debit: bean.debit,
               credit: bean.credit,
               amount: bean.amount,
@@ -380,6 +383,7 @@ export default {
         aId: false
       }
       self.validateFinal = false
+      console.log('self.entity: ', self.entity)
     },
 
     /* Bean */
