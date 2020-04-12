@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="font-size: 10 px">
     <div style="padding-top: 1%">
       <div>
         <h1>Journal</h1>
@@ -46,6 +46,13 @@
                     </div> -->
                     <input type="date" class="form-control" placeholder="起始" v-model="entity.timeDate" >
                     <input type="date" class="form-control" placeholder="迄止" v-model="entity.timeDateEnd" >
+                    <div style="margin-bottom: 10px"></div>
+                    <button type="button" class="btn btn-outline-info btn-circle" @click="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" title="search">
+                      <i class="material-icons">search</i>
+                    </button>
+                    <button type="button" class="btn btn-outline-warning btn-circle" @click="queryEntity()" title="reset">
+                      <i class="material-icons">restore</i>
+                    </button>
                   </th>
                   <th>
                     <select class="custom-select"
@@ -61,31 +68,17 @@
                   </th>
                   <th></th>
                   <th>
-                    <div class="container row">
-                      <div class="col-sm">
-                        <input type="text" class="form-control" placeholder="請輸入項目..."
-                          v-model="entity.item" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" >
-                      </div>
-                      <div class="col-sm">
-                        <input type="text" class="form-control" placeholder="請輸入地點..."
-                          v-model="entity.place" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" >
-                      </div>
-                      <div class="col-sm">
-                        <input type="text" class="form-control" placeholder="誰..."
-                          v-model="entity.who" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" >
-                      </div>
-                    </div>
+                    <input type="text" class="form-control" placeholder="請輸入項目..."
+                      v-model="entity.item" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" >
+                    <input type="text" class="form-control" placeholder="請輸入地點..."
+                      v-model="entity.place" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" >
+                    <input type="text" class="form-control" placeholder="誰..."
+                      v-model="entity.who" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" >
                   </th>
                   <th></th>
                   <th></th>
                   <th>
                     <button type="button" class="btn btn-primary" @click="toLayout(PARAMS.Layout.Add.symbol)">Add</button>
-                    <button type="button" class="btn btn-outline-info btn-circle" @click="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" title="search">
-                      <i class="material-icons">search</i>
-                    </button>
-                    <button type="button" class="btn btn-outline-warning btn-circle" @click="queryEntity()" title="reset">
-                      <i class="material-icons">restore</i>
-                    </button>
                   </th>
                 </tr>
               </thead>
@@ -96,7 +89,7 @@
                   <td>{{ getSubjectText(bean.debit) }}</td>
                   <td>{{ getSubjectText(bean.credit) }}</td>
                   <td>{{ bean.amount }}</td>
-                  <td>{{ bean.item }}<br/>{{ bean.place }}<br />{{ bean.who }}</td>
+                  <td>{{ (bean.item.length > 10) ? bean.item.substring(0, 10) + '...' : bean.item }}<br/>{{ bean.place }}<br />{{ bean.who }}</td>
                   <td>{{ getAccountText(bean.accountId) }}</td>
                   <td>{{ toFormatDateTime(bean.timeModify) }}</td>
                   <td>
@@ -171,14 +164,14 @@
             <!-- Place -->
             <div>
               <label for="place">Place</label>
-              <input v-model="entity.place" type="text" class="form-control" id="place" placeholder="Place">
+              <input v-model="entity.place" type="text" class="form-control" id="-" placeholder="Place">
             </div>
             <br />
 
             <!-- Who -->
             <div>
               <label for="who">Who</label>
-              <input v-model="entity.who" type="text" class="form-control" id="who" placeholder="Who">
+              <input v-model="entity.who" type="text" class="form-control" id="-" placeholder="Who">
             </div>
             <br />
 
