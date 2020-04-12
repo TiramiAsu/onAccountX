@@ -123,25 +123,32 @@
             </div>
             <br />
 
-            <!-- debit -->
-            <div>
-              <label for="debit">Debit</label>
-              <div class="form-group">
-                <select class="custom-select" id="debit" v-model="entity.debit" required>
-                  <option v-for="(subject, index) in subjectList" :key="index" :value="subject.id">{{ subject.name }}</option>
-                </select>
-                <div v-if="!validate.debit" class="invalid-feedback">請選擇借項科目</div>
-              </div>
-            </div>
-
-            <!-- credit -->
-            <div>
-              <label for="credit">Credit</label>
-              <div class="form-group">
-                <select class="custom-select" id="credit" v-model="entity.credit" required>
-                  <option v-for="(subject, index) in subjectList" :key="index" :value="subject.id">{{ subject.name }}</option>
-                </select>
-                <div v-if="!validate.credit" class="invalid-feedback">請選擇貸項科目</div>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm">
+                  <!-- debit -->
+                  <div>
+                    <label for="debit">Debit</label>
+                    <div class="form-group">
+                      <select class="custom-select" id="debit" v-model="entity.debit" required>
+                        <option v-for="(subject, index) in subjectList" :key="index" :value="subject.id">{{ subject.name }}</option>
+                      </select>
+                      <div v-if="!validate.debit" class="invalid-feedback">請選擇借項科目</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <!-- credit -->
+                  <div>
+                    <label for="credit">Credit</label>
+                    <div class="form-group">
+                      <select class="custom-select" id="credit" v-model="entity.credit" required>
+                        <option v-for="(subject, index) in subjectList" :key="index" :value="subject.id">{{ subject.name }}</option>
+                      </select>
+                      <div v-if="!validate.credit" class="invalid-feedback">請選擇貸項科目</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

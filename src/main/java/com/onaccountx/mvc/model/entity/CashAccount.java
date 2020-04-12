@@ -30,46 +30,46 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "acc_cash")
-public class AccCash implements Serializable {
+public class CashAccount implements Serializable {
 
 	private static final long serialVersionUID = -6069818283617915777L;
 
-	public final static String _ENTITY_NAME = "AccCash";
+	public final static String _JSON_NAME = "cashAccount";
 	public final static String _ID = "id";
 	public final static String _INCREASE = "increase";
 	public final static String _REDUCE = "reduce";
 	public final static String _TIME_MODIFY = "timeModify";
 	public final static String _TIME_BUILD = "timeBuild";
-	public final static String _JOURNAL_ID = "jId";
+	public final static String _JOURNAL_ID = "journalId";
 
 	@Id
 	@Column(name = "id", nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "increase")
+	@Column(name = "increase", nullable = false)
 	private Integer increase;
 
-	@Column(name = "reduce")
+	@Column(name = "reduce", nullable = false)
 	private Integer reduce;
 
-	@Column(name = "time_modify")
+	@Column(name = "time_modify", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeModify;
 
-	@Column(name = "time_build")
+	@Column(name = "time_build", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
 
 	@Column(name = "j_id", nullable = false)
-	private Long jId;
+	private Long journalId;
 
-	public AccCash() {}
+	public CashAccount() {}
 
-	public AccCash(Integer increase, Integer reduce, Long jId) {
+	public CashAccount(Integer increase, Integer reduce, Long journalId) {
 		this.increase = increase;
 		this.reduce = reduce;
-		this.jId = jId;
+		this.journalId = journalId;
 	}
 
 	public Long getId() {
@@ -112,12 +112,12 @@ public class AccCash implements Serializable {
 		this.timeBuild = timeBuild;
 	}
 
-	public Long getJId() {
-		return jId;
+	public Long getJournalId() {
+		return journalId;
 	}
 
-	public void setJId(Long jId) {
-		this.jId = jId;
+	public void setJournalId(Long journalId) {
+		this.journalId = journalId;
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class AccCash implements Serializable {
 				", reduce=" + reduce +
 				", timeModify=" + timeModify +
 				", timeBuild=" + timeBuild +
-				", jId=" + jId +
+				", journalId=" + journalId +
 				"]";
 	}
 }

@@ -40,9 +40,9 @@ import org.springframework.stereotype.Service;
 import com.google.json.JsonSanitizer;
 import com.onaccountx.generic.GenericRESTBean;
 import com.onaccountx.generic.GenericRESTService;
-import com.onaccountx.mvc.model.entity.AccCash;
-import com.onaccountx.mvc.service.AccCashService;
-import com.onaccountx.restful.bean.AccCashRESTBean;
+import com.onaccountx.mvc.model.entity.CashAccount;
+import com.onaccountx.mvc.service.CashAccountService;
+import com.onaccountx.restful.bean.CashAccountRESTBean;
 import com.onaccountx.utils.SpringUtils;
 
 /**
@@ -60,18 +60,14 @@ import com.onaccountx.utils.SpringUtils;
  * @author TiramiAsu (Email)
  */
 @Service
-@Path("/acccash")
-public class AccCashRESTService implements GenericRESTService {
+@Path("/cashaccount")
+public class CashAccountRESTService implements GenericRESTService {
 
 	@Autowired
-	AccCashService accCashService;
-	
-	public void setMemberService(AccCashService accCashService) {
-		this.accCashService = accCashService;
-	}
+	CashAccountService cashAccountService;
 	
 	private void enableService() {
-		accCashService = (accCashService == null) ? SpringUtils.getBean(AccCashService.class) : accCashService;
+		cashAccountService = (cashAccountService == null) ? SpringUtils.getBean(CashAccountService.class) : cashAccountService;
 	}
 
 	@GET
@@ -81,7 +77,7 @@ public class AccCashRESTService implements GenericRESTService {
 	public Response queryREST() {
 		
 		// Data
-		List<AccCash> accCashList = null;
+		List<CashAccount> cashAccList = null;
 		List<Map<String, Object>> beanList = new ArrayList<>();
 		
 		// Service Enable
@@ -91,19 +87,19 @@ public class AccCashRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 		
 		// Handle
-		accCashList = accCashService.query();
+		cashAccList = cashAccountService.query();
 		
 		// Response
-		if (accCashList == null) {
+		if (cashAccList == null) {
 			return new ResponseREST(ERROR_DATABASE).build();
 		} else {
-			for (AccCash ac : accCashList) {
+			for (CashAccount ac : cashAccList) {
 				Map<String, Object> restBean = new GenericRESTBean()
-						.put("id", ac.getId())
-						.put("increase", ac.getIncrease())
-						.put("reduce", ac.getReduce())
-						.put("jId", ac.getJId())
-						.put("timeModify", ac.getTimeModify().getTime())
+						.put(CashAccount._ID, ac.getId())
+						.put(CashAccount._INCREASE, ac.getIncrease())
+						.put(CashAccount._REDUCE, ac.getReduce())
+						.put(CashAccount._JOURNAL_ID, ac.getJournalId())
+						.put(CashAccount._TIME_MODIFY, ac.getTimeModify().getTime())
 						.build();
 				beanList.add(restBean);
 			}
@@ -135,7 +131,7 @@ public class AccCashRESTService implements GenericRESTService {
 		}
 
 		return Response.status(200)
-				.entity(accCashService.queryREST(jsonObject))
+				.entity(cashAccountService.queryREST(jsonObject))
 				.build();
 	}
 
@@ -147,8 +143,8 @@ public class AccCashRESTService implements GenericRESTService {
 	public Response findREST(@PathParam("id") String id) {
 		
 		// Data
-		AccCash accCash = null;
-		AccCashRESTBean bean = null;
+		CashAccount cashAcc = null;
+		CashAccountRESTBean bean = null;
 		
 		// Service Enable
 		enableService();
@@ -157,18 +153,18 @@ public class AccCashRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 		
 		// Handle
-		accCash = accCashService.find(Long.parseLong(id));
+		cashAcc = cashAccountService.find(Long.parseLong(id));
 		
 		// Response
-		if (accCash == null) {
+		if (cashAcc == null) {
 			return new ResponseREST(ERROR_DATABASE).build();
 		} else {
-				bean = new AccCashRESTBean();
-				bean.setId(accCash.getId())
-					.setIncrease(accCash.getIncrease())
-					.setReduce(accCash.getReduce())
-					.setJId(accCash.getJId())
-					.setTimeModify(accCash.getTimeModify());
+				bean = new CashAccountRESTBean();
+				bean.setId(cashAcc.getId())
+					.setIncrease(cashAcc.getIncrease())
+					.setReduce(cashAcc.getReduce())
+					.setJournalId(cashAcc.getJournalId())
+					.setTimeModify(cashAcc.getTimeModify());
 			return new ResponseREST(SUCCESS)
 					.setData(bean)
 					.build();
@@ -182,8 +178,8 @@ public class AccCashRESTService implements GenericRESTService {
 	public Response createREST(InputStream in) {
 
 		JSONObject jsonObj = toJsonObj(in);
-		AccCashRESTBean bean = null;
-		AccCash accCash;
+		CashAccountRESTBean bean = null;
+		CashAccount cashAcc;
 
 		// Data
 
@@ -198,16 +194,16 @@ public class AccCashRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 
 		// Handle
-		bean = mapAccCashBean(jsonObj);
+		bean = mapCashAccBean(jsonObj);
 
 		if (bean == null) {
 			return new ResponseREST(ERROR_PARSE).build();
 		}
 
-		accCash = new AccCash(bean.getIncrease(), bean.getReduce(), bean.getJId());
+		cashAcc = new CashAccount(bean.getIncrease(), bean.getReduce(), bean.getJournalId());
 
 		try {
-			accCashService.create(accCash);
+			cashAccountService.create(cashAcc);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
@@ -224,8 +220,8 @@ public class AccCashRESTService implements GenericRESTService {
 	public Response updateREST(InputStream in, @PathParam("id") String id) {
 
 		JSONObject jsonObj = toJsonObj(in);
-		AccCashRESTBean bean = null;
-		AccCash accCash;
+		CashAccountRESTBean bean = null;
+		CashAccount accCash;
 
 		// Data
 
@@ -240,19 +236,19 @@ public class AccCashRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 
 		// Handle
-		bean = mapAccCashBean(jsonObj);
+		bean = mapCashAccBean(jsonObj);
 
 		if (bean == null) {
 			return new ResponseREST(ERROR_PARSE).build();
 		}
 
 		try {
-			accCash = accCashService.find(Long.parseLong(id));
+			accCash = cashAccountService.find(Long.parseLong(id));
 			accCash.setIncrease(bean.getIncrease() == null ? accCash.getIncrease() : bean.getIncrease());
 			accCash.setReduce(bean.getReduce() == null ? accCash.getReduce() : bean.getReduce());
-			accCash.setJId(bean.getJId() == null ? accCash.getJId() : bean.getJId());
+			accCash.setJournalId(bean.getJournalId() == null ? accCash.getJournalId() : bean.getJournalId());
 			accCash.setTimeModify(new Date());
-			accCashService.update(accCash);
+			cashAccountService.update(accCash);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
@@ -279,7 +275,7 @@ public class AccCashRESTService implements GenericRESTService {
 		// Handle
 
 		try {
-			accCashService.delete(Long.parseLong(id));
+			cashAccountService.delete(Long.parseLong(id));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
@@ -291,8 +287,8 @@ public class AccCashRESTService implements GenericRESTService {
 	/** private method */
 	
 	// JSONObject 映射 RESTBean
-	private AccCashRESTBean mapAccCashBean(JSONObject jsonObj) {
-		AccCashRESTBean retBean = null;
+	private CashAccountRESTBean mapCashAccBean(JSONObject jsonObj) {
+		CashAccountRESTBean retBean = null;
 		ObjectMapper mapper = new ObjectMapper();
 		String data = null;
 
@@ -301,13 +297,13 @@ public class AccCashRESTService implements GenericRESTService {
 		}
 
 		try {
-			data = jsonObj.get(AccCash._ENTITY_NAME).toString();
+			data = jsonObj.get(CashAccount._JSON_NAME).toString();
 			// System.out.println(data);
 			if (data == null || data.length() == 0) {
 				return null;
 			}
 
-			retBean = mapper.readValue(JsonSanitizer.sanitize(data), AccCashRESTBean.class);
+			retBean = mapper.readValue(JsonSanitizer.sanitize(data), CashAccountRESTBean.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

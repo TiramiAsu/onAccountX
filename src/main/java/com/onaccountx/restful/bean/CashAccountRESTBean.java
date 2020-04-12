@@ -19,7 +19,7 @@ import java.util.Date;
  * 
  * @author TiramiAsu (Email)
  */
-public class AccCashRESTBean implements Serializable {
+public class CashAccountRESTBean implements Serializable {
 
 	private static final long serialVersionUID = -3857232576005492446L;
 
@@ -27,22 +27,22 @@ public class AccCashRESTBean implements Serializable {
 	private Integer increase;
 	private Integer reduce;
 	private Date timeModify;
-	private Long jId;
+	private Long journalId;
 
-	public AccCashRESTBean() {}
+	public CashAccountRESTBean() {}
 
-	public AccCashRESTBean(Integer increase, Integer reduce, Date timeModify, Long jId) {
+	public CashAccountRESTBean(Integer increase, Integer reduce, Date timeModify, Long journalId) {
 		this.increase = increase;
 		this.reduce = reduce;
 		this.timeModify = timeModify;
-		this.jId = jId;
+		this.journalId = journalId;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public AccCashRESTBean setId(Long id) {
+	public CashAccountRESTBean setId(Long id) {
 		this.id = id;
 		return this;
 	}
@@ -51,7 +51,7 @@ public class AccCashRESTBean implements Serializable {
 		return increase;
 	}
 
-	public AccCashRESTBean setIncrease(Integer increase) {
+	public CashAccountRESTBean setIncrease(Integer increase) {
 		this.increase = increase;
 		return this;
 	}
@@ -60,7 +60,7 @@ public class AccCashRESTBean implements Serializable {
 		return reduce;
 	}
 
-	public AccCashRESTBean setReduce(Integer reduce) {
+	public CashAccountRESTBean setReduce(Integer reduce) {
 		this.reduce = reduce;
 		return this;
 	}
@@ -69,27 +69,27 @@ public class AccCashRESTBean implements Serializable {
 		return timeModify;
 	}
 
-	public AccCashRESTBean setTimeModify(Date timeModify) {
+	public CashAccountRESTBean setTimeModify(Date timeModify) {
 		this.timeModify = timeModify;
 		return this;
 	}
 
-	public Long getJId() {
-		return jId;
+	public Long getJournalId() {
+		return journalId;
 	}
 
-	public AccCashRESTBean setJId(Long jId) {
-		this.jId = jId;
+	public CashAccountRESTBean setJournalId(Long journalId) {
+		this.journalId = journalId;
 		return this;
 	}
 
 	@Override
 	public String toString() {
-		return "AccCashRESTBean [id=" + id +
+		return "CashAccountRESTBean [id=" + id +
 				", increase=" + increase +
 				", reduce=" + reduce +
 				", timeModify=" + timeModify +
-				", jId=" + jId +
+				", journalId=" + journalId +
 				"]";
 	}
 }

@@ -25,74 +25,70 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.googlecode.genericdao.search.SearchResult;
-import com.onaccountx.mvc.model.dao.AccCashDAO;
-import com.onaccountx.mvc.model.entity.AccCash;
-import com.onaccountx.mvc.service.AccCashService;
+import com.onaccountx.mvc.model.dao.CashAccountDAO;
+import com.onaccountx.mvc.model.entity.CashAccount;
+import com.onaccountx.mvc.service.CashAccountService;
 import com.onaccountx.restful.ResponseREST;
-import com.onaccountx.restful.bean.AccCashRESTBean;
+import com.onaccountx.restful.bean.CashAccountRESTBean;
 import com.onaccountx.utils.JsonUtils;
 
 /**
  * <pre>
- * [實作 AccCashService] 2020-03-18 15:17
+ * [實作 CashAccountService] 2020-03-18 15:17
  * </pre>
  * 
  * @author TiramiAsu (Email)
  */
 @Service
-public class AccCashServiceImpl implements AccCashService {
+public class CashAccountServiceImpl implements CashAccountService {
 
 	@Autowired
-	private AccCashDAO accCashDAO;
-
-	public void setAccCashDAO(AccCashDAO accCashDAO) {
-		this.accCashDAO = accCashDAO;
-	}
+	private CashAccountDAO cashAccountDAO;
 
 	@Override
 	@Transactional
-	public boolean create(AccCash bean) {
+	public boolean create(CashAccount bean) {
 		bean.setTimeBuild(new Date());
 		bean.setTimeModify(new Date());
-		return accCashDAO.save(bean);
+		return cashAccountDAO.save(bean);
 	}
 
 	@Override
 	@Transactional
-	public AccCash find(Long id) {
-		return accCashDAO.find(id);
+	public CashAccount find(Long id) {
+		return cashAccountDAO.find(id);
 	}
 
 	@Override
 	@Transactional
-	public boolean update(AccCash bean) {
-		return accCashDAO.save(bean);
+	public boolean update(CashAccount bean) {
+		return cashAccountDAO.save(bean);
 	}
 
 	@Override
 	@Transactional
 	public boolean delete(Long id) {
-		return accCashDAO.remove(accCashDAO.find(id));
+		return cashAccountDAO.remove(cashAccountDAO.find(id));
 	}
 
 	@Override
 	@Transactional
-	public List<AccCash> query() {
+	public List<CashAccount> query() {
 
-		List<AccCash> accCashList = null;
+		List<CashAccount> accCashList = null;
 
 		/* Initial value */
 		/* Check */
 		/* Search Condition */
 
 		try {
-			accCashList = accCashDAO.findAll().stream()
+			accCashList = cashAccountDAO.findAll().stream()
 					.sorted((o1, o2) -> o2.getId()
 					.compareTo(o1.getId()))
 //					.peek(System.out::println)
 					.collect(Collectors.toList());
 			if (accCashList == null) {
-				throw new Exception(">>> AccCash Query Failed <<<");
+				throw new Exception(">>> CashAccount Query Failed <<<");
 			}
 		} catch (Exception e) {
 			accCashList = null;
@@ -105,8 +101,8 @@ public class AccCashServiceImpl implements AccCashService {
 	@Transactional
 	public ResponseREST queryREST(Object json) {
 
-		JSONObject jsonObject = JsonUtils.parseAttributes("accCash", json);
-		List<AccCashRESTBean> outputJson = new ArrayList<>();
+		JSONObject jsonObject = JsonUtils.parseAttributes(CashAccount._JSON_NAME, json);
+		List<CashAccountRESTBean> outputJson = new ArrayList<>();
 		Map<String, Object> conds = new HashMap<String, Object>();
 
 		/* initial value */
@@ -115,37 +111,37 @@ public class AccCashServiceImpl implements AccCashService {
 
 		/* check */
 
-		jJId = (jsonObject.get(AccCash._JOURNAL_ID) == null) ? jJId : Long.parseLong(jsonObject.get(AccCash._JOURNAL_ID) + "");
+		jJId = (jsonObject.get(CashAccount._JOURNAL_ID) == null) ? jJId : Long.parseLong(jsonObject.get(CashAccount._JOURNAL_ID) + "");
 
 		/* Search Condition */
 
-		List<AccCash> accCashes = new ArrayList<>();
+		List<CashAccount> cashAccounts = new ArrayList<>();
 		SearchResult<Object> sr = new SearchResult<Object>();
 
 		if (jJId != -1L) {
-			conds.put(AccCash._JOURNAL_ID, jJId);
+			conds.put(CashAccount._JOURNAL_ID, jJId);
 		}
 
 		// 以 "id" 為順序
 		ResponseREST responseMeg = null;
 
 		try {
-			sr = accCashDAO.query(AccCash._ID, true, conds);
+			sr = cashAccountDAO.query(CashAccount._ID, true, conds);
 
 			/* choose output data */
 
 			for (Object obj : sr.getResult()) {
-				accCashes.add((AccCash) obj);
+				cashAccounts.add((CashAccount) obj);
 			}
 
-			for (AccCash accCash : accCashes) {
-				AccCashRESTBean bean = new AccCashRESTBean();
+			for (CashAccount cashAcc : cashAccounts) {
+				CashAccountRESTBean bean = new CashAccountRESTBean();
 
-				bean.setId(accCash.getId());
-				bean.setIncrease(accCash.getIncrease());
-				bean.setReduce(accCash.getReduce());
-				bean.setJId(accCash.getJId());
-				bean.setTimeModify(accCash.getTimeModify());
+				bean.setId(cashAcc.getId());
+				bean.setIncrease(cashAcc.getIncrease());
+				bean.setReduce(cashAcc.getReduce());
+				bean.setJournalId(cashAcc.getJournalId());
+				bean.setTimeModify(cashAcc.getTimeModify());
 
 				outputJson.add(bean);
 			}

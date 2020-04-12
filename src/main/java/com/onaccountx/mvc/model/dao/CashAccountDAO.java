@@ -10,13 +10,13 @@
 package com.onaccountx.mvc.model.dao;
 
 import com.googlecode.genericdao.dao.hibernate.GenericDAO;
-import com.onaccountx.mvc.model.entity.AccCash;
+import com.onaccountx.mvc.model.entity.CashAccount;
 
 /**
  * <pre>
- * [定義 AccCashDAO] 2020-03-18 15:02
+ * [定義 CashAccountDAO] 2020-03-18 15:02
  * </pre>
  * 
  * @author TiramiAsu (Email)
  */
-public interface AccCashDAO extends _DAO<AccCash>, GenericDAO<AccCash, Long> {}
+public interface CashAccountDAO extends _DAO<CashAccount>, GenericDAO<CashAccount, Long> {}
