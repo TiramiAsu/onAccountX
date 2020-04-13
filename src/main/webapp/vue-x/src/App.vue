@@ -29,7 +29,7 @@
 
             <router-link to="journal">
               <span class="list-group-item list-group-item-action"
-                :class="(nowRoute === '/journal') ? btn.select : ''" data-toggle="collapse" role="tab">Acc. Journal</span>
+                :class="(nowRoute === '/journal') ? btn.select : ''" data-toggle="collapse" role="tab">Acc. Journal / Cash</span>
             </router-link>
 
             <router-link to="member">

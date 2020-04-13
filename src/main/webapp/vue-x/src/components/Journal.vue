@@ -2,7 +2,7 @@
   <div style="font-size: 10 px">
     <div style="padding-top: 1%">
       <div>
-        <h1>Journal</h1>
+        <h1>Journal & Cash</h1>
         <h6 style="color: lightgray">
           <span v-if="thisLayout === PARAMS.Layout.Manage.value">{{ PARAMS.Layout.Manage.text }}</span>
           <span v-if="thisLayout === PARAMS.Layout.Add.value">{{ PARAMS.Layout.Add.text }}</span>
@@ -153,12 +153,40 @@
             </div>
 
             <!-- Amount -->
-            <div>
+            <div v-if="(entity.debit !== cashId) && (entity.credit !== cashId)">
               <label for="amount">Amount</label>
               <input v-model="entity.amount" type="number" class="form-control is-invalid" id="amount" placeholder="Amount" required>
               <div v-if="!validate.amount" class="invalid-feedback">不可空白</div>
             </div>
-            <br />
+
+            <div class="container" v-else>
+              <div class="row">
+                <!-- Increase -->
+                <div class="col-sm" v-if="entity.debit === cashId">
+                  <div>
+                    <label for="increase">Increase</label>
+                    <input v-model="entity.increase" type="number" class="form-control is-invalid" id="increase" placeholder="Increase" required>
+                    <div v-if="!validate.increase" class="invalid-feedback">不可空白</div>
+                  </div>
+                </div>
+                <!-- Reduce -->
+                <div class="col-sm" v-if="entity.credit === cashId">
+                  <div>
+                    <label for="reduce">Reduce</label>
+                    <input v-model="entity.reduce" type="number" class="form-control is-invalid" id="reduce" placeholder="Reduce" required>
+                    <div v-if="!validate.reduce" class="invalid-feedback">不可空白</div>
+                  </div>
+                </div>
+                <!-- Amount -->
+                <div class="col-sm">
+                  <div>
+                    <label for="amount">Amount</label>
+                    <input v-model="entity.amount" type="number" class="form-control is-invalid" id="amount" placeholder="Amount" required>
+                    <div v-if="!validate.amount" class="invalid-feedback">不可空白</div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <!-- Item -->
             <div>
@@ -244,9 +272,9 @@ export default {
       },
       PARAMS: {
         Layout: {
-          Manage: { symbol: 'manage', value: 0, text: '日記帳維護' },
-          Add: { symbol: 'add', value: 1, text: '日記帳新增' },
-          Edit: { symbol: 'edit', value: 2, text: '日記帳編輯' },
+          Manage: { symbol: 'manage', value: 0, text: '日記帳/現金帳維護' },
+          Add: { symbol: 'add', value: 1, text: '日記帳/現金帳新增' },
+          Edit: { symbol: 'edit', value: 2, text: '日記帳/現金帳編輯' },
           Action: {
             Filter: { symbol: 'filter' },
             Cancel: { symbol: 'cancel' }
@@ -290,6 +318,7 @@ export default {
         code: null,
         name: '請選擇...'
       }],
+      cashId: -1, // 判斷是否要填現金簿資訊
 
       // layout
       thisLayout: 0,
@@ -574,6 +603,12 @@ export default {
         if (response) {
           self.subjectList = self.subjectList.concat(response.data.data)
         }
+        self.subjectList.forEach(subject => {
+          if (subject.code === '1-9-1') { // 現金編號
+            self.cashId = subject.id
+          }
+        })
+        // console.log('cashId: ', self.cashId)
         self.display = false
       }).catch(function (error) {
         console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
