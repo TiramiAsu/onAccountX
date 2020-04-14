@@ -21,6 +21,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -36,7 +37,7 @@ import javax.persistence.TemporalType;
 @Table(name = "acc_journals")
 public class Journal implements Serializable {
 
-	private static final long serialVersionUID = -5565819749879625656L;
+	private static final long serialVersionUID = -5318609753154866299L;
 
 	public final static String _JSON_NAME = "journal";
 	public final static String _ID = "id";
@@ -90,6 +91,9 @@ public class Journal implements Serializable {
 	@Column(name = "time_modify", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeModify;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "journal")
+	private CashAccount cashAccount;
 
 	public Journal() {}
 
@@ -191,6 +195,14 @@ public class Journal implements Serializable {
 
 	public void setTimeModify(Date timeModify) {
 		this.timeModify = timeModify;
+	}
+
+	public CashAccount getCashAccount() {
+		return cashAccount;
+	}
+
+	public void setCashAccount(CashAccount cashAccount) {
+		this.cashAccount = cashAccount;
 	}
 
 	@Override

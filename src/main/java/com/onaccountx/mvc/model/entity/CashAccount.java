@@ -13,10 +13,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,20 +34,22 @@ import javax.persistence.TemporalType;
 @Table(name = "acc_cash")
 public class CashAccount implements Serializable {
 
-	private static final long serialVersionUID = -6069818283617915777L;
+	private static final long serialVersionUID = -3225417063836407455L;
 
 	public final static String _JSON_NAME = "cashAccount";
-	public final static String _ID = "id";
+	public final static String _ID = "journalId";
 	public final static String _INCREASE = "increase";
 	public final static String _REDUCE = "reduce";
 	public final static String _TIME_MODIFY = "timeModify";
 	public final static String _TIME_BUILD = "timeBuild";
-	public final static String _JOURNAL_ID = "journalId";
 
 	@Id
-	@Column(name = "id", nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@OneToOne
+	@JoinColumn(name = "journal_id",
+	foreignKey = @ForeignKey(
+			name = "journal_fk",
+			value = ConstraintMode.CONSTRAINT))
+	private Journal journal;
 
 	@Column(name = "increase", nullable = false)
 	private Integer increase;
@@ -61,23 +65,28 @@ public class CashAccount implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
 
-	@Column(name = "j_id", nullable = false)
-	private Long journalId;
-
 	public CashAccount() {}
 
-	public CashAccount(Integer increase, Integer reduce, Long journalId) {
+	public CashAccount(Journal journal, Integer increase, Integer reduce) {
+		this.journal = journal;
 		this.increase = increase;
 		this.reduce = reduce;
-		this.journalId = journalId;
 	}
 
-	public Long getId() {
-		return id;
+	public CashAccount(Journal journal, Integer increase, Integer reduce, Date timeModify, Date timeBuild) {
+		this.journal = journal;
+		this.increase = increase;
+		this.reduce = reduce;
+		this.timeModify = timeModify;
+		this.timeBuild = timeBuild;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Journal getJournal() {
+		return journal;
+	}
+
+	public void setJournal(Journal journal) {
+		this.journal = journal;
 	}
 
 	public Integer getIncrease() {
@@ -112,22 +121,12 @@ public class CashAccount implements Serializable {
 		this.timeBuild = timeBuild;
 	}
 
-	public Long getJournalId() {
-		return journalId;
-	}
-
-	public void setJournalId(Long journalId) {
-		this.journalId = journalId;
-	}
-
 	@Override
 	public String toString() {
-		return "AccCash [id=" + id +
-				", increase=" + increase +
+		return "CashAccount [increase=" + increase +
 				", reduce=" + reduce +
 				", timeModify=" + timeModify +
 				", timeBuild=" + timeBuild +
-				", journalId=" + journalId +
 				"]";
 	}
 }

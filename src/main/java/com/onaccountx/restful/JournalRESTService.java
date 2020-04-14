@@ -40,8 +40,10 @@ import org.springframework.stereotype.Service;
 import com.google.json.JsonSanitizer;
 import com.onaccountx.generic.GenericRESTBean;
 import com.onaccountx.generic.GenericRESTService;
+import com.onaccountx.mvc.model.entity.CashAccount;
 import com.onaccountx.mvc.model.entity.Journal;
 import com.onaccountx.mvc.service.AccountService;
+import com.onaccountx.mvc.service.CashAccountService;
 import com.onaccountx.mvc.service.JournalService;
 import com.onaccountx.mvc.service.SubjectService;
 import com.onaccountx.restful.bean.JournalRESTBean;
@@ -58,6 +60,8 @@ import com.onaccountx.utils.SpringUtils;
 @Path("/journal")
 public class JournalRESTService implements GenericRESTService {
 
+	private String _CASH_CODE = "1-9-1";
+
 	@Autowired
 	JournalService journalService;
 
@@ -67,10 +71,14 @@ public class JournalRESTService implements GenericRESTService {
 	@Autowired
 	AccountService accountService;
 
+	@Autowired
+	CashAccountService cashAccountService;
+
 	private void enableService() {
 		journalService = (journalService == null) ? SpringUtils.getBean(JournalService.class) : journalService;
 		subjectService = (subjectService == null) ? SpringUtils.getBean(SubjectService.class) : subjectService;
 		accountService = (accountService == null) ? SpringUtils.getBean(AccountService.class) : accountService;
+		cashAccountService = (cashAccountService == null) ? SpringUtils.getBean(CashAccountService.class) : cashAccountService;
 	}
 
 	@GET
@@ -167,17 +175,17 @@ public class JournalRESTService implements GenericRESTService {
 		if (journal == null) {
 			return new ResponseREST(ERROR_DATABASE).build();
 		} else {
-				bean = new JournalRESTBean(
-						journal.getId(),
-						journal.getTimeDate().getTime(),
-						journal.getDebit().getId(),
-						journal.getCredit().getId(),
-						journal.getAmount(),
-						journal.getItem(),
-						journal.getPlace(),
-						journal.getWho(),
-						journal.getAccount().getId(),
-						journal.getTimeModify());
+			bean = new JournalRESTBean(
+					journal.getId(),
+					journal.getTimeDate().getTime(),
+					journal.getDebit().getId(),
+					journal.getCredit().getId(),
+					journal.getAmount(),
+					journal.getItem(),
+					journal.getPlace(),
+					journal.getWho(),
+					journal.getAccount().getId(),
+					journal.getTimeModify());
 			return new ResponseREST(SUCCESS)
 					.setData(bean)
 					.build();
@@ -193,6 +201,7 @@ public class JournalRESTService implements GenericRESTService {
 		JSONObject jsonObj = toJsonObj(in);
 		JournalRESTBean restBean = null;
 		Journal journal;
+		CashAccount cashAccount = null;
 
 		// Data
 
@@ -222,12 +231,25 @@ public class JournalRESTService implements GenericRESTService {
 				restBean.getPlace(),
 				restBean.getWho(),
 				accountService.find(restBean.getAccountId()));
+		cashAccount = new CashAccount(
+				journal,
+				restBean.getIncrease(),
+				restBean.getReduce(),
+				new Date(),
+				new Date());
 		try {
+			boolean b1 = journal.getDebit().getCode().equals(_CASH_CODE);
+			boolean b2 = journal.getCredit().getCode().equals(_CASH_CODE);
+			// increase 或 reduce 有 "現金" -> 則被現金簿記錄
+			if (b1 || b2) {
+				journal.setCashAccount(cashAccount);
+			}
 			journalService.create(journal);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
 		}
+
 		// Response
 		return new ResponseREST(SUCCESS).build();
 	}

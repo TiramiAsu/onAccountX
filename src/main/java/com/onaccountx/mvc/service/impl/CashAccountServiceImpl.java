@@ -83,8 +83,7 @@ public class CashAccountServiceImpl implements CashAccountService {
 
 		try {
 			accCashList = cashAccountDAO.findAll().stream()
-					.sorted((o1, o2) -> o2.getId()
-					.compareTo(o1.getId()))
+					.sorted((o1, o2) -> o2.getJournal().getId().compareTo(o1.getJournal().getId()))
 //					.peek(System.out::println)
 					.collect(Collectors.toList());
 			if (accCashList == null) {
@@ -111,7 +110,7 @@ public class CashAccountServiceImpl implements CashAccountService {
 
 		/* check */
 
-		jJId = (jsonObject.get(CashAccount._JOURNAL_ID) == null) ? jJId : Long.parseLong(jsonObject.get(CashAccount._JOURNAL_ID) + "");
+		jJId = (jsonObject.get(CashAccount._ID) == null) ? jJId : Long.parseLong(jsonObject.get(CashAccount._ID) + "");
 
 		/* Search Condition */
 
@@ -119,7 +118,7 @@ public class CashAccountServiceImpl implements CashAccountService {
 		SearchResult<Object> sr = new SearchResult<Object>();
 
 		if (jJId != -1L) {
-			conds.put(CashAccount._JOURNAL_ID, jJId);
+			conds.put(CashAccount._ID, jJId);
 		}
 
 		// 以 "id" 為順序
@@ -137,10 +136,9 @@ public class CashAccountServiceImpl implements CashAccountService {
 			for (CashAccount cashAcc : cashAccounts) {
 				CashAccountRESTBean bean = new CashAccountRESTBean();
 
-				bean.setId(cashAcc.getId());
 				bean.setIncrease(cashAcc.getIncrease());
 				bean.setReduce(cashAcc.getReduce());
-				bean.setJournalId(cashAcc.getJournalId());
+				bean.setJournalId(cashAcc.getJournal().getId());
 				bean.setTimeModify(cashAcc.getTimeModify());
 
 				outputJson.add(bean);

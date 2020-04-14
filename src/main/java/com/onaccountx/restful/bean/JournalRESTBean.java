@@ -34,6 +34,10 @@ public class JournalRESTBean implements Serializable {
 	private Long accountId; // account id
 	private Date timeModify;
 
+	// CashAccount
+	private Integer increase;
+	private Integer reduce;
+
 	public JournalRESTBean() {}
 
 	public JournalRESTBean(Long id, Long timeDate, Long debit, Long credit, Integer amount,
@@ -130,6 +134,22 @@ public class JournalRESTBean implements Serializable {
 		this.timeModify = timeModify;
 	}
 
+	public Integer getIncrease() {
+		return increase;
+	}
+
+	public void setIncrease(Integer increase) {
+		this.increase = increase;
+	}
+
+	public Integer getReduce() {
+		return reduce;
+	}
+
+	public void setReduce(Integer reduce) {
+		this.reduce = reduce;
+	}
+
 	@Override
 	public String toString() {
 		return "JournalRESTBean [id=" + id +
@@ -142,6 +162,8 @@ public class JournalRESTBean implements Serializable {
 				", who=" + who +
 				", accountId=" + accountId +
 				", timeModify=" + timeModify +
+				", increase=" + increase +
+				", reduce=" + reduce +
 				"]";
 	}
 }

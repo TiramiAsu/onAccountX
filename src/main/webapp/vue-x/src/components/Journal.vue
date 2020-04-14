@@ -24,6 +24,7 @@
                   <th>Date</th>
                   <th>Debit</th>
                   <th>Credit</th>
+                  <th>Reduce / Increase</th>
                   <th>Amount</th>
                   <th>Info (Item / Place / Who)</th>
                   <th>Account</th>
@@ -67,6 +68,7 @@
                     </select>
                   </th>
                   <th></th>
+                  <th></th>
                   <th>
                     <input type="text" class="form-control" placeholder="請輸入項目..."
                       v-model="entity.item" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)" >
@@ -88,6 +90,7 @@
                   <td>{{ toFormatDateTime(bean.timeDate, 'YYYY-MM-DD') }}</td>
                   <td>{{ getSubjectText(bean.debit) }}</td>
                   <td>{{ getSubjectText(bean.credit) }}</td>
+                  <td align="center">{{ ((bean.reduce === undefined) && (bean.increase === undefined)) ? '' : ((bean.increase > 0) ? '-' : '+') }}</td>
                   <td>{{ bean.amount }}</td>
                   <td>{{ (bean.item.length > 10) ? bean.item.substring(0, 10) + '...' : bean.item }}<br/>{{ bean.place }}<br />{{ bean.who }}</td>
                   <td>{{ getAccountText(bean.accountId) }}</td>
@@ -165,16 +168,16 @@
                 <div class="col-sm" v-if="entity.debit === cashId">
                   <div>
                     <label for="increase">Increase</label>
-                    <input v-model="entity.increase" type="number" class="form-control is-invalid" id="increase" placeholder="Increase" required>
-                    <div v-if="!validate.increase" class="invalid-feedback">不可空白</div>
+                    <input v-model="entity2.increase" type="number" class="form-control is-invalid" id="increase" placeholder="Increase" required>
+                    <div v-if="!validate2.increase" class="invalid-feedback">不可空白</div>
                   </div>
                 </div>
                 <!-- Reduce -->
                 <div class="col-sm" v-if="entity.credit === cashId">
                   <div>
                     <label for="reduce">Reduce</label>
-                    <input v-model="entity.reduce" type="number" class="form-control is-invalid" id="reduce" placeholder="Reduce" required>
-                    <div v-if="!validate.reduce" class="invalid-feedback">不可空白</div>
+                    <input v-model="entity2.reduce" type="number" class="form-control is-invalid" id="reduce" placeholder="Reduce" required>
+                    <div v-if="!validate2.reduce" class="invalid-feedback">不可空白</div>
                   </div>
                 </div>
                 <!-- Amount -->
@@ -187,6 +190,7 @@
                 </div>
               </div>
             </div>
+            <br />
 
             <!-- Item -->
             <div>
@@ -224,7 +228,7 @@
           </form>
           <button type="button" class="btn btn-outline-dark" @click="toLayout(PARAMS.Layout.Action.Cancel.symbol)">Cancel</button>
           <button v-if="thisLayout === PARAMS.Layout.Add.value"
-                  type="button" class="btn btn-outline-primary" @click="createEntity(entity)">Finish</button>
+                  type="button" class="btn btn-outline-primary" @click="createEntity(entity, entity2)">Finish</button>
           <button v-if="thisLayout === PARAMS.Layout.Edit.value"
                   type="button" class="btn btn-outline-primary" @click="updateEntity(entity)">Update</button>
         </div>
@@ -269,6 +273,16 @@ export default {
           method: 'get',
           url: '/onAccountX/srv/account/list/account' // only id & account
         }
+        // cashAccount: {
+        //   create: {
+        //     method: 'put',
+        //     url: '/onAccountX/srv/cashaccount'
+        //   },
+        //   update: {
+        //     method: 'put',
+        //     url: '/onAccountX/srv/cashaccount/' // +id
+        //   }
+        // }
       },
       PARAMS: {
         Layout: {
@@ -296,6 +310,11 @@ export default {
         // other
         timeDateEnd: null
       },
+      entity2: {
+        // CashAccount Object
+        increase: 0,
+        reduce: 0
+      },
 
       // validate option
       validate: {
@@ -308,6 +327,11 @@ export default {
         // place: false, // 不驗證
         // who: false, // 不驗證
         accountId: false
+      },
+      validate2: {
+        // empty
+        increase: false,
+        reduce: false
       },
       validateFinal: false, // 檢查結果
 
@@ -335,7 +359,9 @@ export default {
   },
   updated () {
     var v = this.validate
+    var v2 = this.validate2
     var e = this.entity
+    var e2 = this.entity2
     v.timeDate = e.timeDate !== null
     v.debit = e.debit !== null
     v.credit = e.credit !== null
@@ -344,6 +370,9 @@ export default {
     // place 不驗證
     // who 不驗證
     v.accountId = e.accountId !== null
+
+    v2.increase = e2.increase !== null
+    v2.reduce = e2.reduce !== null
   },
   methods: {
     /* Initial */
@@ -369,6 +398,10 @@ export default {
               // other
               timeDateEnd: null
             }
+            self.entity2 = {
+              increase: (bean.credit === self.cashId) ? 0 : bean.amount,
+              reduce: (bean.debit === self.cashId) ? 0 : bean.amount
+            }
           } else {
             console.log(`>>> Error: 'bean' is not defined.`)
           }
@@ -390,6 +423,10 @@ export default {
             // other
             timeDateEnd: null
           }
+          self.entity2 = {
+            increase: 0,
+            reduce: 0
+          }
           break
       }
       self.validate = {
@@ -400,6 +437,10 @@ export default {
         amount: false,
         item: false,
         accountId: false
+      }
+      self.validate2 = {
+        increase: false,
+        reduce: false
       }
       self.validateFinal = false
     },
@@ -435,7 +476,7 @@ export default {
       return apiBean
     },
     // 新增修改資料 -> create, update 資料用
-    saveBean (bean) {
+    saveBean (bean, bean2) {
       return {
         id: bean.id,
         // bean,timeDate is String (yyyy-MM-dd)
@@ -447,13 +488,22 @@ export default {
         place: bean.place,
         who: bean.who,
         accountId: bean.accountId,
-        timeModify: bean.timeModify
+        timeModify: bean.timeModify,
+        // CashAccount
+        increase: bean2.increase,
+        reduce: bean2.reduce
       }
     },
     // 打包 API 用 Entity
     pkgApiEntity (apiBean) {
       return {
         journal: apiBean
+      }
+    },
+    // 打包 API 用 Entity2
+    pkgApiEntity2 (apiBean2) {
+      return {
+        cashAccount: apiBean2
       }
     },
 
@@ -480,15 +530,21 @@ export default {
         console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
       })
     },
-    createEntity (bean) {
+    createEntity (bean, bean2) {
       var self = this
       var v = this.validate
-      var apiBean = self.saveBean(bean)
+      var v2 = this.validate2
+      var apiBean = self.saveBean(bean, bean2)
 
       // all check
       var final = true
       for (var item in v) {
         if (!v[item]) {
+          final = false
+        }
+      }
+      for (var item2 in v2) {
+        if (!v2[item2]) {
           final = false
         }
       }
@@ -514,7 +570,7 @@ export default {
             }
           }
         }).catch(function (error) {
-          console.log('>>> Error: Add failed: ', error)
+          console.log('>>> Error: Add ' + self.API.entityName + ' failed: ', error)
         })
       } else {
         alert('請檢查是否有欄位未填寫')

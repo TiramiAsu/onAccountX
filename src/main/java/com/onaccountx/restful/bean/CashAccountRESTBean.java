@@ -23,7 +23,6 @@ public class CashAccountRESTBean implements Serializable {
 
 	private static final long serialVersionUID = -3857232576005492446L;
 
-	private Long id;
 	private Integer increase;
 	private Integer reduce;
 	private Date timeModify;
@@ -36,15 +35,6 @@ public class CashAccountRESTBean implements Serializable {
 		this.reduce = reduce;
 		this.timeModify = timeModify;
 		this.journalId = journalId;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public CashAccountRESTBean setId(Long id) {
-		this.id = id;
-		return this;
 	}
 
 	public Integer getIncrease() {
@@ -85,8 +75,7 @@ public class CashAccountRESTBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CashAccountRESTBean [id=" + id +
-				", increase=" + increase +
+		return "CashAccountRESTBean [increase=" + increase +
 				", reduce=" + reduce +
 				", timeModify=" + timeModify +
 				", journalId=" + journalId +

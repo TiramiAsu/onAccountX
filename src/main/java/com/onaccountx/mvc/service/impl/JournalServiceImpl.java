@@ -26,8 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.googlecode.genericdao.search.SearchResult;
 import com.onaccountx.generic.GenericRESTBean;
+import com.onaccountx.mvc.model.dao.CashAccountDAO;
 import com.onaccountx.mvc.model.dao.JournalDAO;
 import com.onaccountx.mvc.model.dao.SubjectDAO;
+import com.onaccountx.mvc.model.entity.CashAccount;
 import com.onaccountx.mvc.model.entity.Journal;
 import com.onaccountx.mvc.service.JournalService;
 import com.onaccountx.restful.ResponseREST;
@@ -49,6 +51,9 @@ public class JournalServiceImpl implements JournalService {
 
 	@Autowired
 	private SubjectDAO subjectDAO;
+
+	@Autowired
+	private CashAccountDAO cashAccountDAO;
 
 	@Override
 	@Transactional
@@ -182,6 +187,7 @@ public class JournalServiceImpl implements JournalService {
 			}
 
 			for (Journal journal : journalList) {
+				CashAccount cashAccount = null;
 				Map<String, Object> restBean = new GenericRESTBean()
 						.put(Journal._ID, journal.getId())
 						.put(Journal._TIME_DATE, journal.getTimeDate().getTime())
@@ -194,6 +200,13 @@ public class JournalServiceImpl implements JournalService {
 						.put(Journal._ACCOUNT_ID, journal.getAccount().getId())
 						.put(Journal._TIME_MODIFY, journal.getTimeModify().getTime())
 						.build();
+				try {
+					cashAccount = cashAccountDAO.find(journal.getId());
+					restBean.put(CashAccount._INCREASE, cashAccount.equals(null) ? 0 : cashAccount.getIncrease());
+					restBean.put(CashAccount._REDUCE, cashAccount.equals(null) ? 0 : cashAccount.getReduce());
+				} catch (Exception e) {
+					// 現金簿不存在 -> 代表只有日記簿紀錄
+				}
 
 				outputJson.add(restBean);
 			}
