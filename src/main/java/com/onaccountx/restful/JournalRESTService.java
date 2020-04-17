@@ -231,17 +231,19 @@ public class JournalRESTService implements GenericRESTService {
 				restBean.getPlace(),
 				restBean.getWho(),
 				accountService.find(restBean.getAccountId()));
-		cashAccount = new CashAccount(
-				journal,
-				restBean.getIncrease(),
-				restBean.getReduce(),
-				new Date(),
-				new Date());
 		try {
 			boolean b1 = journal.getDebit().getCode().equals(_CASH_CODE);
 			boolean b2 = journal.getCredit().getCode().equals(_CASH_CODE);
+			System.out.println(" debit: " + journal.getDebit().getCode());
+			System.out.println("credit: " + journal.getCredit().getCode());
 			// increase 或 reduce 有 "現金" -> 則被現金簿記錄
 			if (b1 || b2) {
+				cashAccount = new CashAccount(
+					journal,
+					restBean.getIncrease(),
+					restBean.getReduce(),
+					new Date(),
+					new Date());
 				journal.setCashAccount(cashAccount);
 			}
 			journalService.create(journal);
@@ -264,6 +266,7 @@ public class JournalRESTService implements GenericRESTService {
 		JSONObject jsonObj = toJsonObj(in);
 		JournalRESTBean restBean = null;
 		Journal journal;
+		CashAccount cashAccount;
 
 		// Data
 
@@ -286,16 +289,31 @@ public class JournalRESTService implements GenericRESTService {
 
 		try {
 			journal = journalService.find(Long.parseLong(id));
-			journal.setTimeDate(restBean.getTimeDate() == null ? journal.getTimeDate() : new Date(restBean.getTimeDate()));
-			journal.setDebit(restBean.getDebit() == null ? journal.getDebit() : subjectService.find(restBean.getDebit()));
-			journal.setCredit(restBean.getCredit() == null ? journal.getCredit() : subjectService.find(restBean.getCredit()));
-			journal.setAmount(restBean.getAmount() == null ? journal.getAmount() : restBean.getAmount());
-			journal.setItem(restBean.getItem() == null ? journal.getItem() : restBean.getItem());
-			journal.setPlace(restBean.getPlace() == null ? journal.getPlace() : restBean.getPlace());
-			journal.setWho(restBean.getWho() == null ? journal.getWho() : restBean.getWho());
-			journal.setAccount(restBean.getAccountId() == null ? journal.getAccount() : accountService.find(restBean.getAccountId()));
-			journal.setTimeModify(new Date());
-			journalService.update(journal);
+			Journal newJournal = new Journal(
+				restBean.getTimeDate() == null ? journal.getTimeDate() : new Date(restBean.getTimeDate()),
+				restBean.getDebit() == null ? journal.getDebit() : subjectService.find(restBean.getDebit()),
+				restBean.getCredit() == null ? journal.getCredit() : subjectService.find(restBean.getCredit()),
+				restBean.getAmount() == null ? journal.getAmount() : restBean.getAmount(),
+				restBean.getItem() == null ? journal.getItem() : restBean.getItem(),
+				restBean.getPlace() == null ? journal.getPlace() : restBean.getPlace(),
+				restBean.getWho() == null ? journal.getWho() : restBean.getWho(),
+				restBean.getAccountId() == null ? journal.getAccount() : accountService.find(restBean.getAccountId()));
+
+			boolean b1 = newJournal.getDebit().getCode().equals(_CASH_CODE);
+			boolean b2 = newJournal.getCredit().getCode().equals(_CASH_CODE);
+			// increase 或 reduce 有 "現金" -> 則被現金簿記錄
+			if (b1 || b2) {
+				cashAccount = cashAccountService.find(journal.getId());
+				CashAccount newCashAccount = new CashAccount(
+					newJournal,
+					restBean.getIncrease() == null ? cashAccount.getIncrease() : restBean.getIncrease(),
+					restBean.getReduce() == null ? cashAccount.getReduce() : restBean.getReduce(),
+					new Date(),
+					new Date());
+				newJournal.setCashAccount(newCashAccount);
+			}
+			journalService.create(newJournal);
+			journalService.delete(journal.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();

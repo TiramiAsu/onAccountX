@@ -230,7 +230,7 @@
           <button v-if="thisLayout === PARAMS.Layout.Add.value"
                   type="button" class="btn btn-outline-primary" @click="createEntity(entity, entity2)">Finish</button>
           <button v-if="thisLayout === PARAMS.Layout.Edit.value"
-                  type="button" class="btn btn-outline-primary" @click="updateEntity(entity)">Update</button>
+                  type="button" class="btn btn-outline-primary" @click="updateEntity(entity, entity2)">Update</button>
         </div>
       </div>
     </div>
@@ -576,10 +576,11 @@ export default {
         alert('請檢查是否有欄位未填寫')
       }
     },
-    updateEntity (bean) {
+    updateEntity (bean, bean2) {
       var self = this
       var v = this.validate
-      var apiBean = this.saveBean(bean)
+      var v2 = this.validate2
+      var apiBean = this.saveBean(bean, bean2)
 
       // all check
       var final = true
@@ -588,6 +589,11 @@ export default {
           final = false
         }
         // console.log(item + ':' + v[item])
+      }
+      for (var item2 in v2) {
+        if (!v2[item2]) {
+          final = false
+        }
       }
       self.validateFinal = final
 
