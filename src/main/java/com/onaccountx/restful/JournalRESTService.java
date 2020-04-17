@@ -14,7 +14,6 @@ import static com.onaccountx.utils.ResponseUtils.ERROR_DATABASE;
 import static com.onaccountx.utils.ResponseUtils.ERROR_INPUT;
 import static com.onaccountx.utils.ResponseUtils.ERROR_PARSE;
 import static com.onaccountx.utils.ResponseUtils.SUCCESS;
-import static com.onaccountx.utils.ResponseUtils.VALIDATE_FAIL;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,75 +40,45 @@ import org.springframework.stereotype.Service;
 import com.google.json.JsonSanitizer;
 import com.onaccountx.generic.GenericRESTBean;
 import com.onaccountx.generic.GenericRESTService;
-import com.onaccountx.mvc.model.entity.Account;
+import com.onaccountx.mvc.model.entity.CashAccount;
+import com.onaccountx.mvc.model.entity.Journal;
 import com.onaccountx.mvc.service.AccountService;
-import com.onaccountx.mvc.service.MemberService;
-import com.onaccountx.restful.bean.AccountRESTBean;
+import com.onaccountx.mvc.service.CashAccountService;
+import com.onaccountx.mvc.service.JournalService;
+import com.onaccountx.mvc.service.SubjectService;
+import com.onaccountx.restful.bean.JournalRESTBean;
 import com.onaccountx.utils.SpringUtils;
 
 /**
  * <pre>
- * [Account REST Service] 2020-03-20 17:44
- * 
- * [Process]
- * // Data
- * // Service Enable
- * // Authenticate User
- * // Handle
- * // Response
+ * [Journal REST Service] 2020-04-08 00:19
  * </pre>
  * 
  * @author TiramiAsu (Email)
  */
 @Service
-@Path("/account")
-public class AccountRESTService implements GenericRESTService {
+@Path("/journal")
+public class JournalRESTService implements GenericRESTService {
+
+	private String _CASH_CODE = "1-9-1";
+
+	@Autowired
+	JournalService journalService;
+
+	@Autowired
+	SubjectService subjectService;
 
 	@Autowired
 	AccountService accountService;
 
 	@Autowired
-	MemberService memberService;
-	
+	CashAccountService cashAccountService;
+
 	private void enableService() {
+		journalService = (journalService == null) ? SpringUtils.getBean(JournalService.class) : journalService;
+		subjectService = (subjectService == null) ? SpringUtils.getBean(SubjectService.class) : subjectService;
 		accountService = (accountService == null) ? SpringUtils.getBean(AccountService.class) : accountService;
-		memberService = (memberService == null) ? SpringUtils.getBean(MemberService.class) : memberService;
-	}
-
-	@GET
-	@Path("/list/account")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response queryRESTmin() {
-
-		// Data
-		List<Account> accountList = null;
-		List<Map<String, Object>> beanList = new ArrayList<>();
-		
-		// Service Enable
-		enableService();
-		
-		// Authenticate User
-		// TODO Json Web Token -> Filter
-		
-		// Handle
-		accountList = accountService.query();
-		
-		// Response
-		if (accountList == null) {
-			return new ResponseREST(ERROR_DATABASE).build();
-		} else {
-			for (Account acc : accountList) {
-				Map<String, Object> restBean = new GenericRESTBean()
-						.put(Account._ID, acc.getId())
-						.put(Account._ACCOUNT, acc.getAccount())
-						.build();
-				beanList.add(restBean);
-			}
-			return new ResponseREST(SUCCESS)
-					.setData(beanList)
-					.build();
-		}
+		cashAccountService = (cashAccountService == null) ? SpringUtils.getBean(CashAccountService.class) : cashAccountService;
 	}
 
 	@GET
@@ -119,7 +88,7 @@ public class AccountRESTService implements GenericRESTService {
 	public Response queryREST() {
 		
 		// Data
-		List<Account> accountList = null;
+		List<Journal> journalList = null;
 		List<Map<String, Object>> beanList = new ArrayList<>();
 		
 		// Service Enable
@@ -129,20 +98,24 @@ public class AccountRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 		
 		// Handle
-		accountList = accountService.query();
+		journalList = journalService.query();
 		
 		// Response
-		if (accountList == null) {
+		if (journalList == null) {
 			return new ResponseREST(ERROR_DATABASE).build();
 		} else {
-			for (Account acc : accountList) {
+			for (Journal journal : journalList) {
 				Map<String, Object> restBean = new GenericRESTBean()
-						.put("id", acc.getId())
-						.put("account", acc.getAccount())
-						.put("memberId", acc.getMember().getId())
-						.put("status", acc.getStatus())
-						.put("timeLast", acc.getTimeLast())
-						.put("timeModify", acc.getTimeModify().getTime())
+						.put(Journal._ID, journal.getId())
+						.put(Journal._TIME_DATE, journal.getTimeDate().getTime())
+						.put(Journal._DEBIT, journal.getDebit().getId())
+						.put(Journal._CREDIT, journal.getCredit().getId())
+						.put(Journal._AMOUNT, journal.getAmount())
+						.put(Journal._ITEM, journal.getItem())
+						.put(Journal._PLACE, journal.getPlace())
+						.put(Journal._WHO, journal.getWho())
+						.put(Journal._TIME_BUILD, journal.getTimeBuild().getTime())
+						.put(Journal._TIME_MODIFY, journal.getTimeModify().getTime())
 						.build();
 				beanList.add(restBean);
 			}
@@ -174,7 +147,7 @@ public class AccountRESTService implements GenericRESTService {
 		}
 
 		return Response.status(200)
-				.entity(accountService.queryREST(jsonObject))
+				.entity(journalService.queryREST(jsonObject))
 				.build();
 	}
 
@@ -186,8 +159,8 @@ public class AccountRESTService implements GenericRESTService {
 	public Response findREST(@PathParam("id") String id) {
 		
 		// Data
-		Account account = null;
-		AccountRESTBean bean = null;
+		Journal journal = null;
+		JournalRESTBean bean = null;
 		
 		// Service Enable
 		enableService();
@@ -196,18 +169,23 @@ public class AccountRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 		
 		// Handle
-		account = accountService.find(Long.parseLong(id));
+		journal = journalService.find(Long.parseLong(id));
 		
 		// Response
-		if (account == null) {
+		if (journal == null) {
 			return new ResponseREST(ERROR_DATABASE).build();
 		} else {
-				bean = new AccountRESTBean();
-				bean.setId(account.getId())
-					.setAccount(account.getAccount())
-					.setStatus(account.getStatus())
-					.setTimeLast(account.getTimeLast())
-					.setTimeModify(account.getTimeModify());
+			bean = new JournalRESTBean(
+					journal.getId(),
+					journal.getTimeDate().getTime(),
+					journal.getDebit().getId(),
+					journal.getCredit().getId(),
+					journal.getAmount(),
+					journal.getItem(),
+					journal.getPlace(),
+					journal.getWho(),
+					journal.getAccount().getId(),
+					journal.getTimeModify());
 			return new ResponseREST(SUCCESS)
 					.setData(bean)
 					.build();
@@ -221,8 +199,9 @@ public class AccountRESTService implements GenericRESTService {
 	public Response createREST(InputStream in) {
 
 		JSONObject jsonObj = toJsonObj(in);
-		AccountRESTBean restBean = null;
-		Account account;
+		JournalRESTBean restBean = null;
+		Journal journal;
+		CashAccount cashAccount = null;
 
 		// Data
 
@@ -237,23 +216,42 @@ public class AccountRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 
 		// Handle
-		restBean = mapAccountEntity(jsonObj);
+		restBean = mapJournalEntity(jsonObj);
 
 		if (restBean == null) {
 			return new ResponseREST(ERROR_PARSE).build();
 		}
 
-		account = new Account(restBean.getAccount(),
-				restBean.getPassword(),
-				restBean.getStatus(),
-				restBean.getErrorTimes(),
-				memberService.find(restBean.getMemberId()));
+		journal = new Journal(
+				new Date(restBean.getTimeDate()),
+				subjectService.find(restBean.getDebit()),
+				subjectService.find(restBean.getCredit()),
+				restBean.getAmount(),
+				restBean.getItem(),
+				restBean.getPlace(),
+				restBean.getWho(),
+				accountService.find(restBean.getAccountId()));
 		try {
-			accountService.create(account);
+			boolean b1 = journal.getDebit().getCode().equals(_CASH_CODE);
+			boolean b2 = journal.getCredit().getCode().equals(_CASH_CODE);
+			System.out.println(" debit: " + journal.getDebit().getCode());
+			System.out.println("credit: " + journal.getCredit().getCode());
+			// increase 或 reduce 有 "現金" -> 則被現金簿記錄
+			if (b1 || b2) {
+				cashAccount = new CashAccount(
+					journal,
+					restBean.getIncrease(),
+					restBean.getReduce(),
+					new Date(),
+					new Date());
+				journal.setCashAccount(cashAccount);
+			}
+			journalService.create(journal);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
 		}
+
 		// Response
 		return new ResponseREST(SUCCESS).build();
 	}
@@ -266,8 +264,9 @@ public class AccountRESTService implements GenericRESTService {
 	public Response updateREST(InputStream in, @PathParam("id") String id) {
 
 		JSONObject jsonObj = toJsonObj(in);
-		AccountRESTBean restBean = null;
-		Account account;
+		JournalRESTBean restBean = null;
+		Journal journal;
+		CashAccount cashAccount;
 
 		// Data
 
@@ -282,57 +281,39 @@ public class AccountRESTService implements GenericRESTService {
 		// TODO Json Web Token -> Filter
 
 		// Handle
-		restBean = mapAccountEntity(jsonObj);
+		restBean = mapJournalEntity(jsonObj);
 
 		if (restBean == null) {
 			return new ResponseREST(ERROR_PARSE).build();
 		}
 
-		// validate identity user
-		String oldPassword = restBean.getOldPassword();
-		if (!oldPassword.equals(accountService.find(restBean.getId()).getPassword())) {
-			return new ResponseREST(VALIDATE_FAIL).build();
-		}
-
 		try {
-			account = accountService.find(Long.parseLong(id));
-			account.setAccount(restBean.getAccount() == null ? account.getAccount() : restBean.getAccount());
-			account.setPassword(restBean.getPassword() == null ? account.getPassword() : restBean.getPassword());
-			account.setStatus(restBean.getStatus() == -1 ? account.getStatus() : restBean.getStatus());
-			account.setErrorTimes(restBean.getErrorTimes() == -1 ? account.getErrorTimes() : restBean.getErrorTimes());
-			account.setTimeModify(new Date());
-			account.setMember(memberService.find(restBean.getMemberId()));
-			accountService.update(account);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseREST(ERROR_DATABASE).build();
-		}
-		// Response
-		return new ResponseREST(SUCCESS).build();
-	}
+			journal = journalService.find(Long.parseLong(id));
+			Journal newJournal = new Journal(
+				restBean.getTimeDate() == null ? journal.getTimeDate() : new Date(restBean.getTimeDate()),
+				restBean.getDebit() == null ? journal.getDebit() : subjectService.find(restBean.getDebit()),
+				restBean.getCredit() == null ? journal.getCredit() : subjectService.find(restBean.getCredit()),
+				restBean.getAmount() == null ? journal.getAmount() : restBean.getAmount(),
+				restBean.getItem() == null ? journal.getItem() : restBean.getItem(),
+				restBean.getPlace() == null ? journal.getPlace() : restBean.getPlace(),
+				restBean.getWho() == null ? journal.getWho() : restBean.getWho(),
+				restBean.getAccountId() == null ? journal.getAccount() : accountService.find(restBean.getAccountId()));
 
-	@PUT
-	@Path("/enable/{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response enableREST(@PathParam("id") String id) {
-
-		Account account;
-
-		// Data
-
-		// Service Enable
-		enableService();
-
-		// Authenticate User
-		// TODO Json Web Token -> Filter
-
-		// Handle
-
-		try {
-			account = accountService.find(Long.parseLong(id));
-			account.setStatus(Account.VALUE_ENABLE); // 無論解鎖或不停用, 都是啟用
-			accountService.update(account);
+			boolean b1 = newJournal.getDebit().getCode().equals(_CASH_CODE);
+			boolean b2 = newJournal.getCredit().getCode().equals(_CASH_CODE);
+			// increase 或 reduce 有 "現金" -> 則被現金簿記錄
+			if (b1 || b2) {
+				cashAccount = cashAccountService.find(journal.getId());
+				CashAccount newCashAccount = new CashAccount(
+					newJournal,
+					restBean.getIncrease() == null ? cashAccount.getIncrease() : restBean.getIncrease(),
+					restBean.getReduce() == null ? cashAccount.getReduce() : restBean.getReduce(),
+					new Date(),
+					new Date());
+				newJournal.setCashAccount(newCashAccount);
+			}
+			journalService.create(newJournal);
+			journalService.delete(journal.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
@@ -359,7 +340,7 @@ public class AccountRESTService implements GenericRESTService {
 		// Handle
 
 		try {
-			accountService.delete(Long.parseLong(id));
+			journalService.delete(Long.parseLong(id));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseREST(ERROR_DATABASE).build();
@@ -371,8 +352,8 @@ public class AccountRESTService implements GenericRESTService {
 	/** private method */
 	
 	// JSONObject 映射 RESTBean
-	private AccountRESTBean mapAccountEntity(JSONObject jsonObj) {
-		AccountRESTBean restBean = null;
+	private JournalRESTBean mapJournalEntity(JSONObject jsonObj) {
+		JournalRESTBean restBean = null;
 		ObjectMapper mapper = new ObjectMapper();
 		String data = null;
 
@@ -381,13 +362,13 @@ public class AccountRESTService implements GenericRESTService {
 		}
 
 		try {
-			data = jsonObj.get(Account._JSON_NAME).toString();
+			data = jsonObj.get(Journal._JSON_NAME).toString();
 			// System.out.println(data);
 			if (data == null || data.length() == 0) {
 				return null;
 			}
 
-			restBean = mapper.readValue(JsonSanitizer.sanitize(data), AccountRESTBean.class);
+			restBean = mapper.readValue(JsonSanitizer.sanitize(data), JournalRESTBean.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

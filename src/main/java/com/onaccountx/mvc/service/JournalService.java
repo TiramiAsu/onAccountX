@@ -10,13 +10,13 @@
 package com.onaccountx.mvc.service;
 
 import com.onaccountx.generic.GenericService;
-import com.onaccountx.mvc.model.entity.AccCash;
+import com.onaccountx.mvc.model.entity.Journal;
 
 /**
  * <pre>
- * [定義 AccCashService] 2020-03-18 15:16
+ * [定義 JournalService] 2020-04-07 23:09
  * </pre>
  * 
  * @author TiramiAsu (Email)
  */
-public interface AccCashService  extends GenericService<AccCash> {}
+public interface JournalService extends GenericService<Journal> {}

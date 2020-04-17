@@ -13,10 +13,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,54 +32,61 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "acc_cash")
-public class AccCash implements Serializable {
+public class CashAccount implements Serializable {
 
-	private static final long serialVersionUID = -3240840189249944395L;
+	private static final long serialVersionUID = -4889249180015881134L;
 
-	public final static String _JSON_NAME = "accCash";
-	public final static String _ID = "id";
+	public final static String _JSON_NAME = "cashAccount";
+	public final static String _ID = "journalId";
 	public final static String _INCREASE = "increase";
 	public final static String _REDUCE = "reduce";
 	public final static String _TIME_MODIFY = "timeModify";
 	public final static String _TIME_BUILD = "timeBuild";
-	public final static String _JOURNAL_ID = "jId";
 
 	@Id
-	@Column(name = "id", nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@OneToOne
+	@JoinColumn(name = "journal_id",
+	foreignKey = @ForeignKey(
+			name = "journal_fk",
+			value = ConstraintMode.CONSTRAINT))
+	private Journal journal;
 
-	@Column(name = "increase")
+	@Column(name = "increase", nullable = false)
 	private Integer increase;
 
-	@Column(name = "reduce")
+	@Column(name = "reduce", nullable = false)
 	private Integer reduce;
 
-	@Column(name = "time_modify")
+	@Column(name = "time_modify", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeModify;
 
-	@Column(name = "time_build")
+	@Column(name = "time_build", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeBuild;
 
-	@Column(name = "j_id", nullable = false)
-	private Long jId;
+	public CashAccount() {}
 
-	public AccCash() {}
-
-	public AccCash(Integer increase, Integer reduce, Long jId) {
+	public CashAccount(Journal journal, Integer increase, Integer reduce) {
+		this.journal = journal;
 		this.increase = increase;
 		this.reduce = reduce;
-		this.jId = jId;
 	}
 
-	public Long getId() {
-		return id;
+	public CashAccount(Journal journal, Integer increase, Integer reduce, Date timeModify, Date timeBuild) {
+		this.journal = journal;
+		this.increase = increase;
+		this.reduce = reduce;
+		this.timeModify = timeModify;
+		this.timeBuild = timeBuild;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Journal getJournal() {
+		return journal;
+	}
+
+	public void setJournal(Journal journal) {
+		this.journal = journal;
 	}
 
 	public Integer getIncrease() {
@@ -112,22 +121,12 @@ public class AccCash implements Serializable {
 		this.timeBuild = timeBuild;
 	}
 
-	public Long getJId() {
-		return jId;
-	}
-
-	public void setJId(Long jId) {
-		this.jId = jId;
-	}
-
 	@Override
 	public String toString() {
-		return "AccCash [id=" + id +
-				", increase=" + increase +
+		return "CashAccount [increase=" + increase +
 				", reduce=" + reduce +
 				", timeModify=" + timeModify +
 				", timeBuild=" + timeBuild +
-				", jId=" + jId +
 				"]";
 	}
 }

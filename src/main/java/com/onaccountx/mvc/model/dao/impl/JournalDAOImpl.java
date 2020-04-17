@@ -11,15 +11,16 @@ package com.onaccountx.mvc.model.dao.impl;
 
 import org.springframework.stereotype.Repository;
 
-import com.onaccountx.mvc.model.dao.AccCashDAO;
-import com.onaccountx.mvc.model.entity.AccCash;
+import com.onaccountx.mvc.model.dao.JournalDAO;
+import com.onaccountx.mvc.model.entity.Journal;
 
 /**
  * <pre>
- * [實作 AccCashDAO] 2020-03-18 15:03
+ * [實作 JournalDAO] 2020-04-07 23:08
  * </pre>
  * 
  * @author TiramiAsu (Email)
  */
 @Repository
-public class AccCashDAOImpl extends _DAOImpl<AccCash> implements AccCashDAO {}
+public class JournalDAOImpl extends _DAOImpl<Journal> implements JournalDAO {}
+

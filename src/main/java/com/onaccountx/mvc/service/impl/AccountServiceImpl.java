@@ -106,7 +106,7 @@ public class AccountServiceImpl implements AccountService {
 	@Transactional
 	public ResponseREST queryREST(Object json) {
 
-		JSONObject jsonObject = JsonUtils.parseAttributes("account", json);
+		JSONObject jsonObject = JsonUtils.parseAttributes(Account._JSON_NAME, json);
 		List<Map<String, Object>> outputJson = new ArrayList<>();
 		Map<String, Object> conds = new HashMap<String, Object>();
 

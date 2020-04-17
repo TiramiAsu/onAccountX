@@ -75,6 +75,46 @@ public class SubjectRESTService implements GenericRESTService {
 	}
 
 	@GET
+	@Path("/list/name")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response queryRESTmin() {
+
+		// Data
+		List<Subject> subjectList = null;
+		List<Map<String, Object>> beanList = new ArrayList<>();
+		
+		// Service Enable
+		enableService();
+		
+		// Authenticate User
+		// TODO Json Web Token -> Filter
+		
+		// Handle
+		subjectList = subjectService.query();
+		
+		// Response
+		if (subjectList == null) {
+			return new ResponseREST(ERROR_DATABASE).build();
+		} else {
+			for (Subject subject : subjectList) {
+				// 代號 1 -> 大分類代號, 代號 1-1 -> 小分類代號
+				if (subject.getCode().length() > 3) { // 不可被選擇
+					Map<String, Object> restBean = new GenericRESTBean()
+							.put(Subject._ID, subject.getId())
+							.put(Subject._CODE, subject.getCode())
+							.put(Subject._NAME, subject.getName())
+							.build();
+					beanList.add(restBean);
+				}
+			}
+			return new ResponseREST(SUCCESS)
+					.setData(beanList)
+					.build();
+		}
+	}
+
+	@GET
 	@Override
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
