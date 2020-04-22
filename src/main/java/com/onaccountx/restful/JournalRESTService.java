@@ -234,8 +234,6 @@ public class JournalRESTService implements GenericRESTService {
 		try {
 			boolean b1 = journal.getDebit().getCode().equals(_CASH_CODE);
 			boolean b2 = journal.getCredit().getCode().equals(_CASH_CODE);
-			System.out.println(" debit: " + journal.getDebit().getCode());
-			System.out.println("credit: " + journal.getCredit().getCode());
 			// increase 或 reduce 有 "現金" -> 則被現金簿記錄
 			if (b1 || b2) {
 				cashAccount = new CashAccount(

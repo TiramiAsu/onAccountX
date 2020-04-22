@@ -666,7 +666,7 @@ export default {
           self.subjectList = self.subjectList.concat(response.data.data)
         }
         self.subjectList.forEach(subject => {
-          if (subject.code === '1-9-1') { // 現金編號
+          if (subject.code === '1-0-9-1') { // 現金編號
             self.cashId = subject.id
           }
         })

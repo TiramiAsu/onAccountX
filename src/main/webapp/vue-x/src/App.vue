@@ -22,6 +22,16 @@
                 :class="(nowRoute === '/home') ? btn.select : ''" data-toggle="collapse" role="tab">Project</span>
             </router-link>
 
+            <router-link to="member">
+              <span class="list-group-item list-group-item-action"
+                :class="(nowRoute === '/member') ? btn.select : ''" data-toggle="collapse" role="tab">Members</span>
+            </router-link>
+
+            <router-link to="account">
+              <span class="list-group-item list-group-item-action"
+                :class="(nowRoute === '/account') ? btn.select : ''" data-toggle="collapse" role="tab">Accounts</span>
+            </router-link>
+
             <router-link to="subject">
               <span class="list-group-item list-group-item-action"
                 :class="(nowRoute === '/subject') ? btn.select : ''" data-toggle="collapse" role="tab">Acc. Subjects</span>
@@ -32,14 +42,9 @@
                 :class="(nowRoute === '/journal') ? btn.select : ''" data-toggle="collapse" role="tab">Acc. Journal / Cash</span>
             </router-link>
 
-            <router-link to="member">
+            <router-link to="report">
               <span class="list-group-item list-group-item-action"
-                :class="(nowRoute === '/member') ? btn.select : ''" data-toggle="collapse" role="tab">Members</span>
-            </router-link>
-
-            <router-link to="account">
-              <span class="list-group-item list-group-item-action"
-                :class="(nowRoute === '/account') ? btn.select : ''" data-toggle="collapse" role="tab">Accounts</span>
+                :class="(nowRoute === '/report') ? btn.select : ''" data-toggle="collapse" role="tab">Report</span>
             </router-link>
 
             <router-link to="profile">

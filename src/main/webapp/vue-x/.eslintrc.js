@@ -28,6 +28,7 @@ module.exports = {
   },
   globals: {
     axios: true,
-    moment: true
+    moment: true,
+    google: true
   }
 }
