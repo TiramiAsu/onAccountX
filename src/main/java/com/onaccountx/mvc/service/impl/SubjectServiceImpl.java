@@ -89,7 +89,7 @@ public class SubjectServiceImpl implements SubjectService {
 
 		try {
 			subjectList = subjectDAO.findAll().stream()
-					.sorted((o1, o2) -> o1.getId().compareTo(o2.getId()))
+					.sorted((o1, o2) -> o1.getCode().compareTo(o2.getCode()))
 //					.peek(System.out::println)
 					.collect(Collectors.toList());
 			if (subjectList == null) {
