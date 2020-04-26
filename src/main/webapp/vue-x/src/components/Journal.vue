@@ -165,7 +165,7 @@
             <div class="container" v-else>
               <div class="row">
                 <!-- Increase -->
-                <div class="col-sm" v-if="entity.debit === cashId">
+                <div class="col-sm" v-if="(entity.debit === cashId) && (entity.credit === cashId)">
                   <div>
                     <label for="increase">Increase</label>
                     <input v-model="entity2.increase" type="number" class="form-control is-invalid" id="increase" placeholder="Increase" required>
@@ -173,7 +173,7 @@
                   </div>
                 </div>
                 <!-- Reduce -->
-                <div class="col-sm" v-if="entity.credit === cashId">
+                <div class="col-sm" v-if="(entity.debit === cashId) && (entity.credit === cashId)">
                   <div>
                     <label for="reduce">Reduce</label>
                     <input v-model="entity2.reduce" type="number" class="form-control is-invalid" id="reduce" placeholder="Reduce" required>
@@ -359,9 +359,7 @@ export default {
   },
   updated () {
     var v = this.validate
-    var v2 = this.validate2
     var e = this.entity
-    var e2 = this.entity2
     v.timeDate = e.timeDate !== null
     v.debit = e.debit !== null
     v.credit = e.credit !== null
@@ -370,9 +368,6 @@ export default {
     // place 不驗證
     // who 不驗證
     v.accountId = e.accountId !== null
-
-    v2.increase = e2.increase !== null
-    v2.reduce = e2.reduce !== null
   },
   methods: {
     /* Initial */
@@ -534,6 +529,11 @@ export default {
       var self = this
       var v = this.validate
       var v2 = this.validate2
+
+      var obj = self.reflashIncreaseAndReduce()
+      bean2.increase = obj.increase
+      bean2.reduce = obj.reduce
+
       var apiBean = self.saveBean(bean, bean2)
 
       // all check
@@ -580,6 +580,11 @@ export default {
       var self = this
       var v = this.validate
       var v2 = this.validate2
+
+      var obj = self.reflashIncreaseAndReduce()
+      bean2.increase = obj.increase
+      bean2.reduce = obj.reduce
+
       var apiBean = this.saveBean(bean, bean2)
 
       // all check
@@ -758,6 +763,35 @@ export default {
         }
       })
       return str
+    },
+    // 自動設定 increase & reduce
+    reflashIncreaseAndReduce () {
+      var self = this
+      var v2 = this.validate2
+      var e = this.entity
+      var increase = null
+      var reduce = null
+
+      var b1 = e.debit === self.cashId
+      var b2 = e.credit === self.cashId
+      if (b1 && b2) {
+        // 不直接設定
+      }
+      if (!b1 && !b2) {
+        increase = 0
+        reduce = 0
+      }
+      if (b1 && !b2) {
+        increase = e.amount
+        reduce = 0
+      }
+      if (!b1 && b2) {
+        increase = 0
+        reduce = e.amount
+      }
+      v2.increase = increase !== null
+      v2.reduce = reduce !== null
+      return { 'increase': increase, 'reduce': reduce }
     },
     // 檢查時間先後
     checkTime (d1, d2) {

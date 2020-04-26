@@ -26,7 +26,8 @@
                 <!-- Left -->
                 <div class="col-sm">
                   <div align="center">{{ reportTitle.left.name }}</div>
-                  <GChart style="width: 500px; height: 500px"
+                  <div align="center"><h3><b>{{ showMoneyFormat(reportTitle.left.total) }}</b></h3></div>
+                  <GChart style="width: 500px; height: 400px"
                     type="PieChart"
                     :data="chartDataLeft"
                     :options="chartOptions"
@@ -35,7 +36,8 @@
                 <!-- Right -->
                 <div class="col-sm">
                   <div align="center">{{ reportTitle.right.name }}</div>
-                  <GChart style="width: 500px; height: 500px"
+                  <div align="center"><h3><b>{{ showMoneyFormat(reportTitle.right.total) }}</b></h3></div>
+                  <GChart style="width: 500px; height: 400px"
                     type="PieChart"
                     :data="chartDataRight"
                     :options="chartOptions"
@@ -96,8 +98,8 @@ export default {
         }
       },
       reportTitle: {
-        left: { name: '收入', code: '2-1' },
-        right: { name: '支出', code: '2-2' }
+        left: { name: '年收入', code: '2-1', total: 0 },
+        right: { name: '年支出', code: '2-2', total: 0 }
       },
       report: {
         timeDate: null,
@@ -142,18 +144,18 @@ export default {
       chartDataTable: [],
       chartTitleTable: [
         { type: 'string', label: 'Subject', id: 'Subject' },
-        { type: 'number', label: '1', id: 'm1' },
-        { type: 'number', label: '2', id: 'm2' },
-        { type: 'number', label: '3', id: 'm3' },
-        { type: 'number', label: '4', id: 'm4' },
-        { type: 'number', label: '5', id: 'm5' },
-        { type: 'number', label: '6', id: 'm6' },
-        { type: 'number', label: '7', id: 'm7' },
-        { type: 'number', label: '8', id: 'm8' },
-        { type: 'number', label: '9', id: 'm9' },
-        { type: 'number', label: '10', id: 'm10' },
-        { type: 'number', label: '11', id: 'm11' },
-        { type: 'number', label: '12', id: 'm12' }
+        { type: 'number', label: '  1 月 ', id: 'm1' },
+        { type: 'number', label: '  2 月 ', id: 'm2' },
+        { type: 'number', label: '  3 月 ', id: 'm3' },
+        { type: 'number', label: '  4 月 ', id: 'm4' },
+        { type: 'number', label: '  5 月 ', id: 'm5' },
+        { type: 'number', label: '  6 月 ', id: 'm6' },
+        { type: 'number', label: '  7 月 ', id: 'm7' },
+        { type: 'number', label: '  8 月 ', id: 'm8' },
+        { type: 'number', label: '  9 月 ', id: 'm9' },
+        { type: 'number', label: ' 10 月 ', id: 'm10' },
+        { type: 'number', label: ' 11 月 ', id: 'm11' },
+        { type: 'number', label: ' 12 月 ', id: 'm12' }
       ],
       // chartData: [
       //   [
@@ -343,12 +345,14 @@ export default {
     getLeftData (self) {
       var code = self.reportTitle.left.code // 2-1
       var preChartData = []
+      var total = 0
       self.entityListGroupBy.forEach(data => {
         if (data.code.substring(0, 3) === code) {
           var arr = []
           arr.push(data.debit)
           arr.push(data.subtotal)
           preChartData.push(arr)
+          total += data.subtotal
         }
       })
       preChartData.sort(function (a, b) {
@@ -356,17 +360,20 @@ export default {
       })
       preChartData.splice(0, 0, self.chartTitlePie)
       self.chartDataLeft = preChartData
+      self.reportTitle.left.total = total
     },
     // 取得 right Chart data
     getRightData (self) {
       var code = self.reportTitle.right.code // 2-2
       var preChartData = []
+      var total = 0
       self.entityListGroupBy.forEach(data => {
         if (data.code.substring(0, 3) === code) {
           var arr = []
           arr.push(data.debit)
           arr.push(data.subtotal)
           preChartData.push(arr)
+          total += data.subtotal
         }
       })
       self.chartDataRight = preChartData.sort(function (a, b) {
@@ -374,6 +381,7 @@ export default {
       })
       preChartData.splice(0, 0, self.chartTitlePie)
       self.chartDataRight = preChartData
+      self.reportTitle.right.total = total
     },
 
     // 檢查時間先後
@@ -489,6 +497,15 @@ export default {
         sum += Number(arr[i]) * Math.pow(10, arr.length - (i + 1))
       }
       return sum // 1221
+    },
+    showMoneyFormat (num) {
+      var str = ''
+      if (typeof num === 'number') {
+        str = '$ ' + num.toLocaleString('en-US')
+      } else {
+        str = 'Error'
+      }
+      return str
     },
 
     /* Util */
