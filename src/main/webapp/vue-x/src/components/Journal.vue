@@ -90,7 +90,7 @@
                   <td>{{ toFormatDateTime(bean.timeDate, 'YYYY-MM-DD') }}</td>
                   <td>{{ getSubjectText(bean.debit) }}</td>
                   <td>{{ getSubjectText(bean.credit) }}</td>
-                  <td align="center">{{ ((bean.reduce === undefined) && (bean.increase === undefined)) ? '' : ((bean.increase > 0) ? '-' : '+') }}</td>
+                  <td align="center">{{ ((bean.reduce === undefined) && (bean.increase === undefined)) ? '' : ((bean.increase > 0) ? '+' : '-') }}</td>
                   <td>{{ bean.amount }}</td>
                   <td>{{ (bean.item.length > 10) ? bean.item.substring(0, 10) + '...' : bean.item }}<br/>{{ bean.place }}<br />{{ bean.who }}</td>
                   <td>{{ getAccountText(bean.accountId) }}</td>
