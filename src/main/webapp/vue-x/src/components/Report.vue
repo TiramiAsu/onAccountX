@@ -15,12 +15,44 @@
             <loading :display="display" :code="loadingCode" />
           </span>
           <div v-if="display === false">
-            <GChart
-              type="PieChart"
-              :data="chartData"
-              :options="chartOptions"
-              :resizeDebounce="chartSize"
-            />
+            <!--
+            <select class="custom-select"
+              v-model="filterCondition.year" @change="queryEntity(entity, PARAMS.Layout.Action.Filter.symbol)">
+              <option v-for="(option, index) in filterCondition.years" :key="index" :value="option.value">{{ option.text }}</option>
+            </select>
+            -->
+            <div class="container">
+              <div class="row">
+                <!-- Left -->
+                <div class="col-sm">
+                  <div align="center">{{ reportTitle.left.name }}</div>
+                  <GChart style="width: 500px; height: 500px"
+                    type="PieChart"
+                    :data="chartDataLeft"
+                    :options="chartOptions"
+                  />
+                </div>
+                <!-- Right -->
+                <div class="col-sm">
+                  <div align="center">{{ reportTitle.right.name }}</div>
+                  <GChart style="width: 500px; height: 500px"
+                    type="PieChart"
+                    :data="chartDataRight"
+                    :options="chartOptions"
+                  />
+                </div>
+              </div>
+              <div style="padding-left: 10%">
+                <GChart
+                  :settings="{ packages: ['table'] }"
+                  type="Table"
+                  :data="chartDataTable"
+                  :options="chartOptionsTable"
+                  :events="chartEventsTable"
+                  ref="gChart"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -41,9 +73,21 @@ export default {
   data () {
     return {
       API: {
-        query: {
+        subjectNames: {
+          method: 'get',
+          url: '/onAccountX/srv/subject/list/name'
+        },
+        reportJournal: {
+          method: 'get',
+          url: '/onAccountX/srv/report/journal'
+        },
+        reportJournalGroupBy: {
+          method: 'get',
+          url: '/onAccountX/srv/report/journal/groupby'
+        },
+        reportTable: {
           method: 'post',
-          url: '/onAccountX/srv/journal'
+          url: '/onAccountX/srv/report/table'
         }
       },
       PARAMS: {
@@ -51,81 +95,286 @@ export default {
           Manage: { symbol: 'manage', value: 0, text: '財務報表' }
         }
       },
-      entityList: [],
-      accountList: [],
-      subjectList: [{
-        id: null, // ui 顯示 "請選擇..."
-        code: null,
-        name: '請選擇...'
-      }],
-      cashId: -1, // 判斷是否要填現金簿資訊
+      reportTitle: {
+        left: { name: '收入', code: '2-1' },
+        right: { name: '支出', code: '2-2' }
+      },
+      report: {
+        timeDate: null,
+        timeDateEnd: null
+      },
+      entityList: [], // all data
+      entityListGroupBy: [], // all data (group by subject name)
+      subjectList: [], // all subject info
+      entityListTable: [], // all 1-12 month data
+      filterCondition: {
+        year: '2019',
+        years: []
+      },
 
       // loading
-      display: false,
+      display: true,
       loadingCode: 0,
 
-      chartData: [
-        ['Task', 'Hours per Day'],
-        ['Work', 20],
-        ['Eat', 2],
-        ['Commute', 2],
-        ['Watch TV', 2],
-        ['Sleep', 7]
-      ],
+      /* Google Charts */
+
+      // pie chart
+      chartData: [],
+      chartDataLeft: [], // left PieChart data
+      chartDataRight: [], // right PieChart data
+      chartTitlePie: ['Task', 'Hours per Day'],
+      // chartData: [
+      //   ['Task', 'Hours per Day'],
+      //   ['Work', 20],
+      //   ['Eat', 2],
+      //   ['Commute', 2],
+      //   ['Watch TV', 2],
+      //   ['Sleep', 7]
+      // ],
       chartOptions: {
         chart: {
           title: 'My Daily Activities',
           subtitle: 'test'
         }
       },
-      chartSize: 600
+
+      // table
+      chartDataTable: [],
+      chartTitleTable: [
+        { type: 'string', label: 'Subject', id: 'Subject' },
+        { type: 'number', label: '1', id: 'm1' },
+        { type: 'number', label: '2', id: 'm2' },
+        { type: 'number', label: '3', id: 'm3' },
+        { type: 'number', label: '4', id: 'm4' },
+        { type: 'number', label: '5', id: 'm5' },
+        { type: 'number', label: '6', id: 'm6' },
+        { type: 'number', label: '7', id: 'm7' },
+        { type: 'number', label: '8', id: 'm8' },
+        { type: 'number', label: '9', id: 'm9' },
+        { type: 'number', label: '10', id: 'm10' },
+        { type: 'number', label: '11', id: 'm11' },
+        { type: 'number', label: '12', id: 'm12' }
+      ],
+      // chartData: [
+      //   [
+      //     { type: 'string', label: 'President', id: 'President' },
+      //     { type: 'date', label: 'From', id: 'From' },
+      //     { type: 'date', label: 'To', id: 'To' }
+      //   ],
+      //   ['Washington', new Date(1789, 3, 30), new Date(1797, 3, 4)],
+      //   ['Adams', new Date(1797, 2, 4), new Date(1802, 2, 4)],
+      //   ['Jefferson', new Date(1801, 2, 4), new Date(1809, 2, 4)]
+      // ],
+      chartOptionsTable: {
+        chart: {
+          title: 'Company Performance',
+          subtitle: 'Sales, Expenses, and Profit: 2014-2017'
+        }
+      },
+      chartEventsTable: {
+        select: () => {
+          const table = this.$refs.gChart.chartObject
+          const selection = table.getSelection()
+          const onSelectionMeaasge = selection.length !== 0 ? 'row was selected' : 'row was diselected'
+          alert(onSelectionMeaasge)
+        }
+      }
     }
   },
   mounted () {
-  },
-  updated () {
+    this.queryReportJournal()
+    this.queryReportJournalGroupBy()
+    this.querySubjectNames()
+    this.queryReportTable()
   },
   methods: {
-    /* Bean */
-
-    // 打包 API 用 Entity
-    pkgApiEntity (apiBean) {
-      return {
-        journal: apiBean
-      }
-    },
-    // 打包 API 用 Entity2
-    pkgApiEntity2 (apiBean2) {
-      return {
-        cashAccount: apiBean2
-      }
-    },
-
     /* API */
 
-    queryEntity (bean, actionSymbol) {
+    querySubjectNames () {
       var self = this
-      var apiBean = this.queryBean(bean)
       axios({
-        method: self.API.query.method,
-        url: self.API.query.url,
+        method: self.API.subjectNames.method,
+        url: self.API.subjectNames.url,
+        headers: {
+          'Content-Type': 'application/json',
+          'mac': 'helloJWT'
+        }
+      }).then(function (response) {
+        if (response) {
+          self.subjectList = response.data.data
+        }
+        self.display = false
+      }).catch(function (error) {
+        console.log('>>> Error: query Subject Names failed: ', error)
+      })
+    },
+    queryReportTable () {
+      var self = this
+      // var preChartData = []
+      axios({
+        method: self.API.reportTable.method,
+        url: self.API.reportTable.url,
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
         },
-        data: self.pkgApiEntity(apiBean)
+        data: { year: self.filterCondition.year }
+      }).then(function (response) {
+        if (response) {
+          self.entityListTable = response.data.data
+          self.tableReport(response.data.data)
+        }
+        self.display = false
+      }).catch(function (error) {
+        console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
+      })
+    },
+    queryReportJournal () {
+      var self = this
+      // var preChartData = []
+      axios({
+        method: self.API.reportJournal.method,
+        url: self.API.reportJournal.url,
+        headers: {
+          'Content-Type': 'application/json',
+          'mac': 'helloJWT'
+        }
       }).then(function (response) {
         if (response) {
           self.entityList = response.data.data
         }
         self.display = false
-        self.toLayout(self.PARAMS.Layout.Manage.symbol, null, actionSymbol)
+      }).catch(function (error) {
+        console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
+      })
+    },
+    queryReportJournalGroupBy () {
+      var self = this
+      var preChartData = []
+      axios({
+        method: self.API.reportJournalGroupBy.method,
+        url: self.API.reportJournalGroupBy.url,
+        headers: {
+          'Content-Type': 'application/json',
+          'mac': 'helloJWT'
+        }
+      }).then(function (response) {
+        if (response) {
+          self.entityListGroupBy = response.data.data
+          // 處理成 charts 用 data
+          preChartData.push(self.chartTitlePie)
+          response.data.data.forEach(report => {
+            var arr = []
+            arr.push(report.debit)
+            arr.push(report.subtotal)
+            preChartData.push(arr)
+          })
+          self.chartData = preChartData
+          self.getLeftData(self)
+          self.getRightData(self)
+        }
+        self.display = false
       }).catch(function (error) {
         console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
       })
     },
 
     /* API - other */
+
+    tableReport (list) {
+      var self = this
+      var codeName = list.codeName
+      var tableData = list.tableData
+      var arr = [] // all subject
+      var arrIncome = [] // code 2-1-x-x
+      var arrExpense = [] // code 2-2-x-x
+      var arrOther = []
+      var count = 0
+      for (var month in tableData) {
+        count++
+      }
+      // arr 先給 subject & 1~12 month subtotal
+      for (var subj in codeName) {
+        var name = codeName[subj]
+        var temp = [[subj, name]]
+        for (var i = 1; i < (count + 1); i++) {
+          temp.push(0) // subtotal
+        }
+        arr.push(temp)
+      }
+      // arr 再塞資料
+      for (month in tableData) { // 取得 month 資料
+        var datas = tableData[month]
+        for (subj in datas) { // 取得 obj
+          var subtotal = datas[subj]
+          // console.log(subj + ":" + subtotal) // 1-0-9-1:現金
+          arr.forEach(row => {
+            if (row[0][0] === subj) { // row = [subject, subtotal]
+              row[Number(month)] = subtotal
+            }
+          })
+        }
+      }
+      // classification
+      for (var row in arr) {
+        var subjectCode = arr[row][0][0]
+        if (subjectCode.substring(0, 3) === self.reportTitle.left.code) {
+          arrIncome.push(arr[row])
+        } else if (subjectCode.substring(0, 3) === self.reportTitle.right.code) {
+          arrExpense.push(arr[row])
+        } else {
+          arrOther.push(arr[row])
+        }
+      }
+      // sort
+      // arr = self.sortBySubjectCode(arr)
+      arrIncome = self.sortBySubjectCode(arrIncome)
+      arrExpense = self.sortBySubjectCode(arrExpense)
+      arrOther = self.sortBySubjectCode(arrOther)
+
+      // set title
+      var newArr = arrIncome.concat(arrExpense) // .concat(arrOther)
+      newArr.splice(0, 0, self.chartTitleTable)
+      // arr.splice(0, 0, self.chartTitleTable)
+
+      self.chartDataTable = newArr // arr
+    },
+    // 取得 left Chart data
+    getLeftData (self) {
+      var code = self.reportTitle.left.code // 2-1
+      var preChartData = []
+      self.entityListGroupBy.forEach(data => {
+        if (data.code.substring(0, 3) === code) {
+          var arr = []
+          arr.push(data.debit)
+          arr.push(data.subtotal)
+          preChartData.push(arr)
+        }
+      })
+      preChartData.sort(function (a, b) {
+        return a[1] < b[1] ? 1 : -1
+      })
+      preChartData.splice(0, 0, self.chartTitlePie)
+      self.chartDataLeft = preChartData
+    },
+    // 取得 right Chart data
+    getRightData (self) {
+      var code = self.reportTitle.right.code // 2-2
+      var preChartData = []
+      self.entityListGroupBy.forEach(data => {
+        if (data.code.substring(0, 3) === code) {
+          var arr = []
+          arr.push(data.debit)
+          arr.push(data.subtotal)
+          preChartData.push(arr)
+        }
+      })
+      self.chartDataRight = preChartData.sort(function (a, b) {
+        return a[1] < b[1] ? 1 : -1
+      })
+      preChartData.splice(0, 0, self.chartTitlePie)
+      self.chartDataRight = preChartData
+    },
 
     // 檢查時間先後
     checkTime (d1, d2) {
@@ -167,6 +416,79 @@ export default {
         }
       }
       return { 'start': start, 'ended': ended }
+    },
+    // 比較 subject 順序
+    sortBySubjectCode (arr) {
+      /*
+      arr = [
+        [["2-2-1-2", "C"], 3, 7],
+        [["1-1-1-1", "A"], 1, 5],
+        [["2-2-1-1", "B"], 2, 6]
+      ]
+      */
+      var self = this
+      var ok = 0 // 確定數量
+      while (ok < arr.length) {
+        for (var i = 0; i < arr.length - ok; i++) {
+          var i2 = i + 1
+          if (i2 === arr.length) {
+            break
+          }
+          var num1 = self.subjectToNumber(arr[i][0][0])
+          var num2 = self.subjectToNumber(arr[i2][0][0])
+          if (num1 > num2) {
+            var temp = arr[i]
+            arr[i] = arr[i2]
+            arr[i2] = temp
+          }
+        }
+        ok++
+      }
+      // var size = arr.length
+      // for (var i = 0; i < size; i++) {
+      //   var i2 = i + 1
+      //   if (i2 !== size) {
+      //     var num1 = self.subjectToNumber(arr[i][0][0])
+      //     var num2 = self.subjectToNumber(arr[i2][0][0])
+      //     if (num1 > num2) {
+      //       var temp = arr[i]
+      //       arr[i] = arr[i2]
+      //       arr[i2] = temp
+      //     }
+      //   }
+      // }
+      return arr
+      /*
+      arr = [
+        ["1-1-1-1", 1, 5],
+        ["2-2-1-1", 2, 6],
+        ["2-2-1-2", 3, 7]
+      ]
+      */
+    },
+    // subject 轉 number (必須為個位數)
+    subjectToNumber (code) {
+      // code = "1-2-2-1"
+      var arr = code.split('-')
+      // arr length < 4, 則補到 4
+      switch (arr.length) {
+        case 1:
+          arr.push('0')
+          arr.push('0')
+          arr.push('0')
+          break
+        case 2:
+          arr.push('0')
+          arr.push('0')
+          break
+        case 3:
+          arr.push('0')
+      }
+      var sum = 0
+      for (var i = 0; i < arr.length; i++) {
+        sum += Number(arr[i]) * Math.pow(10, arr.length - (i + 1))
+      }
+      return sum // 1221
     },
 
     /* Util */
