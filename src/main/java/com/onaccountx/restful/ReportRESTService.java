@@ -134,15 +134,13 @@ public class ReportRESTService {
 
 		// get Subject Map(code & name)
 		Map<String, Object> codeName = new HashMap<>();
-		subjectList.stream()
-			.forEach(subj -> {
+		for (int i = 1; i < 13; i++) { // 1~12 mouth
+			tableData.put(i + "", new HashMap<>());
+			for (Subject subj : subjectList) {
 				codeName.put(subj.getCode(), subj.getName());
-				for (int i = 1; i < 13; i++) { // 1~12 mouth
-					Map<String, Object> dataMap = new HashMap<>();
-					dataMap.put(subj.getCode(), 0);
-					tableData.put(i + "", dataMap);
-				}
-			});
+				tableData.get(i + "").put(subj.getCode(), 0);
+			}
+		}
 		responseData.put("codeName", codeName);
 		
 		// subtotal amount of Subject by month
@@ -168,11 +166,8 @@ public class ReportRESTService {
 							int sum = 0;
 							Long ts = data.getTimeDate().getTime();
 							if (ts >= ts1 && ts < ts2) { // 分月份
-								if (tableData.get(i + "").get(code) == null) {
-									sum = data.getAmount();
-								} else {
-									sum = sum + data.getAmount();
-								}
+								int oriSubtotal = Integer.parseInt(tableData.get(i + "").get(code) + "");
+								sum = oriSubtotal + data.getAmount();
 								tableData.get(i + "").put(code, sum);
 							}
 						}
