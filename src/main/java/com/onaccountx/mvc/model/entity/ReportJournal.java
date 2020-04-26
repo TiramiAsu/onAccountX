@@ -43,8 +43,11 @@ public class ReportJournal implements Serializable {
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "debit")
-	private String debit;
+	@Column(name = "code")
+	private String code;
+
+	@Column(name = "name")
+	private String name;
 
 	@Column(name = "increase")
 	private Integer increase;
@@ -67,12 +70,20 @@ public class ReportJournal implements Serializable {
 		this.id = id;
 	}
 
-	public String getDebit() {
-		return debit;
+	public String getCode() {
+		return code;
 	}
 
-	public void setDebit(String debit) {
-		this.debit = debit;
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Integer getIncrease() {
@@ -110,7 +121,8 @@ public class ReportJournal implements Serializable {
 	@Override
 	public String toString() {
 		return "ReportJournal [id=" + id +
-				", debit=" + debit +
+				", code=" + code +
+				", name=" + name +
 				", increase=" + increase +
 				", reduce=" + reduce +
 				", amount=" + amount +
