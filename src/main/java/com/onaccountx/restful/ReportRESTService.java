@@ -18,7 +18,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +37,9 @@ import org.springframework.stereotype.Service;
 
 import com.onaccountx.generic.GenericRESTBean;
 import com.onaccountx.mvc.model.entity.ReportJournal;
-import com.onaccountx.mvc.model.entity.ReportJournalGroupBy;
+import com.onaccountx.mvc.model.entity.ReportGroupByDebit;
 import com.onaccountx.mvc.model.entity.Subject;
-import com.onaccountx.mvc.service.ReportJournalGroupByService;
+import com.onaccountx.mvc.service.ReportGroupByDebitService;
 import com.onaccountx.mvc.service.ReportJournalService;
 import com.onaccountx.mvc.service.SubjectService;
 import com.onaccountx.utils.JsonUtils;
@@ -64,12 +63,12 @@ public class ReportRESTService {
 	ReportJournalService reportJournalService;
 
 	@Autowired
-	ReportJournalGroupByService reportJournalGroupByService;
+	ReportGroupByDebitService reportGroupByDebitService;
 
 	private void enableService() {
 		subjectService = (subjectService == null) ? SpringUtils.getBean(SubjectService.class) : subjectService;
 		reportJournalService = (reportJournalService == null) ? SpringUtils.getBean(ReportJournalService.class) : reportJournalService;
-		reportJournalGroupByService = (reportJournalGroupByService == null) ? SpringUtils.getBean(ReportJournalGroupByService.class) : reportJournalGroupByService;
+		reportGroupByDebitService = (reportGroupByDebitService == null) ? SpringUtils.getBean(ReportGroupByDebitService.class) : reportGroupByDebitService;
 	}
 
 	@POST
@@ -81,7 +80,10 @@ public class ReportRESTService {
 		JSONObject jsonObj = JsonUtils.toJsonObj(in);
 
 		// Data
-		if (jsonObj == null && jsonObj.get("year") == null) {
+		if (jsonObj == null) {
+			return new ResponseREST(ERROR_INPUT).build();
+		}
+		if (jsonObj.get("year") == null) {
 			return new ResponseREST(ERROR_INPUT).build();
 		}
 		Map<String, Object> responseData = new HashMap<>();
@@ -224,13 +226,13 @@ public class ReportRESTService {
 	}
 
 	@GET
-	@Path("/journal/groupby")
+	@Path("/journal/groupby/debit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response queryJournalNoCashREST() {
+	public Response queryJournalDebitREST() {
 		
 		// Data
-		List<ReportJournalGroupBy> reportJournalNoCashList = null;
+		List<ReportGroupByDebit> reportJournalGroupByList = null;
 		List<Map<String, Object>> beanList = new ArrayList<>();
 		
 		// Service Enable
@@ -240,13 +242,13 @@ public class ReportRESTService {
 		// TODO Json Web Token -> Filter
 		
 		// Handle
-		reportJournalNoCashList = reportJournalGroupByService.query();
+		reportJournalGroupByList = reportGroupByDebitService.query();
 		
 		// Response
-		if (reportJournalNoCashList == null) {
+		if (reportJournalGroupByList == null) {
 			return new ResponseREST(ERROR_DATABASE).build();
 		} else {
-			for (ReportJournalGroupBy rjnc : reportJournalNoCashList) {
+			for (ReportGroupByDebit rjnc : reportJournalGroupByList) {
 				Map<String, Object> restBean = new GenericRESTBean()
 						.put("id", rjnc.getId())
 						.put("code", rjnc.getCode())

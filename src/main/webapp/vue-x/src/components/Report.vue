@@ -83,9 +83,9 @@ export default {
           method: 'get',
           url: '/onAccountX/srv/report/journal'
         },
-        reportJournalGroupBy: {
+        reportJournalGroupByDebit: {
           method: 'get',
-          url: '/onAccountX/srv/report/journal/groupby'
+          url: '/onAccountX/srv/report/journal/groupby/debit'
         },
         reportTable: {
           method: 'post',
@@ -255,8 +255,8 @@ export default {
       var self = this
       var preChartData = []
       axios({
-        method: self.API.reportJournalGroupBy.method,
-        url: self.API.reportJournalGroupBy.url,
+        method: self.API.reportJournalGroupByDebit.method,
+        url: self.API.reportJournalGroupByDebit.url,
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
@@ -310,7 +310,7 @@ export default {
         var datas = tableData[month]
         for (subj in datas) { // 取得 obj
           var subtotal = datas[subj]
-          // console.log(subj + ":" + subtotal) // 1-0-9-1:現金
+          // console.log(subj + ":" + subtotal) // 1-1-1-1:現金
           arr.forEach(row => {
             if (row[0][0] === subj) { // row = [subject, subtotal]
               row[Number(month)] = subtotal

@@ -60,7 +60,7 @@ import com.onaccountx.utils.SpringUtils;
 @Path("/journal")
 public class JournalRESTService implements GenericRESTService {
 
-	private String _CASH_CODE = "1-0-9-1";
+	private String _CASH_CODE = "1-1-1-1";
 
 	@Autowired
 	JournalService journalService;

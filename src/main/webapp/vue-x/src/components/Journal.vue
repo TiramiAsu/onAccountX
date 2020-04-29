@@ -343,6 +343,7 @@ export default {
         name: '請選擇...'
       }],
       cashId: -1, // 判斷是否要填現金簿資訊
+      cashCode: '1-1-1-1',
 
       // layout
       thisLayout: 0,
@@ -671,7 +672,7 @@ export default {
           self.subjectList = self.subjectList.concat(response.data.data)
         }
         self.subjectList.forEach(subject => {
-          if (subject.code === '1-0-9-1') { // 現金編號
+          if (subject.code === self.cashCode) { // 現金編號 1-1-1-1
             self.cashId = subject.id
           }
         })

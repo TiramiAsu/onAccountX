@@ -9,6 +9,8 @@
  */
 package com.onaccountx.mvc.model.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,16 +18,18 @@ import javax.persistence.Table;
 
 /**
  * <pre>
- * [Report Journal No Cash] 2020-04-24 16:36
+ * [Report GroupBy Debit] 2020-04-24 16:36
  * </pre>
  * 
  * @author TiramiAsu (Email)
  */
 @Entity
-@Table(name = "report_journal_groupby")
-public class ReportJournalGroupBy {
+@Table(name = "report_groupby_debit")
+public class ReportGroupByDebit implements Serializable {
 
-	public final static String _JSON_NAME = "reportJournalGroupBy";
+	private static final long serialVersionUID = -3848921308844955769L;
+
+	public final static String _JSON_NAME = "reportGroupByDebit";
 	public final static String _ID = "id";
 	public final static String _DEBIT = "debit";
 	public final static String _SUBTOTAL = "subtotal";
