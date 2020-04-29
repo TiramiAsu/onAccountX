@@ -143,7 +143,8 @@ export default {
       // table
       chartDataTable: [],
       chartTitleTable: [
-        { type: 'string', label: 'Subject', id: 'Subject' },
+        { type: 'string', label: 'code', id: 'code' },
+        { type: 'string', label: 'subject', id: 'subject' },
         { type: 'number', label: '  1 月 ', id: 'm1' },
         { type: 'number', label: '  2 月 ', id: 'm2' },
         { type: 'number', label: '  3 月 ', id: 'm3' },
@@ -334,6 +335,10 @@ export default {
       arrExpense = self.sortBySubjectCode(arrExpense)
       arrOther = self.sortBySubjectCode(arrOther)
 
+      arrIncome = self.beautifyData(arrIncome)
+      arrExpense = self.beautifyData(arrExpense)
+      arrOther = self.beautifyData(arrOther)
+
       // set title
       var newArr = arrIncome.concat(arrExpense) // .concat(arrOther)
       newArr.splice(0, 0, self.chartTitleTable)
@@ -382,6 +387,39 @@ export default {
       preChartData.splice(0, 0, self.chartTitlePie)
       self.chartDataRight = preChartData
       self.reportTitle.right.total = total
+    },
+    beautifyData (arr) {
+      var finalArr = []
+      for (var row in arr) {
+        var newArr = []
+        var tab = '__'
+        newArr.push(arr[row][0][0]) // 1-0-9-1
+        switch (arr[row][0][0].length) {
+          case 7:
+            // "      薩莉亞薪資" (code: "1-1-1-1")
+            newArr.push(tab + tab + tab + arr[row][0][1])
+            break
+          case 5:
+            // "    薪資收入" (code: "1-1-1")
+            newArr.push(tab + tab + arr[row][0][1])
+            break
+          case 3:
+            // "  收入" (code: "1-1")
+            newArr.push(tab + arr[row][0][1])
+            break
+          case 1:
+            // "收支餘絀表" (code: "1")
+            newArr.push(arr[row][0][1]) // code
+            break
+        }
+        for (var i = 0; i < 12; i++) {
+          var num = arr[row][1 + i] // 從 index 1 開始
+          newArr.push((num === 0 ? null : num))
+        }
+        finalArr.push(newArr)
+      }
+      // console.log(finalArr)
+      return finalArr
     },
 
     // 檢查時間先後
