@@ -18,20 +18,21 @@ import javax.persistence.Table;
 
 /**
  * <pre>
- * [Report GroupBy Debit] 2020-04-24 16:36
+ * [Report GroupBy Credit] 2020-04-29 16:22
  * </pre>
  * 
  * @author TiramiAsu (Email)
  */
+
 @Entity
-@Table(name = "report_groupby_debit")
-public class ReportGroupByDebit implements Serializable {
+@Table(name = "report_groupby_credit")
+public class ReportGroupByCredit implements Serializable {
 
-	private static final long serialVersionUID = -3848921308844955769L;
+	private static final long serialVersionUID = -2541225147491421458L;
 
-	public final static String _JSON_NAME = "reportGroupByDebit";
+	public final static String _JSON_NAME = "reportGroupByCredit";
 	public final static String _ID = "id";
-	public final static String _DEBIT = "debit";
+	public final static String _DEBIT = "credit";
 	public final static String _SUBTOTAL = "subtotal";
 
 	@Id
@@ -41,8 +42,8 @@ public class ReportGroupByDebit implements Serializable {
 	@Column(name = "code")
 	private String code;
 
-	@Column(name = "debit")
-	private String debit;
+	@Column(name = "credit")
+	private String credit;
 
 	@Column(name = "subtotal")
 	private Integer subtotal;
@@ -63,12 +64,12 @@ public class ReportGroupByDebit implements Serializable {
 		this.code = code;
 	}
 
-	public String getDebit() {
-		return debit;
+	public String getCredit() {
+		return credit;
 	}
 
-	public void setDebit(String debit) {
-		this.debit = debit;
+	public void setCredit(String credit) {
+		this.credit = credit;
 	}
 
 	public Integer getSubtotal() {
@@ -81,10 +82,11 @@ public class ReportGroupByDebit implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ReportGroupByDebit [id=" + id +
+		return "ReportGroupByCredit [id=" + id +
 				", code=" + code +
-				", debit=" + debit +
+				", credit=" + credit +
 				", subtotal=" + subtotal +
 				"]";
 	}
 }
+

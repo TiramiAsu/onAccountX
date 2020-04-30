@@ -16,32 +16,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.onaccountx.mvc.model.dao.ReportGroupByCreditDAO;
 import com.onaccountx.mvc.model.dao.ReportGroupByDebitDAO;
+import com.onaccountx.mvc.model.entity.ReportGroupByCredit;
 import com.onaccountx.mvc.model.entity.ReportGroupByDebit;
-import com.onaccountx.mvc.service.ReportGroupByDebitService;
-import com.onaccountx.restful.ResponseREST;
+import com.onaccountx.mvc.service.ReportGroupByService;
 
 /**
  * <pre>
- * [實作 ReportGroupByDebitService] 2020-04-24 17:05
+ * [實作 ReportGroupByService] 2020-04-24 17:05
  * </pre>
  * 
  * @author TiramiAsu (Email)
  */
 @Service
-public class ReportGroupByDebitServiceImpl implements ReportGroupByDebitService {
+public class ReportGroupByServiceImpl implements ReportGroupByService {
 
 	@Autowired
 	private ReportGroupByDebitDAO reportGroupByDebitDAO;
 
-	@Override
-	public boolean create(ReportGroupByDebit bean) {
-		return false;
-	}
+	@Autowired
+	private ReportGroupByCreditDAO reportGroupByCreditDAO;
 
 	@Override
 	@Transactional
-	public List<ReportGroupByDebit> query() {
+	public List<ReportGroupByDebit> queryDebit() {
 		List<ReportGroupByDebit> reportGroupByDebit = null;
 		try {
 			reportGroupByDebit = reportGroupByDebitDAO.findAll().stream()
@@ -59,23 +58,21 @@ public class ReportGroupByDebitServiceImpl implements ReportGroupByDebitService 
 	}
 
 	@Override
-	public ReportGroupByDebit find(Long id) {
-		return null;
+	@Transactional
+	public List<ReportGroupByCredit> queryCredit() {
+		List<ReportGroupByCredit> reportGroupByCredit = null;
+		try {
+			reportGroupByCredit = reportGroupByCreditDAO.findAll().stream()
+					.sorted((o1, o2) -> o1.getCode().compareTo(o2.getCode()))
+//					.peek(System.out::println)
+					.collect(Collectors.toList());
+			if (reportGroupByCredit == null) {
+				throw new Exception(">>> Report GroupBy Credit Query Failed <<<");
+			}
+		} catch (Exception e) {
+			reportGroupByCredit = null;
+			e.printStackTrace();
+		}
+		return reportGroupByCredit;
 	}
-
-	@Override
-	public boolean update(ReportGroupByDebit bean) {
-		return false;
-	}
-
-	@Override
-	public boolean delete(Long id) {
-		return false;
-	}
-
-	@Override
-	public ResponseREST queryREST(Object json) {
-		return null;
-	}
-
 }
