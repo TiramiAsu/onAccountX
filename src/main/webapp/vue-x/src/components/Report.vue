@@ -25,8 +25,8 @@
               <div class="row">
                 <!-- Left -->
                 <div class="col-sm">
-                  <div align="center">{{ reportTitle.left.name }}</div>
-                  <div align="center"><h3><b>{{ showMoneyFormat(reportTitle.left.total) }}</b></h3></div>
+                  <div align="center">{{ PARAMS.PieChartTitle.income.name }}</div>
+                  <div align="center"><h3><b>{{ showMoneyFormat(PARAMS.PieChartTitle.income.total) }}</b></h3></div>
                   <GChart style="width: 500px; height: 400px"
                     type="PieChart"
                     :data="chartDataLeft"
@@ -35,8 +35,8 @@
                 </div>
                 <!-- Right -->
                 <div class="col-sm">
-                  <div align="center">{{ reportTitle.right.name }}</div>
-                  <div align="center"><h3><b>{{ showMoneyFormat(reportTitle.right.total) }}</b></h3></div>
+                  <div align="center">{{ PARAMS.PieChartTitle.expense.name }}</div>
+                  <div align="center"><h3><b>{{ showMoneyFormat(PARAMS.PieChartTitle.expense.total) }}</b></h3></div>
                   <GChart style="width: 500px; height: 400px"
                     type="PieChart"
                     :data="chartDataRight"
@@ -44,11 +44,48 @@
                   />
                 </div>
               </div>
+              <div align="center"><h4>{{ PARAMS.TableChart.asset.name }}</h4></div>
               <div style="padding-left: 10%">
                 <GChart
                   :settings="{ packages: ['table'] }"
                   type="Table"
-                  :data="chartDataTable"
+                  :data="chartDataAsset"
+                  :options="chartOptionsTable"
+                  :events="chartEventsTable"
+                  ref="gChart"
+                />
+              </div>
+              <p />
+              <div align="center"><h4>{{ PARAMS.TableChart.liabilities.name }}</h4></div>
+              <div style="padding-left: 10%">
+                <GChart
+                  :settings="{ packages: ['table'] }"
+                  type="Table"
+                  :data="chartDataLiabilities"
+                  :options="chartOptionsTable"
+                  :events="chartEventsTable"
+                  ref="gChart"
+                />
+              </div>
+              <p />
+              <div align="center"><h4>{{ PARAMS.TableChart.income.name }}</h4></div>
+              <div style="padding-left: 10%">
+                <GChart
+                  :settings="{ packages: ['table'] }"
+                  type="Table"
+                  :data="chartDataIncome"
+                  :options="chartOptionsTable"
+                  :events="chartEventsTable"
+                  ref="gChart"
+                />
+              </div>
+              <p />
+              <div align="center"><h4>{{ PARAMS.TableChart.expense.name }}</h4></div>
+              <div style="padding-left: 10%">
+                <GChart
+                  :settings="{ packages: ['table'] }"
+                  type="Table"
+                  :data="chartDataExpense"
                   :options="chartOptionsTable"
                   :events="chartEventsTable"
                   ref="gChart"
@@ -75,17 +112,26 @@ export default {
   data () {
     return {
       API: {
-        subjectNames: {
+        entityName: 'report',
+        subjectCodeName: {
           method: 'get',
           url: '/onAccountX/srv/subject/list/name'
         },
-        reportJournal: {
-          method: 'get',
-          url: '/onAccountX/srv/report/journal'
-        },
-        reportJournalGroupByDebit: {
+        // journalList: {
+        //   method: 'post',
+        //   url: '/onAccountX/srv/journal'
+        // },
+        // reportJournal: {
+        //   method: 'get',
+        //   url: '/onAccountX/srv/report/journal'
+        // },
+        reportGroupByDebit: {
           method: 'get',
           url: '/onAccountX/srv/report/journal/groupby/debit'
+        },
+        reportGroupByCredit: {
+          method: 'get',
+          url: '/onAccountX/srv/report/journal/groupby/credit'
         },
         reportTable: {
           method: 'post',
@@ -95,19 +141,27 @@ export default {
       PARAMS: {
         Layout: {
           Manage: { symbol: 'manage', value: 0, text: '財務報表' }
+        },
+        PieChartTitle: {
+          income: { name: '年收入', code: '2-1', total: 0 },
+          expense: { name: '年支出', code: '2-2', total: 0 }
+        },
+        TableChart: {
+          income: { name: '收入', code: '2-1', total: 0 },
+          expense: { name: '支出', code: '2-2', total: 0 },
+          asset: { name: '資產', code: '1-1', total: 0 },
+          liabilities: { name: '負債', code: '1-2', total: 0 }
         }
-      },
-      reportTitle: {
-        left: { name: '年收入', code: '2-1', total: 0 },
-        right: { name: '年支出', code: '2-2', total: 0 }
       },
       report: {
         timeDate: null,
         timeDateEnd: null
       },
       entityList: [], // all data
-      entityListGroupBy: [], // all data (group by subject name)
+      entityListGroupByDebit: [], // all data (group by Debit)
+      entityListGroupByCredit: [], // all data (group by Credit)
       subjectList: [], // all subject info
+      journalList: [],
       entityListTable: [], // all 1-12 month data
       filterCondition: {
         year: '2019',
@@ -124,7 +178,7 @@ export default {
       chartData: [],
       chartDataLeft: [], // left PieChart data
       chartDataRight: [], // right PieChart data
-      chartTitlePie: ['Task', 'Hours per Day'],
+      chartTitlePie: ['subject', 'subtotal'],
       // chartData: [
       //   ['Task', 'Hours per Day'],
       //   ['Work', 20],
@@ -141,7 +195,10 @@ export default {
       },
 
       // table
-      chartDataTable: [],
+      chartDataAsset: [],
+      chartDataLiabilities: [],
+      chartDataIncome: [],
+      chartDataExpense: [],
       chartTitleTable: [
         { type: 'string', label: 'code', id: 'code' },
         { type: 'string', label: 'subject', id: 'subject' },
@@ -185,19 +242,20 @@ export default {
     }
   },
   mounted () {
-    this.queryReportJournal()
-    this.queryReportJournalGroupBy()
-    this.querySubjectNames()
+    // this.queryReportJournal()
+    this.queryReportGroupBy()
+    this.querySubjectCodeName()
     this.queryReportTable()
+    // this.queryJournalList()
   },
   methods: {
     /* API */
 
-    querySubjectNames () {
+    querySubjectCodeName () {
       var self = this
       axios({
-        method: self.API.subjectNames.method,
-        url: self.API.subjectNames.url,
+        method: self.API.subjectCodeName.method,
+        url: self.API.subjectCodeName.url,
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
@@ -211,6 +269,26 @@ export default {
         console.log('>>> Error: query Subject Names failed: ', error)
       })
     },
+    // queryJournalList () {
+    //   var self = this
+    //   axios({
+    //     method: self.API.journalList.method,
+    //     url: self.API.journalList.url,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'mac': 'helloJWT'
+    //     },
+    //     data: { journal: {year: self.filterCondition.year} }
+    //   }).then(function (response) {
+    //     if (response) {
+    //       self.journalList = response.data.data
+    //       console.log('journal: ', self.journalList)
+    //     }
+    //     self.display = false
+    //   }).catch(function (error) {
+    //     console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
+    //   })
+    // },
     queryReportTable () {
       var self = this
       // var preChartData = []
@@ -232,53 +310,80 @@ export default {
         console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
       })
     },
-    queryReportJournal () {
+    // queryReportJournal () {
+    //   var self = this
+    //   // var preChartData = []
+    //   axios({
+    //     method: self.API.reportJournal.method,
+    //     url: self.API.reportJournal.url,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'mac': 'helloJWT'
+    //     }
+    //   }).then(function (response) {
+    //     if (response) {
+    //       self.entityList = response.data.data
+    //     }
+    //     self.display = false
+    //   }).catch(function (error) {
+    //     console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
+    //   })
+    // },
+    queryReportGroupBy () {
       var self = this
-      // var preChartData = []
+      var preChartDataLeft = []
+      var preChartDataRight = []
+      // Left Charts
       axios({
-        method: self.API.reportJournal.method,
-        url: self.API.reportJournal.url,
+        method: self.API.reportGroupByCredit.method,
+        url: self.API.reportGroupByCredit.url,
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
         }
       }).then(function (response) {
         if (response) {
-          self.entityList = response.data.data
+          self.entityListGroupByCredit = response.data.data
+          // 處理成 charts 用 data
+          preChartDataLeft.push(self.chartTitlePie)
+          response.data.data.forEach(report => {
+            var arr = []
+            arr.push(report.credit)
+            arr.push(report.subtotal)
+            preChartDataLeft.push(arr)
+          })
+          self.chartDataLeft = preChartDataLeft
+          self.getLeftData(self)
         }
         self.display = false
       }).catch(function (error) {
-        console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
+        console.log('>>> Error: query  GroupBy Credit failed: ', error)
       })
-    },
-    queryReportJournalGroupBy () {
-      var self = this
-      var preChartData = []
+      // Right Charts
       axios({
-        method: self.API.reportJournalGroupByDebit.method,
-        url: self.API.reportJournalGroupByDebit.url,
+        method: self.API.reportGroupByDebit.method,
+        url: self.API.reportGroupByDebit.url,
         headers: {
           'Content-Type': 'application/json',
           'mac': 'helloJWT'
         }
       }).then(function (response) {
         if (response) {
-          self.entityListGroupBy = response.data.data
+          self.entityListGroupByDebit = response.data.data
           // 處理成 charts 用 data
-          preChartData.push(self.chartTitlePie)
+          preChartDataRight.push(self.chartTitlePie)
           response.data.data.forEach(report => {
             var arr = []
             arr.push(report.debit)
             arr.push(report.subtotal)
-            preChartData.push(arr)
+            preChartDataRight.push(arr)
           })
-          self.chartData = preChartData
-          self.getLeftData(self)
+          self.chartDataRight = preChartDataRight
           self.getRightData(self)
         }
         self.display = false
       }).catch(function (error) {
-        console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
+        console.log('>>> Error: query GroupBy Debit failed: ', error)
       })
     },
 
@@ -287,74 +392,130 @@ export default {
     tableReport (list) {
       var self = this
       var codeName = list.codeName
-      var tableData = list.tableData
-      var arr = [] // all subject
-      var arrIncome = [] // code 2-1-x-x
+      var tableDataDebit = list.tableDataDebit
+      var tableDataCredit = list.tableDataCredit
+
+      // debit
+      var arrDebit = [] // all subject
+      var arrAsset = []
       var arrExpense = [] // code 2-2-x-x
-      var arrOther = []
+      var arrOtherD = []
+
+      // credit
+      var arrCredit = []
+      var arrIncome = [] // code 2-1-x-x
+      var arrLiabilities = []
+      var arrOtherC = []
+
       var count = 0
-      for (var month in tableData) {
+      for (var month in tableDataDebit) {
         count++
       }
-      // arr 先給 subject & 1~12 month subtotal
+      // arrDebit / arrCredit 先給 subject & 1~12 month subtotal
       for (var subj in codeName) {
         var name = codeName[subj]
         var temp = [[subj, name]]
         for (var i = 1; i < (count + 1); i++) {
           temp.push(0) // subtotal
         }
-        arr.push(temp)
+        arrDebit.push(temp)
+        arrCredit.push(temp)
       }
       // arr 再塞資料
-      for (month in tableData) { // 取得 month 資料
-        var datas = tableData[month]
-        for (subj in datas) { // 取得 obj
-          var subtotal = datas[subj]
+      // debit
+      for (month in tableDataDebit) { // 取得 month 資料
+        var datasD = tableDataDebit[month]
+        for (subj in datasD) { // 取得 obj
+          var subtotalD = datasD[subj]
           // console.log(subj + ":" + subtotal) // 1-1-1-1:現金
-          arr.forEach(row => {
+          arrDebit.forEach(row => {
             if (row[0][0] === subj) { // row = [subject, subtotal]
-              row[Number(month)] = subtotal
+              row[Number(month)] = subtotalD
+            }
+          })
+        }
+      }
+      // credit
+      for (month in tableDataCredit) {
+        var datasC = tableDataCredit[month]
+        for (subj in datasC) {
+          var subtotalC = datasC[subj]
+          arrCredit.forEach(row => {
+            if (row[0][0] === subj) {
+              row[Number(month)] = subtotalC
             }
           })
         }
       }
       // classification
-      for (var row in arr) {
-        var subjectCode = arr[row][0][0]
-        if (subjectCode.substring(0, 3) === self.reportTitle.left.code) {
-          arrIncome.push(arr[row])
-        } else if (subjectCode.substring(0, 3) === self.reportTitle.right.code) {
-          arrExpense.push(arr[row])
+      // 支出, 資產 -> debit
+      for (var rowD in arrDebit) {
+        var subjectCodeD = arrDebit[rowD][0][0]
+        if (subjectCodeD.substring(0, 3) === self.PARAMS.TableChart.asset.code) {
+          arrAsset.push(arrDebit[rowD])
+        } else if (subjectCodeD.substring(0, 3) === self.PARAMS.TableChart.expense.code) {
+          arrExpense.push(arrDebit[rowD])
         } else {
-          arrOther.push(arr[row])
+          arrOtherD.push(arrDebit[rowD])
+        }
+      }
+      // 收入, 負債 -> credit
+      for (var rowC in arrCredit) {
+        var subjectCodeC = arrCredit[rowC][0][0]
+        console.log(arrCredit[rowC])
+        if (subjectCodeC.substring(0, 3) === self.PARAMS.TableChart.income.code) {
+          arrIncome.push(arrCredit[rowC])
+        } else if (subjectCodeC.substring(0, 3) === self.PARAMS.TableChart.liabilities.code) {
+          arrLiabilities.push(arrCredit[rowC])
+        } else {
+          arrOtherC.push(arrCredit[rowC])
         }
       }
       // sort
       // arr = self.sortBySubjectCode(arr)
-      arrIncome = self.sortBySubjectCode(arrIncome)
-      arrExpense = self.sortBySubjectCode(arrExpense)
-      arrOther = self.sortBySubjectCode(arrOther)
+      arrIncome = self.beautifyData(self.sortBySubjectCode(arrIncome))
+      arrExpense = self.beautifyData(self.sortBySubjectCode(arrExpense))
+      arrOtherD = self.beautifyData(self.sortBySubjectCode(arrOtherD))
 
-      arrIncome = self.beautifyData(arrIncome)
-      arrExpense = self.beautifyData(arrExpense)
-      arrOther = self.beautifyData(arrOther)
+      arrAsset = self.beautifyData(self.sortBySubjectCode(arrAsset))
+      arrLiabilities = self.beautifyData(self.sortBySubjectCode(arrLiabilities))
+      arrOtherC = self.beautifyData(self.sortBySubjectCode(arrOtherC))
 
       // set title
-      var newArr = arrIncome.concat(arrExpense) // .concat(arrOther)
-      newArr.splice(0, 0, self.chartTitleTable)
-      // arr.splice(0, 0, self.chartTitleTable)
+      // var newAsset = arrAsset.concat(arrExpense) // .concat(arrOther)
+      arrAsset.splice(0, 0, self.chartTitleTable)
+      self.chartDataAsset = arrAsset
 
-      self.chartDataTable = newArr // arr
+      arrLiabilities.splice(0, 0, self.chartTitleTable)
+      self.chartDataLiabilities = arrLiabilities
+
+      arrIncome.splice(0, 0, self.chartTitleTable)
+      self.chartDataIncome = arrIncome
+
+      arrExpense.splice(0, 0, self.chartTitleTable)
+      self.chartDataExpense = arrExpense
+    },
+    getEmptydataArray (codeName, countEmpty) {
+      var arr = []
+      for (var subj in codeName) {
+        var name = codeName[subj]
+        var temp = [[subj, name]]
+        for (var i = 1; i < (countEmpty + 1); i++) {
+          temp.push(0) // subtotal
+        }
+        arr.push(temp)
+      }
+      return arr
     },
     // 取得 left Chart data
     getLeftData (self) {
-      var code = self.reportTitle.left.code // 2-1
+      var code = self.PARAMS.PieChartTitle.income.code // 2-1
       var preChartData = []
       var total = 0
-      self.entityListGroupBy.forEach(data => {
+      self.entityListGroupByCredit.forEach(data => {
         if (data.code.substring(0, 3) === code) {
           var arr = []
-          arr.push(data.debit)
+          arr.push(data.credit)
           arr.push(data.subtotal)
           preChartData.push(arr)
           total += data.subtotal
@@ -365,14 +526,14 @@ export default {
       })
       preChartData.splice(0, 0, self.chartTitlePie)
       self.chartDataLeft = preChartData
-      self.reportTitle.left.total = total
+      self.PARAMS.PieChartTitle.income.total = total
     },
     // 取得 right Chart data
     getRightData (self) {
-      var code = self.reportTitle.right.code // 2-2
+      var code = self.PARAMS.PieChartTitle.expense.code // 2-2
       var preChartData = []
       var total = 0
-      self.entityListGroupBy.forEach(data => {
+      self.entityListGroupByDebit.forEach(data => {
         if (data.code.substring(0, 3) === code) {
           var arr = []
           arr.push(data.debit)
@@ -386,7 +547,7 @@ export default {
       })
       preChartData.splice(0, 0, self.chartTitlePie)
       self.chartDataRight = preChartData
-      self.reportTitle.right.total = total
+      self.PARAMS.PieChartTitle.expense.total = total
     },
     beautifyData (arr) {
       var finalArr = []
