@@ -44,48 +44,26 @@
                   />
                 </div>
               </div>
-              <div align="center"><h4>{{ PARAMS.TableChart.asset.name }}</h4></div>
+              <!--
+              <div align="center"><h4>{{ PARAMS.TableChart.title.asset }}</h4></div>
               <div style="padding-left: 10%">
                 <GChart
                   :settings="{ packages: ['table'] }"
                   type="Table"
-                  :data="chartDataAsset"
+                  :data="chartDataAssetLiabilities"
                   :options="chartOptionsTable"
                   :events="chartEventsTable"
                   ref="gChart"
                 />
               </div>
+              -->
               <p />
-              <div align="center"><h4>{{ PARAMS.TableChart.liabilities.name }}</h4></div>
+              <div align="center"><h4>{{ PARAMS.TableChart.title.income }}</h4></div>
               <div style="padding-left: 10%">
                 <GChart
                   :settings="{ packages: ['table'] }"
                   type="Table"
-                  :data="chartDataLiabilities"
-                  :options="chartOptionsTable"
-                  :events="chartEventsTable"
-                  ref="gChart"
-                />
-              </div>
-              <p />
-              <div align="center"><h4>{{ PARAMS.TableChart.income.name }}</h4></div>
-              <div style="padding-left: 10%">
-                <GChart
-                  :settings="{ packages: ['table'] }"
-                  type="Table"
-                  :data="chartDataIncome"
-                  :options="chartOptionsTable"
-                  :events="chartEventsTable"
-                  ref="gChart"
-                />
-              </div>
-              <p />
-              <div align="center"><h4>{{ PARAMS.TableChart.expense.name }}</h4></div>
-              <div style="padding-left: 10%">
-                <GChart
-                  :settings="{ packages: ['table'] }"
-                  type="Table"
-                  :data="chartDataExpense"
+                  :data="chartDataIncomeExpense"
                   :options="chartOptionsTable"
                   :events="chartEventsTable"
                   ref="gChart"
@@ -117,14 +95,6 @@ export default {
           method: 'get',
           url: '/onAccountX/srv/subject/list/name'
         },
-        // journalList: {
-        //   method: 'post',
-        //   url: '/onAccountX/srv/journal'
-        // },
-        // reportJournal: {
-        //   method: 'get',
-        //   url: '/onAccountX/srv/report/journal'
-        // },
         reportGroupByDebit: {
           method: 'get',
           url: '/onAccountX/srv/report/journal/groupby/debit'
@@ -147,6 +117,10 @@ export default {
           expense: { name: '年支出', code: '2-2', total: 0 }
         },
         TableChart: {
+          title: {
+            income: '收入 & 支出',
+            asset: '資產 & 負債'
+          },
           income: { name: '收入', code: '2-1', total: 0 },
           expense: { name: '支出', code: '2-2', total: 0 },
           asset: { name: '資產', code: '1-1', total: 0 },
@@ -195,10 +169,8 @@ export default {
       },
 
       // table
-      chartDataAsset: [],
-      chartDataLiabilities: [],
-      chartDataIncome: [],
-      chartDataExpense: [],
+      chartDataAssetLiabilities: [],
+      chartDataIncomeExpense: [],
       chartTitleTable: [
         { type: 'string', label: 'code', id: 'code' },
         { type: 'string', label: 'subject', id: 'subject' },
@@ -232,21 +204,19 @@ export default {
         }
       },
       chartEventsTable: {
-        select: () => {
-          const table = this.$refs.gChart.chartObject
-          const selection = table.getSelection()
-          const onSelectionMeaasge = selection.length !== 0 ? 'row was selected' : 'row was diselected'
-          alert(onSelectionMeaasge)
-        }
+        // select: () => {
+        //   const table = this.$refs.gChart.chartObject
+        //   const selection = table.getSelection()
+        //   const onSelectionMeaasge = selection.length !== 0 ? 'row was selected' : 'row was diselected'
+        //   alert(onSelectionMeaasge)
+        // }
       }
     }
   },
   mounted () {
-    // this.queryReportJournal()
     this.queryReportGroupBy()
     this.querySubjectCodeName()
     this.queryReportTable()
-    // this.queryJournalList()
   },
   methods: {
     /* API */
@@ -269,26 +239,6 @@ export default {
         console.log('>>> Error: query Subject Names failed: ', error)
       })
     },
-    // queryJournalList () {
-    //   var self = this
-    //   axios({
-    //     method: self.API.journalList.method,
-    //     url: self.API.journalList.url,
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'mac': 'helloJWT'
-    //     },
-    //     data: { journal: {year: self.filterCondition.year} }
-    //   }).then(function (response) {
-    //     if (response) {
-    //       self.journalList = response.data.data
-    //       console.log('journal: ', self.journalList)
-    //     }
-    //     self.display = false
-    //   }).catch(function (error) {
-    //     console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
-    //   })
-    // },
     queryReportTable () {
       var self = this
       // var preChartData = []
@@ -310,25 +260,6 @@ export default {
         console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
       })
     },
-    // queryReportJournal () {
-    //   var self = this
-    //   // var preChartData = []
-    //   axios({
-    //     method: self.API.reportJournal.method,
-    //     url: self.API.reportJournal.url,
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'mac': 'helloJWT'
-    //     }
-    //   }).then(function (response) {
-    //     if (response) {
-    //       self.entityList = response.data.data
-    //     }
-    //     self.display = false
-    //   }).catch(function (error) {
-    //     console.log('>>> Error: query ' + self.API.entityName + ' failed: ', error)
-    //   })
-    // },
     queryReportGroupBy () {
       var self = this
       var preChartDataLeft = []
@@ -395,105 +326,124 @@ export default {
       var tableDataDebit = list.tableDataDebit
       var tableDataCredit = list.tableDataCredit
 
-      // debit
-      var arrDebit = [] // all subject
-      var arrAsset = []
-      var arrExpense = [] // code 2-2-x-x
-      var arrOtherD = []
-
-      // credit
-      var arrCredit = []
-      var arrIncome = [] // code 2-1-x-x
-      var arrLiabilities = []
-      var arrOtherC = []
-
-      var count = 0
-      for (var month in tableDataDebit) {
-        count++
+      var debitArr = {
+        all: [],
+        asset: [],
+        expense: [],
+        other: []
       }
-      // arrDebit / arrCredit 先給 subject & 1~12 month subtotal
-      for (var subj in codeName) {
-        var name = codeName[subj]
-        var temp = [[subj, name]]
-        for (var i = 1; i < (count + 1); i++) {
-          temp.push(0) // subtotal
-        }
-        arrDebit.push(temp)
-        arrCredit.push(temp)
+      var creditArr = {
+        all: [],
+        income: [],
+        liabilities: [],
+        other: []
       }
+
+      // 先給 subject & 1~12 month subtotal
+      debitArr.all = self.getEmptydataArray(codeName, Object.keys(tableDataDebit).length)
+      creditArr.all = self.getEmptydataArray(codeName, Object.keys(tableDataCredit).length)
+
       // arr 再塞資料
-      // debit
-      for (month in tableDataDebit) { // 取得 month 資料
-        var datasD = tableDataDebit[month]
-        for (subj in datasD) { // 取得 obj
-          var subtotalD = datasD[subj]
-          // console.log(subj + ":" + subtotal) // 1-1-1-1:現金
-          arrDebit.forEach(row => {
-            if (row[0][0] === subj) { // row = [subject, subtotal]
-              row[Number(month)] = subtotalD
-            }
-          })
-        }
-      }
-      // credit
-      for (month in tableDataCredit) {
-        var datasC = tableDataCredit[month]
-        for (subj in datasC) {
-          var subtotalC = datasC[subj]
-          arrCredit.forEach(row => {
-            if (row[0][0] === subj) {
-              row[Number(month)] = subtotalC
-            }
-          })
-        }
-      }
+      debitArr.all = self.getGroupByData(tableDataDebit, debitArr.all)
+      creditArr.all = self.getGroupByData(tableDataCredit, creditArr.all)
+
       // classification
+      var obj1 = self.getClassification('debit', debitArr.all, self.PARAMS.TableChart.asset, self.PARAMS.TableChart.expense)
+      var obj2 = self.getClassification('credit', creditArr.all, self.PARAMS.TableChart.income, self.PARAMS.TableChart.liabilities)
+
       // 支出, 資產 -> debit
-      for (var rowD in arrDebit) {
-        var subjectCodeD = arrDebit[rowD][0][0]
-        if (subjectCodeD.substring(0, 3) === self.PARAMS.TableChart.asset.code) {
-          arrAsset.push(arrDebit[rowD])
-        } else if (subjectCodeD.substring(0, 3) === self.PARAMS.TableChart.expense.code) {
-          arrExpense.push(arrDebit[rowD])
-        } else {
-          arrOtherD.push(arrDebit[rowD])
-        }
-      }
+      debitArr.asset = obj1.asset
+      debitArr.expense = obj1.expense
+      debitArr.other = obj1.other
+
       // 收入, 負債 -> credit
-      for (var rowC in arrCredit) {
-        var subjectCodeC = arrCredit[rowC][0][0]
-        console.log(arrCredit[rowC])
-        if (subjectCodeC.substring(0, 3) === self.PARAMS.TableChart.income.code) {
-          arrIncome.push(arrCredit[rowC])
-        } else if (subjectCodeC.substring(0, 3) === self.PARAMS.TableChart.liabilities.code) {
-          arrLiabilities.push(arrCredit[rowC])
-        } else {
-          arrOtherC.push(arrCredit[rowC])
-        }
-      }
+      creditArr.income = obj2.income
+      creditArr.liabilities = obj2.liabilities
+      creditArr.other = obj2.other
+
       // sort
       // arr = self.sortBySubjectCode(arr)
-      arrIncome = self.beautifyData(self.sortBySubjectCode(arrIncome))
-      arrExpense = self.beautifyData(self.sortBySubjectCode(arrExpense))
-      arrOtherD = self.beautifyData(self.sortBySubjectCode(arrOtherD))
+      debitArr.asset = self.beautifyData(self.sortBySubjectCode(debitArr.asset))
+      debitArr.expense = self.beautifyData(self.sortBySubjectCode(debitArr.expense))
+      debitArr.other = self.beautifyData(self.sortBySubjectCode(debitArr.other))
 
-      arrAsset = self.beautifyData(self.sortBySubjectCode(arrAsset))
-      arrLiabilities = self.beautifyData(self.sortBySubjectCode(arrLiabilities))
-      arrOtherC = self.beautifyData(self.sortBySubjectCode(arrOtherC))
+      creditArr.income = self.beautifyData(self.sortBySubjectCode(creditArr.income))
+      creditArr.liabilities = self.beautifyData(self.sortBySubjectCode(creditArr.liabilities))
+      creditArr.other = self.beautifyData(self.sortBySubjectCode(creditArr.other))
 
       // set title
-      // var newAsset = arrAsset.concat(arrExpense) // .concat(arrOther)
-      arrAsset.splice(0, 0, self.chartTitleTable)
-      self.chartDataAsset = arrAsset
+      // asset & liabilities
+      var al = debitArr.asset.concat(creditArr.liabilities)
+      al.splice(0, 0, self.chartTitleTable)
+      self.chartDataAssetLiabilities = al
 
-      arrLiabilities.splice(0, 0, self.chartTitleTable)
-      self.chartDataLiabilities = arrLiabilities
+      // income & excepense
+      var ie = []
+      var sumArrIncome = self.getSumArray('sum', '總收入(A)', creditArr.income)
+      var sumArrExpense = self.getSumArray('sum', '總支出(B)', debitArr.expense)
 
-      arrIncome.splice(0, 0, self.chartTitleTable)
-      self.chartDataIncome = arrIncome
+      var finalArr = []
+      finalArr.push(sumArrIncome)
+      finalArr.push(sumArrExpense)
+      var surplusOrDeficitArr = self.getSumArray('minus', '收支餘絀(C = A - B)', finalArr)
 
-      arrExpense.splice(0, 0, self.chartTitleTable)
-      self.chartDataExpense = arrExpense
+      creditArr.income.push(sumArrIncome)
+      debitArr.expense.push(sumArrExpense)
+      debitArr.expense.push(surplusOrDeficitArr)
+
+      ie = creditArr.income.concat(debitArr.expense)
+      ie.splice(0, 0, self.chartTitleTable)
+      self.chartDataIncomeExpense = ie
+    },
+    getClassification (symbol, arr, bigSubject1, bigSubject2) {
+      var a1 = []
+      var a2 = []
+      var other = []
+      for (var row in arr) {
+        var subjectCode = arr[row][0][0]
+        if (subjectCode.substring(0, 3) === bigSubject1.code) {
+          // debit -> asset;   credit -> income
+          a1.push(arr[row])
+        } else if (subjectCode.substring(0, 3) === bigSubject2.code) {
+          // debit -> expense; credit -> liabilities
+          a2.push(arr[row])
+        } else {
+          other.push(arr[row])
+        }
+      }
+      var obj = {}
+      switch (symbol) {
+        case 'debit':
+          obj = { 'asset': a1, 'expense': a2, 'other': other }
+          break
+        case 'credit':
+          obj = { 'income': a1, 'liabilities': a2, 'other': other }
+          break
+      }
+      console.log(obj)
+      return obj
+    },
+    getSumArray (symbol, title, arr) {
+      var returnArr = [null, title]
+      var rowLength = arr[0].length
+      switch (symbol) {
+        case 'sum':
+          for (var i = 2; i < rowLength; i++) {
+            var sumIncome = 0
+            for (var row in arr) {
+              sumIncome += arr[row][i]
+            }
+            returnArr.push(sumIncome)
+          }
+          break
+        case 'minus':
+          var arrIncome = arr[0]
+          var arrExpense = arr[1]
+          for (i = 2; i < rowLength; i++) {
+            returnArr.push(arrIncome[i] - arrExpense[i])
+          }
+      }
+      return returnArr
     },
     getEmptydataArray (codeName, countEmpty) {
       var arr = []
@@ -506,6 +456,21 @@ export default {
         arr.push(temp)
       }
       return arr
+    },
+    getGroupByData (tableData, emptyDataArray) {
+      for (var month in tableData) { // 取得 month 資料
+        var datas = tableData[month]
+        for (var subj in datas) { // 取得 obj
+          var subtotal = datas[subj]
+          // console.log(subj + ":" + subtotal) // 1-1-1-1:現金
+          emptyDataArray.forEach(row => {
+            if (row[0][0] === subj) { // row = [subject, subtotal]
+              row[Number(month)] = subtotal
+            }
+          })
+        }
+      }
+      return emptyDataArray
     },
     // 取得 left Chart data
     getLeftData (self) {
@@ -651,19 +616,6 @@ export default {
         }
         ok++
       }
-      // var size = arr.length
-      // for (var i = 0; i < size; i++) {
-      //   var i2 = i + 1
-      //   if (i2 !== size) {
-      //     var num1 = self.subjectToNumber(arr[i][0][0])
-      //     var num2 = self.subjectToNumber(arr[i2][0][0])
-      //     if (num1 > num2) {
-      //       var temp = arr[i]
-      //       arr[i] = arr[i2]
-      //       arr[i2] = temp
-      //     }
-      //   }
-      // }
       return arr
       /*
       arr = [

@@ -22,9 +22,19 @@
                 :class="(nowRoute === '/home') ? btn.select : ''" data-toggle="collapse" role="tab">Project</span>
             </router-link>
 
-            <router-link to="member">
+            <router-link to="report">
               <span class="list-group-item list-group-item-action"
-                :class="(nowRoute === '/member') ? btn.select : ''" data-toggle="collapse" role="tab">Members</span>
+                :class="(nowRoute === '/report') ? btn.select : ''" data-toggle="collapse" role="tab">Report</span>
+            </router-link>
+
+            <router-link to="journal">
+              <span class="list-group-item list-group-item-action"
+                :class="(nowRoute === '/journal') ? btn.select : ''" data-toggle="collapse" role="tab">Journal / Cash</span>
+            </router-link>
+
+            <router-link to="subject">
+              <span class="list-group-item list-group-item-action"
+                :class="(nowRoute === '/subject') ? btn.select : ''" data-toggle="collapse" role="tab">Subjects</span>
             </router-link>
 
             <router-link to="account">
@@ -32,19 +42,9 @@
                 :class="(nowRoute === '/account') ? btn.select : ''" data-toggle="collapse" role="tab">Accounts</span>
             </router-link>
 
-            <router-link to="subject">
+            <router-link to="member">
               <span class="list-group-item list-group-item-action"
-                :class="(nowRoute === '/subject') ? btn.select : ''" data-toggle="collapse" role="tab">Acc. Subjects</span>
-            </router-link>
-
-            <router-link to="journal">
-              <span class="list-group-item list-group-item-action"
-                :class="(nowRoute === '/journal') ? btn.select : ''" data-toggle="collapse" role="tab">Acc. Journal / Cash</span>
-            </router-link>
-
-            <router-link to="report">
-              <span class="list-group-item list-group-item-action"
-                :class="(nowRoute === '/report') ? btn.select : ''" data-toggle="collapse" role="tab">Report</span>
+                :class="(nowRoute === '/member') ? btn.select : ''" data-toggle="collapse" role="tab">Members</span>
             </router-link>
 
             <router-link to="profile">
@@ -59,7 +59,16 @@
         <div class="col">
 
           <div v-if="$route.path === '/home'">
-            <img src="@/assets/tables.png" width="80%">
+            <div style="padding: 3% 5%">
+              <div align="center"><h3>資料庫架構</h3></div>
+              <hr>
+              <div align="center"><img src="@/assets/tables.png" width="80%"></div>
+            </div>
+            <div style="padding: 1% 5%">
+              <div align="center"><h3>系統架構</h3></div>
+              <hr>
+              <div align="center"><img src="@/assets/system.png" width="80%"></div>
+            </div>
           </div>
 
           <div v-else>

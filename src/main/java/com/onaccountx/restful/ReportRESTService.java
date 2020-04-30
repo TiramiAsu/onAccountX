@@ -115,9 +115,6 @@ public class ReportRESTService {
 					return c.get(Calendar.YEAR) == Integer.parseInt(filterYear);
 				})
 				.collect(Collectors.toList());
-//		System.out.println(reportJournalList);
-//		System.out.println(subjectList);
-//		System.out.println();
 
 		// subtotal 1~12 month amount group by Subject
 		// get correct year of data from & to
@@ -135,9 +132,6 @@ public class ReportRESTService {
 		rangeYear.put("startYear", dataYearStart);
 		rangeYear.put("endedYear", dataYearEnded);
 		responseData.put("rangeYear", rangeYear);
-//		System.out.println(dataYearStart);
-//		System.out.println(dataYearEnded);
-//		System.out.println();
 
 		// get Subject Map(code & name)
 		Map<String, Object> codeName = new HashMap<>();
@@ -203,55 +197,13 @@ public class ReportRESTService {
 					}
 				}
 			});
-//		System.out.println(tableData);
 		responseData.put("tableDataDebit", tableDataDebit);
-		responseData.put("tableDataCrebit", tableDataCredit);
+		responseData.put("tableDataCredit", tableDataCredit);
 		// return response
 		return new ResponseREST(SUCCESS)
 				.setData(responseData)
 				.build();
 	}
-
-//	@GET
-//	@Path("/journal")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public Response queryJournalREST() {
-//		
-//		// Data
-//		List<Journal> journalList = null;
-//		List<Map<String, Object>> beanList = new ArrayList<>();
-//		
-//		// Service Enable
-//		enableService();
-//		
-//		// Authenticate User
-//		// TODO Json Web Token -> Filter
-//		
-//		// Handle
-//		journalList = journalService.query();
-//		
-//		// Response
-//		if (journalList == null) {
-//			return new ResponseREST(ERROR_DATABASE).build();
-//		} else {
-//			for (Journal j : journalList) {
-//				Map<String, Object> restBean = new GenericRESTBean()
-//						.put("id", j.getId())
-//						.put("code", j.getCode())
-//						.put("name", j.getName())
-//						.put("increase", j.getIncrease())
-//						.put("reduce", j.getReduce())
-//						.put("amount", j.getAmount())
-//						.put("timeDate", j.getTimeDate().getTime())
-//						.build();
-//				beanList.add(restBean);
-//			}
-//			return new ResponseREST(SUCCESS)
-//					.setData(beanList)
-//					.build();
-//		}
-//	}
 
 	@GET
 	@Path("/journal/groupby/debit")
