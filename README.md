@@ -10,7 +10,7 @@
 
 ## [ 資料庫架構 ]
 
-![](src\main\webapp\vue-x\src\assets\tables.png)
+![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/tables.png)
 
 
 
