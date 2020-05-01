@@ -57,17 +57,18 @@
 
 
 
-| “新增”頁面                                                   |
-| ------------------------------------------------------------ |
+| 頁面切換                                                     |
+| :----------------------------------------------------------- |
+| “新增”                                                       |
 | ![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/維護UI-II.png) |
-| “編輯”頁面                                                   |
+| “編輯”                                                       |
 | ![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/維護UI-III.png) |
 
 
 
 ## [ 財務報表 ]
 
-![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/財務報表-I.png)
+![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/財務報表-I.png)
 
 ![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/財務報表-IIx.png)
 
