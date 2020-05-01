@@ -209,12 +209,16 @@ public class Journal implements Serializable {
 	public String toString() {
 		return "Journal [id=" + id +
 				", timeDate=" + timeDate +
+				", debit=" + debit.getCode() +
+				", credit=" + credit.getCode() +
 				", amount=" + amount +
 				", item=" + item +
 				", place=" + place +
 				", who=" + who +
+				", account=" + account +
 				", timeBuild=" + timeBuild +
 				", timeModify=" + timeModify +
+				", cashAccount=" + cashAccount +
 				"]";
 	}
 }
