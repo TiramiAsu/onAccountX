@@ -44,7 +44,7 @@
 
 ## [ 後台 UI ]
 
-![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/維護 UI - I.png) 
+![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/維護UI-I.png) 
 
 各維護頁面共同功能如下：
 
@@ -59,28 +59,28 @@
 
 | “新增”頁面                                                   |
 | ------------------------------------------------------------ |
-| ![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/維護 UI - II.png) |
+| ![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/維護UI-II.png) |
 | “編輯”頁面                                                   |
-| ![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/維護 UI - III.png) |
+| ![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/維護UI-III.png) |
 
 
 
 ## [ 財務報表 ]
 
-![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/財務報表 - I.png)
+![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/財務報表-I.png)
 
-![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/財務報表 - IIx.png)
+![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/財務報表-IIx.png)
 
 
 
 ## [ 履歷 ]
 
-![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/profiles-1.png)
+![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/profiles-1.png)
 
-![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/profiles-2.png)
+![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/profiles-2.png)
 
-![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgsprofiles-3.png)
+![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/profiles-3.png)
 
-![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/profiles-4.png)
+![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/profiles-4.png)
 
-![](https://github.com/TiramiAsu/onAccountX/blob/develop/src/main/webapp/vue-x/src/assets/imgs/profiles-5.png)
+![](https://github.com/TiramiAsu/onAccountX/blob/develop/imgs/profiles-5.png)
