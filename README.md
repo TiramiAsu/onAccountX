@@ -44,6 +44,22 @@
 
 ## [ 後台 UI ]
 
+![](https://github.com/TiramiAsu/onAccountX/blob/master/imgs/back-endUI-II.png) 
+
+| **Item**             | **Description**                     |
+| -------------------- | ----------------------------------- |
+| **Project**          | 資料庫架構、系統架構                |
+| **Report**           | 財務報表                            |
+| **Journal   / Cash** | 日記帳務資料維護 / 現金帳務資料維護 |
+| **Subject**          | 會計科目維護                        |
+| **Accounts**         | 帳戶資料維護                        |
+| **Members**          | 會員資料維護                        |
+| **My   Profile**     | 本人履歷                            |
+
+
+
+## [ 維護 UI ]
+
 ![](https://github.com/TiramiAsu/onAccountX/blob/master/imgs/維護UI-I.png) 
 
 各維護頁面共同功能如下：
