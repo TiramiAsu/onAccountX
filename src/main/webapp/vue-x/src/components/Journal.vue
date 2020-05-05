@@ -203,14 +203,14 @@
             <!-- Place -->
             <div>
               <label for="place">Place</label>
-              <input v-model="entity.place" type="text" class="form-control" id="-" placeholder="Place">
+              <input v-model="entity.place" type="text" class="form-control" id="place" placeholder="Place">
             </div>
             <br />
 
             <!-- Who -->
             <div>
               <label for="who">Who</label>
-              <input v-model="entity.who" type="text" class="form-control" id="-" placeholder="Who">
+              <input v-model="entity.who" type="text" class="form-control" id="who" placeholder="Who">
             </div>
             <br />
 
@@ -387,7 +387,7 @@ export default {
               credit: bean.credit,
               amount: bean.amount,
               item: bean.item,
-              place: bean.palce,
+              place: bean.place,
               who: bean.who,
               accountId: bean.accountId,
               timeModify: -1, // 由 API 處理,

@@ -420,7 +420,7 @@ export default {
           obj = { 'income': a1, 'liabilities': a2, 'other': other }
           break
       }
-      console.log(obj)
+      // console.log(obj)
       return obj
     },
     getSumArray (symbol, title, arr) {
