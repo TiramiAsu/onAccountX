@@ -135,6 +135,14 @@
 			<version>1.2.0</version>
 		</dependency>
 
+		<!-- oracle Driver -->
+		<!-- https://mvnrepository.com/artifact/com.oracle.ojdbc/ojdbc8 -->
+		<dependency>
+			<groupId>com.oracle.ojdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>19.3.0.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
